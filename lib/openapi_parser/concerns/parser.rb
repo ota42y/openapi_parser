@@ -17,6 +17,7 @@ module OpenAPIParser::Parser
     def_delegators :_parser_core, :_openapi_attr_hash_objects, :openapi_attr_hash_object
     def_delegators :_parser_core, :_openapi_attr_hash_body_objects, :openapi_attr_hash_body_objects
 
+    # @return [OpenAPIParser::Parser::Core]
     def _parser_core
       @_parser_core ||= OpenAPIParser::Parser::Core.new(self)
     end

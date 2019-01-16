@@ -59,4 +59,41 @@ RSpec.describe OpenAPIParser::Schemas::Parameter do
       expect(subject.schema.type).to eq 'integer'
     end
   end
+
+  describe 'valid?' do
+    let(:schema) { petstore_schema }
+    let(:root) { OpenAPIParser.parse(schema, {}) }
+    let(:is_valid) { root.valid_definition? }
+
+    it do
+      expect(root.openapi_definition_errors.empty?).to eq true
+      expect(is_valid).to eq true
+    end
+
+    context 'not exist name' do
+      let(:schema) do
+        s = petstore_schema
+        s['paths']['/pets']['get']['parameters'][0].delete 'name'
+        s
+      end
+
+      it do
+        expect(is_valid) .to eq false
+        expect { raise root.openapi_definition_errors.first }.to raise_error(OpenAPIParser::InvalidDefinitionError, /name/)
+      end
+    end
+
+    context 'not exist in path template' do
+      let(:schema) do
+        s = petstore_schema
+        s['paths']['/pets/{id}']['get']['parameters'][0]['name'] = 'ab'
+        s
+      end
+
+      it do
+        expect(is_valid) .to eq false
+        expect { raise root.openapi_definition_errors.first }.to raise_error(OpenAPIParser::InvalidDefinitionError, /ab but/)
+      end
+    end
+  end
 end

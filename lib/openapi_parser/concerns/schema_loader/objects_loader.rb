@@ -8,6 +8,13 @@ class OpenAPIParser::SchemaLoader::ObjectsLoader < OpenAPIParser::SchemaLoader::
     [obj]
   end
 
+  def definition_validate(parents, target_object)
+    data = target_object.send(variable_name)
+
+    ref = build_object_reference_from_base(target_object.object_reference, schema_key)
+    [valid_definition?(target_object, ref, schema_key, data, parents, create_data_types)].compact
+  end
+
   private
 
     # @return [OpenAPIParser::Schemas::Base]

@@ -2,6 +2,7 @@
 # TODO: callbacks
 # TODO: security
 # TODO: servers
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class Operation < Base

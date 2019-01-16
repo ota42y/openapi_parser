@@ -10,4 +10,4 @@ inherit_from:
   - '.rubocop_ignore.yml'
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6

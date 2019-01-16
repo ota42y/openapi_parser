@@ -76,4 +76,22 @@ module OpenAPIParser
       "don't exist response definition #{@reference}"
     end
   end
+
+  class InvalidDefinitionError < OpenAPIError
+    def initialize(reference, attribute_name, value)
+      super(reference)
+      @attribute_name = attribute_name
+      @value = value
+    end
+
+    def message
+      "#{@attribute_name} is #{@value} but it's invalid definition in #{@reference}"
+    end
+  end
+
+  class InvalidPathTemplateNameError < InvalidDefinitionError
+    def message
+      "#{@attribute_name} is #{@value} but it's should be in path template definition in #{@reference}"
+    end
+  end
 end

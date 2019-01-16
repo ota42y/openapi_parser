@@ -21,4 +21,41 @@ RSpec.describe OpenAPIParser::Schemas::OpenAPI do
   describe '#components' do
     it { expect(subject.components).not_to eq nil }
   end
+
+  describe 'valid?' do
+    let(:schema) { petstore_schema }
+    let(:root) { OpenAPIParser.parse(schema, {}) }
+    let(:is_valid) { root.valid_definition? }
+
+    it do
+      expect(root.openapi_definition_errors.empty?).to eq true
+      expect(is_valid).to eq true
+    end
+
+    context 'not exist openapi' do
+      let(:schema) do
+        s = petstore_schema
+        s.delete 'openapi'
+        s
+      end
+
+      it do
+        expect(is_valid) .to eq false
+        expect { raise root.openapi_definition_errors.first }.to raise_error(OpenAPIParser::InvalidDefinitionError, /openapi/)
+      end
+    end
+
+    context 'not exist paths' do
+      let(:schema) do
+        s = petstore_schema
+        s.delete 'paths'
+        s
+      end
+
+      it do
+        expect(is_valid) .to eq false
+        expect { raise root.openapi_definition_errors.first }.to raise_error(OpenAPIParser::InvalidDefinitionError, /paths/)
+      end
+    end
+  end
 end

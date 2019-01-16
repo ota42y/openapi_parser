@@ -1,4 +1,10 @@
 class OpenAPIParser::PathItemFinder
+  class << self
+    def path_template?(path_name)
+      path_name.start_with?('{') && path_name.end_with?('}')
+    end
+  end
+
   # @param [OpenAPIParser::Schemas::Paths] paths
   def initialize(paths)
     @root = PathNode.new('/')
@@ -62,7 +68,7 @@ class OpenAPIParser::PathItemFinder
 
       path_name = splited_path.shift
 
-      child = path_template?(path_name) ? path_template_node(path_name) : children[path_name]
+      child = OpenAPIParser::PathItemFinder.path_template?(path_name) ? path_template_node(path_name) : children[path_name]
       child.register_path_node(splited_path, full_path)
     end
 
@@ -95,10 +101,6 @@ class OpenAPIParser::PathItemFinder
 
       def path_template_node(path_name)
         @path_template_node ||= PathNode.new(path_name[1..(path_name.length - 2)]) # delete {} from {name}
-      end
-
-      def path_template?(path_name)
-        path_name.start_with?('{') && path_name.end_with?('}')
       end
   end
 

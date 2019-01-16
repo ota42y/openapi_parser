@@ -4,6 +4,7 @@
 # TODO: callbacks
 
 module OpenAPIParser::Schemas
+  # Components Object in OpenAPI3
   class Components < Base
     # @!attribute [r] parameters
     #   @return [Hash{String => Parameter}, nil]

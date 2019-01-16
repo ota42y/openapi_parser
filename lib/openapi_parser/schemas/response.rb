@@ -1,4 +1,5 @@
 # TODO: links
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class Response < Base

@@ -1,6 +1,7 @@
 # TODO: example
 # TODO: examples
 # TODO: encoding
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class MediaType < Base

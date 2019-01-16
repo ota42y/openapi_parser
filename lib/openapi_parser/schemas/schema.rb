@@ -1,6 +1,7 @@
 # TODO: support 'not' because I need check reference...
 # TODO: support 'discriminator', 'xml', 'externalDocs'
 # TODO: support extended property
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class Schema < Base
@@ -103,6 +104,10 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] additional_properties
     #   @return [Boolean, Schema, Reference, nil]
-    openapi_attr_object :additional_properties, Schema, reference: true, allow_data_type: true, schema_key: :additionalProperties
+    openapi_attr_object :additional_properties, Schema,
+                        reference: true,
+                        allow_data_type: true,
+                        schema_key: :additionalProperties,
+                        data_types: [::Object]
   end
 end

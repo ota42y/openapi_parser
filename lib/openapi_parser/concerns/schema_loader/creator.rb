@@ -14,13 +14,6 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
 
     attr_reader :klass, :allow_reference, :allow_data_type
 
-    def build_object_reference_from_base(base, names)
-      names = [names] unless names.kind_of?(Array)
-      ref = names.map { |n| escape_reference(n) }.join('/')
-
-      "#{base}/#{ref}"
-    end
-
     # @return Boolean
     def check_reference_schema?(check_schema)
       check_object_schema?(check_schema) && !check_schema['$ref'].nil?
@@ -28,10 +21,6 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
 
     def check_object_schema?(check_schema)
       check_schema.kind_of?(::Hash)
-    end
-
-    def escape_reference(str)
-      str.to_s.gsub('/', '~1')
     end
 
     def build_openapi_object_from_option(target_object, ref, schema)
@@ -44,5 +33,14 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
       else
         @klass.new(ref, target_object, target_object.root, schema)
       end
+    end
+
+    def create_data_types
+      return @create_data_types if defined? @create_data_types
+
+      # TODO: check allow reference
+      @create_data_types = [@klass]
+      @create_data_types.concat(@data_types) if @allow_data_type && @data_types
+      @create_data_types
     end
 end

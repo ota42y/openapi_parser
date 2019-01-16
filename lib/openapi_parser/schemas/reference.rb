@@ -1,3 +1,5 @@
+# TODO: support schema definition check
+
 module OpenAPIParser::Schemas
   class Reference < Base
     # @!attribute [r] ref

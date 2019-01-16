@@ -1,3 +1,5 @@
+# TODO: support schema definition check
+
 module OpenAPIParser::Schemas
   class Header < Base
     openapi_attr_values :description, :required, :deprecated, :style, :explode, :example

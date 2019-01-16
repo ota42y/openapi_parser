@@ -2,6 +2,7 @@
 # TODO: servers object
 # TODO: tags object
 # TODO: externalDocs object
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class OpenAPI < Base
@@ -14,11 +15,11 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] openapi
     #   @return [String, nil]
-    openapi_attr_values :openapi
+    openapi_attr_value :openapi, data_types: [String], required: true
 
     # @!attribute [r] paths
     #   @return [Paths, nil]
-    openapi_attr_object :paths, Paths, reference: false
+    openapi_attr_object :paths, Paths, reference: false, required: true
 
     # @!attribute [r] components
     #   @return [Components, nil]
@@ -27,6 +28,14 @@ module OpenAPIParser::Schemas
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
+    end
+
+    def valid_definition?
+      openapi_definition_errors.empty?
+    end
+
+    def openapi_definition_errors
+      @openapi_definition_errors ||= validate_definitions([])
     end
   end
 end

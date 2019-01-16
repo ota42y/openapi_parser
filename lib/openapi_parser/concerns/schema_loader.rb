@@ -27,7 +27,7 @@ class OpenAPIParser::SchemaLoader
   # return data is equal to :children
   # @return [Array<OpenAPIParser::Schemas::Base>]
   def load_data
-    all_loader.each { |l| load_data_by_schema_loader(l) }
+    core.all_loader.each { |l| load_data_by_schema_loader(l) }
     children
   end
 
@@ -46,13 +46,5 @@ class OpenAPIParser::SchemaLoader
       return unless object.kind_of?(OpenAPIParser::Parser)
 
       @children[object.object_reference] = object
-    end
-
-    def all_loader
-      core._openapi_attr_values.values +
-        core._openapi_attr_objects.values +
-        core._openapi_attr_list_objects.values +
-        core._openapi_attr_hash_objects.values +
-        core._openapi_attr_hash_body_objects.values
     end
 end

@@ -1,5 +1,6 @@
 # TODO: support servers
 # TODO: support reference
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class PathItem < Base

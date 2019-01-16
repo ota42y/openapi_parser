@@ -1,4 +1,5 @@
 # TODO: support extended property
+# TODO: support schema definition check
 
 module OpenAPIParser::Schemas
   class RequestBody < Base

@@ -15,6 +15,15 @@ class OpenAPIParser::Parser::Core
     @target_klass = target_klass
   end
 
+  # @return [Array<OpenAPIParser::SchemaLoader::Base>]
+  def all_loader
+    @all_loader ||= _openapi_attr_values.values +
+                    _openapi_attr_objects.values +
+                    _openapi_attr_list_objects.values +
+                    _openapi_attr_hash_objects.values +
+                    _openapi_attr_hash_body_objects.values
+  end
+
   private
 
     attr_reader :target_klass

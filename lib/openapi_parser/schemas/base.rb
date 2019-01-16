@@ -3,6 +3,7 @@ module OpenAPIParser::Schemas
     include OpenAPIParser::Parser
     include OpenAPIParser::Findable
     include OpenAPIParser::Expandable
+    include OpenAPIParser::DefinitionValidatable
 
     attr_reader :parent, :raw_schema, :object_reference, :root
 
