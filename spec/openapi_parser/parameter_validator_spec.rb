@@ -62,5 +62,74 @@ RSpec.describe OpenAPIParser::ParameterValidator do
         end
       end
     end
+
+    context 'nested query params in post request' do
+      let(:http_method) { :post }
+      let(:request_path) { '/validate-nested' }
+      let(:config) do
+        {
+          coerce_value: true,
+          datetime_coerce_class: DateTime
+        }
+      end
+
+      context 'with required params, nested' do
+        let(:params) do
+          {
+            'nested_object' => {
+              'name' => 'hello',
+              'value' => '2016-04-01T16:00:00+09:00'
+            },
+            'nested_but_flat_object' => {
+              'name' => 'hello',
+              'value' => '2016-04-01T16:00:00+09:00'
+            }
+          }
+        end
+
+        it { expect(subject['nested_but_flat_object']['name']).to eq('hello') }
+        it { expect(subject['nested_but_flat_object']['value']).to be_an_instance_of(DateTime) }
+        it { expect(subject['nested_object']['value']).to be_an_instance_of(DateTime) }
+      end
+
+      context 'without required nested param' do
+        let(:params) do
+          {
+            'nested_object' => {
+              'name' => 'hello',
+              'value' => '2016-04-01T16:00:00+09:00'
+            },
+            'nested_but_flat_object' => {
+              'value' => '2016-04-01T16:00:00+09:00'
+            }
+          }
+        end
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::NotExistRequiredKey)
+            expect(e.message).to end_with('missing required parameters: nested_but_flat_object[name]')
+          end
+        end
+      end
+
+      context 'without required parent param' do
+        let(:params) do
+          {
+            'nested_object' => {
+              'name' => 'hello',
+              'value' => '2016-04-01T16:00:00+09:00'
+            }
+          }
+        end
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::NotExistRequiredKey)
+            expect(e.message).to end_with('missing required parameters: nested_but_flat_object[name], nested_but_flat_object[value]')
+          end
+        end
+      end
+    end
   end
 end

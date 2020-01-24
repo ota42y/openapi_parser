@@ -161,6 +161,43 @@ paths:
                 type: array
                 items:
                   type: string
+  /validate-nested:
+    post:
+      description: validate test data with query params
+      parameters:
+        - in: query
+          name: nested_object
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+                format: date-time
+        - in: query
+          name: nested_but_flat_object[name]
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: nested_but_flat_object[value]
+          required: true
+          schema:
+            type: string
+            format: date-time
+
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  string:
+                    type: string
   /validate:
     get:
       description: get characters
