@@ -110,7 +110,7 @@ class OpenAPIParser::PathItemFinder
 
       # if there are many matching paths, return the one with the smallest number of params
       # (prefer /user/{id}/action over /user/{param_1}/{param_2} )
-      matching.min_by { |match| match[0].size } 
+      matching.min_by { |match| match[1].size } 
     end
 
     def parse_request_path(http_method, request_path)
