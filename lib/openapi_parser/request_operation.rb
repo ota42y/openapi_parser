@@ -41,6 +41,7 @@ class OpenAPIParser::RequestOperation
 
   def validate_path_params(options = nil)
     options ||= config.path_params_options
+    path_item&.validate_path_params(path_params, options)
     operation_object&.validate_path_params(path_params, options)
   end
 
