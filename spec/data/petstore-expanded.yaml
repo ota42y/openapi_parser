@@ -248,13 +248,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   /animals/{id}:
     parameters:
-    - name: id
-      in: path
-      description: ID of pet to fetch
-      required: true
-      schema:
-        type: integer
-        format: int64
+    - $ref: '#/components/parameters/petId'
     - name: token
       in: header
       description: token to be passed as a header
@@ -277,6 +271,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
+  /animals/{groupId}/{id}.json:
+    parameters:
+    - $ref: '#/components/parameters/petId'
+    - name: groupId
+      in: path
+      description: group ID of the animal
+      required: true
+      schema:
+        type: integer
+        format: int64
+      style: simple
+    - name: token
+      in: header
+      description: token to be passed as a header
+      required: true
+      schema:
+        type: integer
+        format: int64
+      style: simple
+    get:
+      parameters:
+      - name: header_2
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: pet response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
 components:
   parameters:
     test:
@@ -289,6 +317,13 @@ components:
         format: int32
     test_ref:
       $ref: '#/components/parameters/test'
+    petId1:
+      in: path
+      description: ID of pet to fetch
+      required: true
+      schema:
+        type: integer
+        format: int64
   schemas:
     Pet:
       allOf:

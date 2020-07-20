@@ -38,7 +38,62 @@ class OpenAPIParser::PathItemFinder
     end
   end
 
+  def parse_path_parameters(schema_path, request_path)
+    parameters = path_parameters(schema_path)
+    return nil if parameters.empty?
+
+    params = {}
+    unparsed_req = request_path.dup
+    unparsed_schema = schema_path.dup
+
+    # Iterate through each of the parameters and ensure that we can parse it.
+    # If at any time the schema stops matching, abort and return `nil`.
+    # The parameters must be in the same order as their appear in the schema_path.
+    parameters.each do |parameter|
+      start_pos = unparsed_schema.index(parameter)
+
+      # Strip off any "header" (non-parameter value in path) in front of the param,
+      # aborting if the "header" is not found in the request path
+      if start_pos > 0
+        header = unparsed_schema[0..(start_pos - 1)]
+        return nil if unparsed_req.index(header) != 0
+
+        unparsed_schema = unparsed_schema[start_pos..unparsed_schema.length]
+        unparsed_req = unparsed_req[start_pos..unparsed_req.length]
+      end
+
+      # Remove the parameter from the schema path name and find out what is next (non-param character or EOS)
+      unparsed_schema = unparsed_schema[parameter.length..unparsed_schema.length]
+      if unparsed_schema.length == 0
+        value = unparsed_req
+        unparsed_req = ''
+      else
+        value_end_pos = unparsed_req.index(unparsed_schema[0])
+        return nil if value_end_pos == -1
+
+        # Capture the value and slice the string to remove it for the next iteration
+        value = unparsed_req[0..(value_end_pos - 1)]
+        unparsed_req = unparsed_req[value_end_pos..unparsed_req.length]
+      end
+
+      # Remove the curly braces from the parameter name before returning
+      params[param_name(parameter)] = value
+    end
+
+    params
+  end
+
   private
+    def path_parameters(schema_path)
+      # OAS3 follows a RFC6570 subset for URL templates
+      # https://swagger.io/docs/specification/serialization/#uri-templates
+      # A URL template param can be preceded optionally by a "." or ";", and can be succeeded optionally by a "*";
+      # this regex returns a match of the full parameter name with all of these modifiers. Ex: {;id*}
+      parameters = schema_path.scan(/(\{[\.;]*[^\{\*\}]+\**\})/)
+      # The `String#scan` method returns an array of arrays; we want an array of strings
+      parameters.collect { |param| param[0] }
+    end
+
     # check if there is a identical path in the schema (without any param)
     def matches_directly?(request_path, http_method)
       @paths.path[request_path]&.operation(http_method)
@@ -70,8 +125,9 @@ class OpenAPIParser::PathItemFinder
       splitted_request_path.zip(splitted_schema_path).reduce({}) do |result, zip_item|
         request_path_item, schema_path_item = zip_item
 
-        if path_template?(schema_path_item)
-          result[param_name(schema_path_item)] = request_path_item
+        params = parse_path_parameters(schema_path_item, request_path_item)
+        if params
+          result.merge!(params)
         else
           return if schema_path_item != request_path_item
         end
@@ -80,7 +136,7 @@ class OpenAPIParser::PathItemFinder
       end
     end
 
-    # find all matching patchs with parameters extracted
+    # find all matching paths with parameters extracted
     # EXAMPLE:
     # [
     #    ['/user/{id}/edit', { 'id' => 1 }],
