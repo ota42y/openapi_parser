@@ -80,7 +80,7 @@ class OpenAPIParser::PathItemFinder
       end
     end
 
-    # find all matching patchs with parameters extracted
+    # find all matching paths with parameters extracted
     # EXAMPLE:
     # [
     #    ['/user/{id}/edit', { 'id' => 1 }],
