@@ -29,11 +29,25 @@ RSpec.describe OpenAPIParser::PathItemFinder do
     it 'fails to match' do
       result = subject.parse_path_parameters('stuff_{id}_', '123')
       expect(result).to be_nil
+
+      result = subject.parse_path_parameters('{p1}-{p2}.json', 'foo.json')
+      expect(result).to be_nil
+
+      result = subject.parse_path_parameters('{p1}.json', 'foo-.jso')
+      expect(result).to be_nil
     end
 
     it 'fails to match no input' do
       result = subject.parse_path_parameters('', '')
       expect(result).to be_nil
+    end
+
+    it 'matches when the last character of the variable is the same as the next character' do
+      result = subject.parse_path_parameters('{p1}schedule', 'adminsschedule')
+      expect(result).to eq({'p1' => 'admins'})
+
+      result = subject.parse_path_parameters('{p1}schedule', 'usersschedule')
+      expect(result).to eq({'p1' => 'users'})
     end
   end
 
