@@ -317,8 +317,9 @@ components:
         format: int32
     test_ref:
       $ref: '#/components/parameters/test'
-    petId1:
+    petId:
       in: path
+      name: id
       description: ID of pet to fetch
       required: true
       schema:
