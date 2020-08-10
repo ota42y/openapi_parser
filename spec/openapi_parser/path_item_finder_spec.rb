@@ -33,7 +33,7 @@ RSpec.describe OpenAPIParser::PathItemFinder do
       result = subject.parse_path_parameters('{p1}-{p2}.json', 'foo.json')
       expect(result).to be_nil
 
-      result = subject.parse_path_parameters('{p1}.json', 'foo-.jso')
+      result = subject.parse_path_parameters('{p1}.json', 'foo.txt')
       expect(result).to be_nil
     end
 

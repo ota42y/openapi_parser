@@ -42,45 +42,16 @@ class OpenAPIParser::PathItemFinder
     parameters = path_parameters(schema_path)
     return nil if parameters.empty?
 
-    params = {}
-    unparsed_req = request_path.dup
-    unparsed_schema = schema_path.dup
-
-    # Iterate through each of the parameters and ensure that we can parse it.
-    # If at any time the schema stops matching, abort and return `nil`.
-    # The parameters must be in the same order as their appear in the schema_path.
+    regex = schema_path.dup
     parameters.each do |parameter|
-      start_pos = unparsed_schema.index(parameter)
-
-      # Strip off any "header" (non-parameter value in path) in front of the param,
-      # aborting if the "header" is not found in the request path
-      if start_pos > 0
-        header = unparsed_schema[0..(start_pos - 1)]
-        return nil if unparsed_req.index(header) != 0
-
-        unparsed_schema = unparsed_schema[start_pos..unparsed_schema.length]
-        unparsed_req = unparsed_req[start_pos..unparsed_req.length]
-      end
-
-      # Remove the parameter from the schema path name and find out what is next (non-param character or EOS)
-      unparsed_schema = unparsed_schema[parameter.length..unparsed_schema.length]
-      if unparsed_schema.length == 0
-        value = unparsed_req
-        unparsed_req = ''
-      else
-        value_end_pos = unparsed_req.index(unparsed_schema[0])
-        return nil if value_end_pos == -1
-
-        # Capture the value and slice the string to remove it for the next iteration
-        value = unparsed_req[0..(value_end_pos - 1)]
-        unparsed_req = unparsed_req[value_end_pos..unparsed_req.length]
-      end
-
-      # Remove the curly braces from the parameter name before returning
-      params[param_name(parameter)] = value
+      regex = regex.gsub(parameter, "(?<#{param_name(parameter)}>.+)")
     end
 
-    params
+    matches = request_path.match(regex)
+    return nil unless matches
+
+    # Match up the captured names with the captured values as a hash
+    matches.names.zip(matches.captures).to_h
   end
 
   private
@@ -150,7 +121,7 @@ class OpenAPIParser::PathItemFinder
         splitted_schema_path = path.split('/')
 
         next result if different_depth_or_method?(splitted_schema_path, splitted_request_path, path_item, http_method)
-        
+
         extracted_params = extract_params(splitted_request_path, splitted_schema_path)
         result << [path, extracted_params] if extracted_params
         result
@@ -161,12 +132,12 @@ class OpenAPIParser::PathItemFinder
     # EXAMPLE: find_path_and_params('get', '/user/1') => ['/user/{id}', { 'id' => 1 }]
     def find_path_and_params(http_method, request_path)
       return [request_path, {}] if matches_directly?(request_path, http_method)
-      
+
       matching = matching_paths_with_params(request_path, http_method)
 
       # if there are many matching paths, return the one with the smallest number of params
       # (prefer /user/{id}/action over /user/{param_1}/{param_2} )
-      matching.min_by { |match| match[0].size } 
+      matching.min_by { |match| match[0].size }
     end
 
     def parse_request_path(http_method, request_path)
