@@ -3,7 +3,13 @@ info:
   version: 1.0.0
   title: OpenAPI3 Test
 paths:
-  /sample:
+  /sample/{sample_id}:
+    parameters:
+      - name: sample_id
+        in: path
+        required: true
+        schema:
+          type: string
     post:
       description: override here
       requestBody:
@@ -20,4 +26,4 @@ paths:
         '204':
           description: empty
   /ref-sample:
-    $ref: '#/paths/~1sample'
+    $ref: '#/paths/~1sample~1%7Bsample_id%7D'
