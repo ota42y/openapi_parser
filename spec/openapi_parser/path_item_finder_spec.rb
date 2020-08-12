@@ -26,6 +26,19 @@ RSpec.describe OpenAPIParser::PathItemFinder do
       expect(result).to eq({'stuff_with_underscores-and-hyphens' => '4', 'id' => '123'})
     end
 
+    # Open API spec does not specifically define what characters are acceptable as a parameter name,
+    # so allow everything in between {}.
+    it 'matches when parameter contains regex characters' do
+      result = subject.parse_path_parameters('{id?}.json', '123.json')
+      expect(result).to eq({'id?' => '123'})
+
+      result = subject.parse_path_parameters('{id.}.json', '123.json')
+      expect(result).to eq({'id.' => '123'})
+
+      result = subject.parse_path_parameters('{{id}}.json', '{123}.json')
+      expect(result).to eq({'id' => '123'})
+    end
+
     it 'fails to match' do
       result = subject.parse_path_parameters('stuff_{id}_', '123')
       expect(result).to be_nil
@@ -34,6 +47,14 @@ RSpec.describe OpenAPIParser::PathItemFinder do
       expect(result).to be_nil
 
       result = subject.parse_path_parameters('{p1}.json', 'foo.txt')
+      expect(result).to be_nil
+
+      result = subject.parse_path_parameters('{{id}}.json', '123.json')
+      expect(result).to be_nil
+    end
+
+    it 'fails to match when a Regex escape character is used in the path' do
+      result = subject.parse_path_parameters('{id}.json', '123-json')
       expect(result).to be_nil
     end
 

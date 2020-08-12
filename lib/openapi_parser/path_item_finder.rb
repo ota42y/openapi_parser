@@ -42,11 +42,19 @@ class OpenAPIParser::PathItemFinder
     parameters = path_parameters(schema_path)
     return nil if parameters.empty?
 
-    regex = schema_path.dup
+    # If there are regex special characters in the path, the regex will
+    # be too permissive, so escape the non-parameter parts.
+    components = []
+    unprocessed = schema_path.dup
     parameters.each do |parameter|
-      regex = regex.gsub(parameter, "(?<#{param_name(parameter)}>.+)")
+      parts = unprocessed.partition(parameter)
+      components << Regexp.escape(parts[0]) unless parts[0] == ''
+      components << "(?<#{param_name(parameter)}>.+)"
+      unprocessed = parts[2]
     end
+    components << Regexp.escape(unprocessed) unless unprocessed == ''
 
+    regex = components.join('')
     matches = request_path.match(regex)
     return nil unless matches
 
