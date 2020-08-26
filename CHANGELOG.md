@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Find path by extracted params than path length #84
+* Unescape ref URI before lookup in OpenAPIParser::Findable #85
+* Improved path parameter matching code to allow file extensions, multiple parameters inside one path element, etc #90
+
 ## 0.11.2 (2020-05-23)
 * Allow date and time content in YAML #81
 
