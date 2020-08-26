@@ -1,5 +1,6 @@
 ## Unreleased
 
+## 0.12.0 (2020-08-26)
 * Find path by extracted params than path length #84
 * Unescape ref URI before lookup in OpenAPIParser::Findable #85
 * Improved path parameter matching code to allow file extensions, multiple parameters inside one path element, etc #90
