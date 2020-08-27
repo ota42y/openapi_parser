@@ -1,10 +1,11 @@
+require 'cgi'
 require 'uri'
 
 module OpenAPIParser::Findable
   # @param [String] reference
   # @return [OpenAPIParser::Findable]
   def find_object(reference)
-    reference = URI.unescape(reference)
+    reference = CGI.unescape(reference)
     return self if object_reference == reference
     remote_reference = !reference.start_with?('#')
     return find_remote_object(reference) if remote_reference
