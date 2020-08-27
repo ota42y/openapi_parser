@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 0.12.1 (2020-08-27)
+* Use CGI.unescape (warning fix) #92
+
 ## 0.12.0 (2020-08-26)
 * Find path by extracted params than path length #84
 * Unescape ref URI before lookup in OpenAPIParser::Findable #85
