@@ -7,6 +7,8 @@ module OpenAPIParser::Schemas
   class Operation < Base
     include OpenAPIParser::ParameterValidatable
 
+    alias path_item parent
+
     openapi_attr_values :tags, :summary, :description, :deprecated
 
     openapi_attr_value :operation_id, schema_key: :operationId
@@ -30,5 +32,18 @@ module OpenAPIParser::Schemas
     def validate_response(response_body, response_validate_options)
       responses&.validate(response_body, response_validate_options)
     end
+
+    def header_parameter_hash
+      @header_parameter_hash ||= path_item.header_parameter_hash.merge(super)
+    end
+
+    def path_parameter_hash
+      @path_parameter_hash ||= path_item.path_parameter_hash.merge(super)
+    end
+
+    def query_parameter_hash
+      @query_parameter_hash ||= path_item.query_parameter_hash.merge(super)
+    end
+
   end
 end
