@@ -245,6 +245,13 @@ RSpec.describe OpenAPIParser::SchemaValidator do
             expect(e.message.start_with?("\"x\" isn't include enum")).to eq true
           end
         end
+
+        it 'not include enum (empty string)' do
+          expect { request_operation.validate_request_body(content_type, { 'enum_string' => '' }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
+            expect(e.message.start_with?("\"\" isn't include enum")).to eq true
+          end
+        end
       end
 
       context 'enum integer' do
