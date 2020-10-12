@@ -75,7 +75,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
         expect { request_operation.validate_request_body(content_type, params) }.to raise_error do |e|
           expect(e).to be_kind_of(OpenAPIParser::ValidateError)
-          expect(e.message).to end_with("expected #{key}, but received #{value.class}: #{value}")
+          expect(e.message).to end_with("expected #{key}, but received #{value.class}: #{value.inspect}")
         end
       end
     end
@@ -242,7 +242,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         it 'not include enum' do
           expect { request_operation.validate_request_body(content_type, { 'enum_string' => 'x' }) }.to raise_error do |e|
             expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
-            expect(e.message.start_with?("x isn't include enum")).to eq true
+            expect(e.message.start_with?("\"x\" isn't include enum")).to eq true
           end
         end
       end
