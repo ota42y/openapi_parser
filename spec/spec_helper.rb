@@ -1,6 +1,6 @@
 require 'bundler'
 require 'yaml'
-# require 'pry'
+require 'pry'
 require 'rspec-parameterized'
 require 'simplecov'
 
