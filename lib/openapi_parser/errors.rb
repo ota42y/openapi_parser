@@ -13,7 +13,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} expected #{@type}, but received #{@data.class}: #{@data}"
+      "#{@reference} expected #{@type}, but received #{@data.class}: #{@data.inspect}"
     end
 
     class << self
@@ -73,7 +73,7 @@ module OpenAPIParser
     end
 
     def message
-      "discriminator propertyName #{@key} does not exist in value #{@value} in #{@reference}"
+      "discriminator propertyName #{@key} does not exist in value #{@value.inspect} in #{@reference}"
     end
   end
 
@@ -84,7 +84,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@value} isn't one of in #{@reference}"
+      "#{@value.inspect} isn't one of in #{@reference}"
     end
   end
 
@@ -95,7 +95,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@value} isn't any of in #{@reference}"
+      "#{@value.inspect} isn't any of in #{@reference}"
     end
   end
 
@@ -106,7 +106,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@value} isn't include enum in #{@reference}"
+      "#{@value.inspect} isn't include enum in #{@reference}"
     end
   end
 
@@ -117,7 +117,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} is less than minimum value"
+      "#{@reference} #{@value.inspect} is less than minimum value"
     end
   end
 
@@ -128,7 +128,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} cannot be less than or equal to exclusive minimum value"
+      "#{@reference} #{@value.inspect} cannot be less than or equal to exclusive minimum value"
     end
   end
 
@@ -139,7 +139,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} is more than maximum value"
+      "#{@reference} #{@value.inspect} is more than maximum value"
     end
   end
 
@@ -150,7 +150,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} cannot be more than or equal to exclusive maximum value"
+      "#{@reference} #{@value.inspect} cannot be more than or equal to exclusive maximum value"
     end
   end
 
@@ -163,7 +163,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} pattern #{@pattern} does not match value: #{@value}#{@example ? ", example: #{@example}" : ""}"
+      "#{@reference} pattern #{@pattern} does not match value: #{@value.inspect}#{@example ? ", example: #{@example}" : ""}"
     end
   end
 
@@ -174,7 +174,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} email address format does not match value: #{@value}"
+      "#{@reference} email address format does not match value: #{@value.inspect}"
     end
   end
 
@@ -185,7 +185,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} Value: #{@value} is not conformant with UUID format"
+      "#{@reference} Value: #{@value.inspect} is not conformant with UUID format"
     end
   end
 
@@ -208,7 +208,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} is longer than max length"
+      "#{@reference} #{@value.inspect} is longer than max length"
     end
   end
 
@@ -219,7 +219,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} is shorter than min length"
+      "#{@reference} #{@value.inspect} is shorter than min length"
     end
   end
 
@@ -230,7 +230,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} contains more than max items"
+      "#{@reference} #{@value.inspect} contains more than max items"
     end
   end
 
@@ -241,7 +241,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@reference} #{@value} contains fewer than min items"
+      "#{@reference} #{@value.inspect} contains fewer than min items"
     end
   end
 end

@@ -1,4 +1,4 @@
-require 'bundler/setup'
+require 'bundler'
 require 'yaml'
 require 'pry'
 require 'rspec-parameterized'

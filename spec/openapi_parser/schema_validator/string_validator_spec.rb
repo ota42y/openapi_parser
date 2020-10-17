@@ -35,7 +35,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidPattern)
-            expect(e.message).to end_with("pattern [0-9]+:[0-9]+ does not match value: #{invalid_str}")
+            expect(e.message).to end_with("pattern [0-9]+:[0-9]+ does not match value: #{invalid_str.inspect}")
           end
         end
       end
@@ -54,7 +54,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidPattern)
-            expect(e.message).to end_with("pattern [0-9]+:[0-9]+ does not match value: #{invalid_str}, example: 11:22")
+            expect(e.message).to end_with("pattern [0-9]+:[0-9]+ does not match value: #{invalid_str.inspect}, example: 11:22")
           end
         end
       end
@@ -89,7 +89,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
           it do
             expect { subject }.to raise_error do |e|
               expect(e).to be_kind_of(OpenAPIParser::MoreThanMaxLength)
-              expect(e.message).to end_with("#{value} is longer than max length")
+              expect(e.message).to end_with("#{value.inspect} is longer than max length")
             end
           end
         end
@@ -121,7 +121,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
           it do
             expect { subject }.to raise_error do |e|
               expect(e).to be_kind_of(OpenAPIParser::LessThanMinLength)
-              expect(e.message).to end_with("#{value} is shorter than min length")
+              expect(e.message).to end_with("#{value.inspect} is shorter than min length")
             end
           end
         end
@@ -155,7 +155,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidEmailFormat)
-            expect(e.message).to end_with("email address format does not match value: not_email")
+            expect(e.message).to end_with("email address format does not match value: \"not_email\"")
           end
         end
       end
@@ -188,7 +188,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidUUIDFormat)
-            expect(e.message).to end_with("Value: not_uuid is not conformant with UUID format")
+            expect(e.message).to end_with("Value: \"not_uuid\" is not conformant with UUID format")
           end
         end
       end

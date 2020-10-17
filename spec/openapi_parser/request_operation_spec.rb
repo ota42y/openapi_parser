@@ -126,7 +126,7 @@ RSpec.describe OpenAPIParser::RequestOperation do
       it do
         expect { subject }.to raise_error do |e|
           expect(e).to be_kind_of(OpenAPIParser::ValidateError)
-          expect(e.message).to end_with("expected integer, but received String: 1")
+          expect(e.message).to end_with("expected integer, but received String: \"1\"")
         end
       end
     end
