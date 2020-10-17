@@ -136,7 +136,7 @@ class OpenAPIParser::PathItemFinder
       end
     end
 
-    # find mathing path and extract params
+    # find matching path and extract params
     # EXAMPLE: find_path_and_params('get', '/user/1') => ['/user/{id}', { 'id' => 1 }]
     def find_path_and_params(http_method, request_path)
       return [request_path, {}] if matches_directly?(request_path, http_method)
