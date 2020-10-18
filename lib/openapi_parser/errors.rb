@@ -295,6 +295,10 @@ module OpenAPIParser
       @errors.each(&b)
     end
 
+    def merge(other, prefix: nil)
+      @errors.merge(other.errors, prefix: prefix)
+    end
+
     class Node
       attr_reader :children, :errors, :no_error, :passed_count
 
@@ -356,12 +360,19 @@ module OpenAPIParser
         @passed_count += 1
       end
 
-      def merge(other)
+      def merge(other, prefix: nil)
         @no_error ||= other. no_error
-        other.children.each do |key, child|
-          @children[key] = child
+        if prefix
+          node = self[prefix]
+        else
+          node = self
         end
-        @errors.concat other.errors
+        children = node.children
+        errors = node.errors
+        other.children.each do |key, child|
+          children[key] = child
+        end
+        errors.concat other.errors
       end
     end
   end

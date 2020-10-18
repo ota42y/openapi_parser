@@ -61,6 +61,22 @@ RSpec.describe OpenAPIParser::ParameterValidator do
           it { expect { subject }.to raise_error(OpenAPIParser::NotNullError) }
         end
       end
+
+      context 'collect_errors' do
+        let(:config) { { collect_errors: true } }
+        let(:params) { { 'query_integer_list' => nil, 'queryString' => 'Query' } }
+
+        it 'collects errors' do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::ErrorCollection)
+            expect(e.to_h).to match({
+              ["query_integer_list"] => an_instance_of(OpenAPIParser::NotNullError),
+              ["query_string"] => an_instance_of(OpenAPIParser::NotExistRequiredKey),
+            })
+            expect(e.message).to end_with('missing required parameters: query_string')
+          end
+        end
+      end
     end
   end
 end
