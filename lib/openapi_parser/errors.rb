@@ -244,4 +244,125 @@ module OpenAPIParser
       "#{@reference} #{@value.inspect} contains fewer than min items"
     end
   end
+
+  class ErrorCollection < OpenAPIError
+    include Enumerable
+
+    attr_reader :errors
+
+    def initialize
+      @errors = Node.new
+      @no_error = true
+      @path = []
+    end
+
+    def any?
+      !@no_error
+    end
+
+    def frame(key)
+      @path << key
+      if block_given?
+        begin
+          yield
+        ensure
+          pop_frame
+        end
+      end
+    end
+
+    def pop_frame
+      @path.pop
+    end
+
+    def add(schema, validator, err, suffix: nil)
+      node = @errors[[*@path, suffix].compact]
+      if err
+        @no_error = false
+        node << err
+      else
+        node.passed
+      end
+    end
+
+    def message
+      map do |path, error|
+        "#{path.join(".")}: #{error.message}"
+      end.join("\n")
+    end
+
+    def each(&b)
+      @errors.each(&b)
+    end
+
+    class Node
+      attr_reader :children, :errors, :no_error, :passed_count
+
+      def initialize(parent = nil)
+        @parent = parent
+        @passed_count = 0
+        @no_error = true
+        @children = {}
+        @errors = []
+      end
+
+      def each(path = [], &b)
+        @errors.each do |error|
+          yield path, error
+        end
+        @children.each do |key, child|
+          child.each([*path, key], &b)
+        end
+      end
+
+      def [](keys)
+        return self if keys.empty?
+        key, *rest = keys
+        child = @children[key] ||= Node.new(self)
+        child[rest]
+      end
+
+      def <<(err)
+        error!
+        if err.is_a?(OpenAPIParser::NotOneOf)
+          max_count = -1
+          max_count_child = nil
+          @children.each do |key, child|
+            if child.passed_count > max_count
+              max_count = child.passed_count
+              max_count_child = child
+            end
+          end
+
+          @children.clear
+          if max_count_child
+            merge(max_count_child)
+          else
+            @errors << err
+          end
+        else
+          @errors << err
+        end
+      end
+
+      def error!
+        @no_error = false
+        @parent&.error!
+      end
+
+      def passed
+        return unless @no_error
+        @parent&.passed
+        @passed_count += 1
+      end
+
+      def merge(other)
+        @no_error ||= other. no_error
+        other.children.each do |key, child|
+          @children[key] = child
+        end
+        @errors.concat other.errors
+      end
+    end
+  end
 end

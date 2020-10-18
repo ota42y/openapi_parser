@@ -619,6 +619,8 @@ components:
           type: string
         integer_1:
           type: integer
+        integer_2:
+          type: integer
       additionalProperties: false
     one_of_object2:
       type: object
@@ -629,5 +631,7 @@ components:
         name:
           type: string
         string_1:
+          type: string
+        string_2:
           type: string
       additionalProperties: false

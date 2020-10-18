@@ -10,8 +10,10 @@ class OpenAPIParser::SchemaValidator
 
       # array type have an schema in items property
       items_schema = schema.items
-      coerced_values = value.map do |v|
-        coerced, err = validatable.validate_schema(v, items_schema)
+      coerced_values = value.map.with_index do |v, i|
+        coerced, err = validatable.frame(i) do
+          validatable.validate_schema(v, items_schema)
+        end
         return [nil, err] if err
 
         coerced

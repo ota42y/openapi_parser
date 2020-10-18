@@ -53,6 +53,9 @@ class OpenAPIParser::SchemaValidator
     @schema = schema
     @coerce_value = options.coerce_value
     @datetime_coerce_class = options.datetime_coerce_class
+    if options.collect_errors
+      @error_collection = OpenAPIParser::ErrorCollection.new
+    end
   end
 
   # execute validate data
@@ -60,6 +63,9 @@ class OpenAPIParser::SchemaValidator
   def validate_data
     coerced, err = validate_schema(@value, @schema)
     raise err if err
+    if @error_collection&.any?
+      raise @error_collection
+    end
 
     coerced
   end
@@ -72,10 +78,12 @@ class OpenAPIParser::SchemaValidator
 
     if (v = validator(value, schema))
       if keyword_args.empty?
-        return v.coerce_and_validate(value, schema)
+        coerced, err = v.coerce_and_validate(value, schema)
       else
-        return v.coerce_and_validate(value, schema, **keyword_args)
+        coerced, err = v.coerce_and_validate(value, schema, **keyword_args)
       end
+      err = process_error(schema, v, err)
+      return coerced, err
     end
 
     # unknown return error
@@ -88,6 +96,27 @@ class OpenAPIParser::SchemaValidator
   # @param [OpenAPIParser::Schemas::Schema] schema
   def validate_integer(value, schema)
     integer_validator.coerce_and_validate(value, schema)
+  end
+
+  def process_error(schema, validator, err, suffix: nil)
+    if @error_collection
+      @error_collection.add(schema, validator, err, suffix: suffix)
+      nil
+    else
+      err
+    end
+  end
+
+  def frame(key, &b)
+    if @error_collection
+      @error_collection.frame(key, &b)
+    else
+      yield
+    end
+  end
+
+  def collect_errors?
+    !!@error_collection
   end
 
   private

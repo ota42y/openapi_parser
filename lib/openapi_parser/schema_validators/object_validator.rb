@@ -16,7 +16,9 @@ class OpenAPIParser::SchemaValidator
         s = properties[name]
         coerced, err = if s
                          remaining_keys.delete(name)
-                         validatable.validate_schema(v, s)
+                         validatable.frame(name) do
+                           validatable.validate_schema(v, s)
+                         end
                        else
                          # TODO: we need to perform a validation based on schema.additional_properties here, if
                          # additionalProperties are defined
@@ -34,9 +36,23 @@ class OpenAPIParser::SchemaValidator
       if !remaining_keys.empty? && !parent_all_of && !schema.additional_properties
         # If object is nested in all of, the validation is already done in allOf validator. Or if
         # additionalProperties are defined, we will validate using that
-        return [nil, OpenAPIParser::NotExistPropertyDefinition.new(remaining_keys, schema.object_reference)]
+        if validatable&.collect_errors?
+          remaining_keys.each do |k|
+            validatable.process_error(schema, self, OpenAPIParser::NotExistPropertyDefinition.new([k], schema.object_reference), suffix: k)
+          end
+        else
+          return [nil, OpenAPIParser::NotExistPropertyDefinition.new(remaining_keys, schema.object_reference)]
+        end
       end
-      return [nil, OpenAPIParser::NotExistRequiredKey.new(required_set.to_a, schema.object_reference)] unless required_set.empty?
+      unless required_set.empty?
+        if validatable&.collect_errors?
+          required_set.each do |k|
+            validatable.process_error(schema, self, OpenAPIParser::NotExistRequiredKey.new([k], schema.object_reference), suffix: k)
+          end
+        else
+          return [nil, OpenAPIParser::NotExistRequiredKey.new(required_set.to_a, schema.object_reference)]
+        end
+      end
 
       value.merge!(coerced_values.to_h) if @coerce_value
 

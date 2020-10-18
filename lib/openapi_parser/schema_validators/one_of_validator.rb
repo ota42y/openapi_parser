@@ -8,8 +8,10 @@ class OpenAPIParser::SchemaValidator
       end
 
       # if multiple schemas are satisfied, it's not valid
-      result = schema.one_of.one? do |s|
-        _coerced, err = validatable.validate_schema(value, s)
+      result = schema.one_of.to_enum(:one?).with_index do |s, i|
+        _coerced, err = validatable.frame(i) do
+          validatable.validate_schema(value, s)
+        end
         err.nil?
       end
       if result

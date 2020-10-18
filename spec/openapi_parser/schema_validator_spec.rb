@@ -426,6 +426,44 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         expect { request_operation.validate_request_body(content_type, params) }.to raise_error(OpenAPIParser::ValidateError)
       end
     end
+
+    context 'collect_errors' do
+      let(:config) { { collect_errors: true } }
+
+      it 'collects errors' do
+        params = { 'unknown' => 1, 'string' => 1, 'array' => [1, '2', 3, '4'] }
+        expect { request_operation.validate_request_body(content_type, params) }.to raise_error do |e|
+          expect(e).to be_a(OpenAPIParser::ErrorCollection)
+          expect(e.to_h).to match({
+            ['array', 1] => an_instance_of(OpenAPIParser::ValidateError),
+            ['array', 3] => an_instance_of(OpenAPIParser::ValidateError),
+            ['string'] => an_instance_of(OpenAPIParser::ValidateError),
+            ['unknown'] => an_instance_of(OpenAPIParser::NotExistPropertyDefinition),
+          })
+        end
+      end
+
+      it 'selects the errors of the most matched oneOf item' do
+        params = { 'one_of_data' => { 'name' => 'test', 'string_1' => '1', 'string_2' => 2 } }
+        expect { request_operation.validate_request_body(content_type, params) }.to raise_error do |e|
+          expect(e).to be_a(OpenAPIParser::ErrorCollection)
+          expect(e.to_h).to match({
+            ['one_of_data', 'string_2'] => an_instance_of(OpenAPIParser::ValidateError),
+          })
+        end
+      end
+
+      it 'selects the errors of the first oneOf item if none of them match at all' do
+        params = { 'one_of_data' => { 'name' => 1 } }
+        expect { request_operation.validate_request_body(content_type, params) }.to raise_error do |e|
+          expect(e).to be_a(OpenAPIParser::ErrorCollection)
+          expect(e.to_h).to match({
+            ['one_of_data', 'name'] => an_instance_of(OpenAPIParser::ValidateError),
+            ['one_of_data', 'integer_1'] => an_instance_of(OpenAPIParser::NotExistRequiredKey),
+          })
+        end
+      end
+    end
   end
 
   describe 'coerce' do
