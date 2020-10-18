@@ -6,12 +6,13 @@ class OpenAPIParser::SchemaValidator
     #   @return [Object, nil] coerce datetime string by this Object class
     # @!attribute [r] validate_header
     #   @return [Boolean] validate header or not
-    attr_reader :coerce_value, :datetime_coerce_class, :validate_header
+    attr_reader :coerce_value, :datetime_coerce_class, :validate_header, :collect_errors
 
-    def initialize(coerce_value: nil, datetime_coerce_class: nil, validate_header: true)
+    def initialize(coerce_value: nil, datetime_coerce_class: nil, validate_header: true, collect_errors: false)
       @coerce_value = coerce_value
       @datetime_coerce_class = datetime_coerce_class
       @validate_header = validate_header
+      @collect_errors = collect_errors
     end
   end
 

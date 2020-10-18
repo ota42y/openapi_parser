@@ -23,11 +23,16 @@ class OpenAPIParser::Config
     @config.fetch(:validate_header, true)
   end
 
+  def collect_errors
+    @config.fetch(:collect_errors, false)
+  end
+
   # @return [OpenAPIParser::SchemaValidator::Options]
   def request_validator_options
     @request_validator_options ||= OpenAPIParser::SchemaValidator::Options.new(coerce_value: coerce_value,
                                                                                datetime_coerce_class: datetime_coerce_class,
-                                                                               validate_header: validate_header)
+                                                                               validate_header: validate_header,
+                                                                               collect_errors: collect_errors)
   end
 
   alias_method :request_body_options, :request_validator_options
