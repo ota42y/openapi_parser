@@ -242,14 +242,14 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         it 'not include enum' do
           expect { request_operation.validate_request_body(content_type, { 'enum_string' => 'x' }) }.to raise_error do |e|
             expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
-            expect(e.message.start_with?("\"x\" isn't include enum")).to eq true
+            expect(e.message.start_with?("\"x\" isn't part of the enum")).to eq true
           end
         end
 
         it 'not include enum (empty string)' do
           expect { request_operation.validate_request_body(content_type, { 'enum_string' => '' }) }.to raise_error do |e|
             expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
-            expect(e.message.start_with?("\"\" isn't include enum")).to eq true
+            expect(e.message.start_with?("\"\" isn't part of the enum")).to eq true
           end
         end
       end
@@ -265,7 +265,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         it 'not include enum' do
           expect { request_operation.validate_request_body(content_type, { 'enum_integer' => 3 }) }.to raise_error do |e|
             expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
-            expect(e.message.start_with?("3 isn't include enum")).to eq true
+            expect(e.message.start_with?("3 isn't part of the enum")).to eq true
           end
         end
       end
@@ -281,7 +281,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         it 'not include enum' do
           expect { request_operation.validate_request_body(content_type, { 'enum_number' => 1.1 }) }.to raise_error do |e|
             expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
-            expect(e.message.start_with?("1.1 isn't include enum")).to eq true
+            expect(e.message.start_with?("1.1 isn't part of the enum")).to eq true
           end
         end
       end

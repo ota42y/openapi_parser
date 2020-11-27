@@ -106,7 +106,7 @@ module OpenAPIParser
     end
 
     def message
-      "#{@value.inspect} isn't include enum in #{@reference}"
+      "#{@value.inspect} isn't part of the enum in #{@reference}"
     end
   end
 
