@@ -182,6 +182,17 @@ components:
           anyOf:
             - "$ref": "#/components/schemas/DonatelloStyle"
             - "$ref": "#/components/schemas/MichelangeloStyle"
+        image:
+          allOf:
+            - "$ref": "#/components/schemas/Image"
+          nullable: true
+    Image:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
     DonatelloStyle:
       type: object
       nullable: true

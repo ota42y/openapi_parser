@@ -8,6 +8,11 @@ class OpenAPIParser::SchemaValidator
       # if any schema return error, it's not valida all of value
       remaining_keys               = value.kind_of?(Hash) ? value.keys : []
       nested_additional_properties = false
+
+      if value.nil? && schema.nullable
+        return [value, nil]
+      end
+
       schema.all_of.each do |s|
         # We need to store the reference to all of, so we can perform strict check on allowed properties
         _coerced, err = validatable.validate_schema(value, s, :parent_all_of => true)
