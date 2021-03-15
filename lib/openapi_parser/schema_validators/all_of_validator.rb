@@ -4,13 +4,18 @@ class OpenAPIParser::SchemaValidator
     # coerce and validate value
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
-    def coerce_and_validate(value, schema, **_keyword_args)
+    def coerce_and_validate(value, schema, **keyword_args)
       # if any schema return error, it's not valida all of value
       remaining_keys               = value.kind_of?(Hash) ? value.keys : []
       nested_additional_properties = false
       schema.all_of.each do |s|
         # We need to store the reference to all of, so we can perform strict check on allowed properties
-        _coerced, err = validatable.validate_schema(value, s, :parent_all_of => true)
+        _coerced, err = validatable.validate_schema(
+          value,
+          s,
+          :parent_all_of => true,
+          parent_discriminator_schemas: keyword_args[:parent_discriminator_schemas]
+        )
 
         if s.type == "object"
           remaining_keys               -= (s.properties || {}).keys
