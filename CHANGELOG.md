@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.13.0 (2021-05-01)
+* Fix a problem with remote reference to path items which have path parameters #95
+* Support enum for booleans. #104
+
 ## 0.12.1 (2020-08-27)
 * Use CGI.unescape (warning fix) #92
 
