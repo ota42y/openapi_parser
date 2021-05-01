@@ -285,6 +285,20 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           end
         end
       end
+
+      context 'enum boolean' do
+        it 'include enum' do
+          expect(request_operation.validate_request_body(content_type, { 'enum_boolean' => true })).
+            to eq({ 'enum_boolean' => true })
+        end
+
+        it 'not include enum' do
+          expect { request_operation.validate_request_body(content_type, { 'enum_boolean' => false }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
+            expect(e.message.start_with?("false isn't part of the enum")).to eq true
+          end
+        end
+      end
     end
 
     describe 'all_of' do
@@ -354,16 +368,16 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           }
         end
         let(:params) { correct_params }
-  
+
         it { expect(subject).not_to eq nil }
-  
+
         context 'no schema matched' do
           let(:params) do
             {
               'integer_1' => 42,
             }
           end
-  
+
           it do
             expect { subject }.to raise_error do |e|
               expect(e.kind_of?(OpenAPIParser::NotOneOf)).to eq true
@@ -371,7 +385,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
             end
           end
         end
-  
+
         context 'multiple schema matched' do
           let(:params) do
             {
@@ -380,14 +394,14 @@ RSpec.describe OpenAPIParser::SchemaValidator do
               'string_1' => 'string_1',
             }
           end
-  
+
           it do
             expect { subject }.to raise_error do |e|
               expect(e.kind_of?(OpenAPIParser::NotOneOf)).to eq true
               expect(e.message.include?("isn't one of")).to eq true
             end
           end
-        end  
+        end
       end
 
       context 'with discriminator' do
@@ -397,11 +411,11 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           {
             'objType' => 'obj1',
             'name' => 'name',
-            'integer_1' => 42,  
+            'integer_1' => 42,
           }
         end
         let(:params) { correct_params }
-  
+
         it { expect(subject).not_to eq nil }
       end
     end
