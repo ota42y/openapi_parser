@@ -837,10 +837,21 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     let(:content_type) { 'application/json' }
     let(:request_operation) { root.request_operation(http_method, request_path) }
     let(:http_method) { :get }
-    let(:request_path) { '/coerce_path_params/1' }
     let(:config) { { coerce_value: true } }
 
-    context 'correct' do
+    context 'correct in operation object' do
+      let(:request_path) { '/coerce_path_params/1' }
+      it do
+        expect(request_operation.path_params).to eq({ 'integer' => '1' })
+
+        subject
+
+        expect(request_operation.path_params).to eq({ 'integer' => 1 })
+      end
+    end
+
+    context 'correct in path item object' do
+      let(:request_path) { '/coerce_path_params_in_path_item/1' }
       it do
         expect(request_operation.path_params).to eq({ 'integer' => '1' })
 
