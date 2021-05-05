@@ -1,9 +1,6 @@
----
-swagger: '2.0'
+openapi: '3.0.3'
 info:
-  description: 'This is a sample server Petstore server.  You can find out more about
-    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).  For
-    this sample, you can use the api key `special-key` to test the authorization filters.'
+  description: This is a sample server Petstore server.
   version: 1.0.5
   title: Swagger Petstore
   termsOfService: http://swagger.io/terms/
@@ -12,8 +9,6 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-host: petstore.swagger.io
-basePath: "/v2"
 tags:
 - name: pet
   description: Everything about your Pets
@@ -27,9 +22,6 @@ tags:
   externalDocs:
     description: Find out more about our store
     url: http://swagger.io
-schemes:
-- https
-- http
 paths:
   "/pet":
     post:
@@ -38,12 +30,6 @@ paths:
       summary: Add a new pet to the store
       description: ''
       operationId: addPet
-      consumes:
-      - application/json
-      - application/xml
-      produces:
-      - application/json
-      - application/xml
       requestBody:
         description: Pet object that needs to be added to the store
         required: true
@@ -60,19 +46,13 @@ paths:
       summary: Update an existing pet
       description: ''
       operationId: updatePet
-      consumes:
-      - application/json
-      - application/xml
-      produces:
-      - application/json
-      - application/xml
-      parameters:
-      - in: body
-        name: body
+      requestBody:
         description: Pet object that needs to be added to the store
         required: true
-        schema:
-          "$ref": "#/definitions/Pet"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pet"
       responses:
         '400':
           description: Invalid ID supplied
@@ -80,10 +60,6 @@ paths:
           description: Pet not found
         '405':
           description: Validation exception
-      security:
-      - petstore_auth:
-        - write:pets
-        - read:pets
 components:
   schemas:
     Pet:
