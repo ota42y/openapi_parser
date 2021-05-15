@@ -18,7 +18,7 @@ class OpenAPIParser::SchemaValidator
       raise 'need implement'
     end
 
-    def validate_discriminator_schema(discriminator, value)
+    def validate_discriminator_schema(discriminator, value, parent_discriminator_schemas: [])
       unless value.key?(discriminator.property_name)
         return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
       end
@@ -34,7 +34,11 @@ class OpenAPIParser::SchemaValidator
       unless resolved_schema
         return [nil, OpenAPIParser::NotExistDiscriminatorMappedSchema.new(mapping_target, discriminator.object_reference)]
       end
-      validatable.validate_schema(value, resolved_schema, **{discriminator_property_name: discriminator.property_name})
+      validatable.validate_schema(
+        value,
+        resolved_schema,
+        **{discriminator_property_name: discriminator.property_name, parent_discriminator_schemas: parent_discriminator_schemas}
+      )
     end
   end
 end

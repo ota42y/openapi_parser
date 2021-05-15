@@ -40,6 +40,14 @@ def petstore_with_discriminator_schema
   YAML.load_file('./spec/data/petstore-with-discriminator.yaml')
 end
 
+def petstore_with_mapped_polymorphism_schema
+  YAML.load_file('./spec/data/petstore-with-mapped-polymorphism.yaml')
+end
+
+def petstore_with_polymorphism_schema
+  YAML.load_file('./spec/data/petstore-with-polymorphism.yaml')
+end
+
 def json_petstore_schema_path
   './spec/data/petstore.json'
 end
