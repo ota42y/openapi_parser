@@ -12,6 +12,7 @@ require_relative 'schema_validators/any_of_validator'
 require_relative 'schema_validators/all_of_validator'
 require_relative 'schema_validators/one_of_validator'
 require_relative 'schema_validators/nil_validator'
+require_relative 'schema_validators/unspecified_type_validator'
 
 class OpenAPIParser::SchemaValidator
   # validate value by schema
@@ -113,7 +114,7 @@ class OpenAPIParser::SchemaValidator
       when 'array'
         array_validator
       else
-        nil
+        unspecified_type_validator
       end
     end
 
@@ -155,5 +156,9 @@ class OpenAPIParser::SchemaValidator
 
     def nil_validator
       @nil_validator ||= OpenAPIParser::SchemaValidator::NilValidator.new(self, @coerce_value)
+    end
+
+    def unspecified_type_validator
+      @unspecified_type_validator ||= OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator.new(self, @coerce_value)
     end
 end

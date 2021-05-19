@@ -209,10 +209,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         end
       end
 
-      context 'any value' do
+      context 'unspecified_type' do
         it do
-          expect(request_operation.validate_request_body(content_type, { 'any_value' => "foo" })).
-            to eq({ 'any_value' => "foo" })
+          expect(request_operation.validate_request_body(content_type, { 'unspecified_type' => "foo" })).
+            to eq({ 'unspecified_type' => "foo" })
         end
       end
     end
@@ -431,20 +431,6 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       expect { request_operation.validate_request_body(content_type, { 'unknown' => 1 }) }.to raise_error do |e|
         expect(e).to be_kind_of(OpenAPIParser::NotExistPropertyDefinition)
         expect(e.message).to end_with("does not define properties: unknown")
-      end
-    end
-
-    describe 'invalid type' do
-      let(:root) { OpenAPIParser.parse(invalid_schema, config) }
-      let(:invalid_schema) do
-        data = normal_schema
-        data['paths']['/validate']['post']['requestBody']['content']['application/json']['schema'].delete 'type'
-        data
-      end
-
-      it do
-        params = { 'string' => 'str' }
-        expect { request_operation.validate_request_body(content_type, params) }.to raise_error(OpenAPIParser::ValidateError)
       end
     end
   end

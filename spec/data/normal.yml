@@ -299,7 +299,7 @@ paths:
                     anyOf:
                       - type: string
                       - type: boolean
-                any_value: {}
+                unspecified_type: {}
                 enum_string:
                   type: string
                   enum:
