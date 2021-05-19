@@ -208,6 +208,13 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           end
         end
       end
+
+      context 'any value' do
+        it do
+          expect(request_operation.validate_request_body(content_type, { 'any_value' => "foo" })).
+            to eq({ 'any_value' => "foo" })
+        end
+      end
     end
 
     describe 'object' do

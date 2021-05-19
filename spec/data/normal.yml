@@ -299,6 +299,7 @@ paths:
                     anyOf:
                       - type: string
                       - type: boolean
+                any_value: {}
                 enum_string:
                   type: string
                   enum:
