@@ -546,6 +546,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
             ['3.5', 3.5],
             [3.5, 3.5],
             [10, 10],
+            ['10', 10],
             %w[pineapple pineapple]
           ]
         end

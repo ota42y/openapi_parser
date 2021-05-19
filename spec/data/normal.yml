@@ -164,6 +164,7 @@ paths:
                     - type: number
                     - type: integer
                     - type: boolean
+                    - type: string
                 nested_array:
                   "$ref": '#/components/schemas/nested_array'
       responses:
