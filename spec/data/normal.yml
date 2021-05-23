@@ -133,6 +133,15 @@ paths:
           required: false
           schema:
             "$ref": '#/components/schemas/nested_array'
+        - name: any_of
+          in: query
+          description: coercing to any of types
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: number
+              - type: boolean
       responses:
         '200':
           description: success
@@ -150,6 +159,12 @@ paths:
             schema:
               type: object
               properties:
+                any_of:
+                  anyOf:
+                    - type: number
+                    - type: integer
+                    - type: boolean
+                    - type: string
                 nested_array:
                   "$ref": '#/components/schemas/nested_array'
       responses:

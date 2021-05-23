@@ -23,12 +23,10 @@ class OpenAPIParser::SchemaValidator
         return value if value.kind_of?(Integer)
 
         begin
-          return Integer(value)
-        rescue ArgumentError => e
-          raise e unless e.message =~ /invalid value for Integer/
+          Integer(value)
+        rescue ArgumentError, TypeError
+          value
         end
-
-        value
       end
   end
 end

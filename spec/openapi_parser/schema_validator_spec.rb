@@ -530,6 +530,28 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           expect { subject }.to raise_error(OpenAPIParser::ValidateError)
         end
       end
+
+      context 'anyOf' do
+        where(:before_value, :result_value) do
+          [
+            [true, true],
+            ['true', true],
+            ['3.5', 3.5],
+            [3.5, 3.5],
+            [10, 10],
+            ['10', 10],
+            %w[pineapple pineapple]
+          ]
+        end
+
+        with_them do
+          let(:params) { { 'any_of' => before_value } }
+          it do
+            expect(subject).to eq({ 'any_of' => result_value })
+            expect(params['any_of']).to eq result_value
+          end
+        end
+      end
     end
 
     context 'string' do
@@ -774,6 +796,36 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
           expect(first_data['nested_coercer_object']['update_time'].class).to eq DateTime
           expect(first_data['nested_coercer_array'][0]['update_time'].class).to eq DateTime
+        end
+      end
+    end
+
+    context 'anyOf' do
+      let(:key) { 'any_of' }
+
+      context 'coerces valid values for any_of param' do
+        where(:before_value, :result_value) do
+          [
+            ['true', true],
+            ['3.5', 3.5],
+            ['10', 10]
+          ]
+        end
+
+        with_them do
+          let(:value) { before_value }
+          it do
+            expect(subject).to eq({ key.to_s => result_value })
+            expect(params[key]).to eq result_value
+          end
+        end
+      end
+
+      context 'invalid values' do
+        let(:value) { 'pineapple' }
+
+        it do
+          expect { subject }.to raise_error(OpenAPIParser::NotAnyOf)
         end
       end
     end

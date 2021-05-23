@@ -21,14 +21,14 @@ class OpenAPIParser::SchemaValidator
 
         value, err = check_enum_include(value, schema)
         return [nil, err] if err
-        
+
         check_minimum_maximum(value, schema)
       end
 
       def coerce(value)
         Float(value)
-      rescue ArgumentError => e
-        raise e unless e.message =~ /invalid value for Float/
+      rescue ArgumentError, TypeError
+        value
       end
   end
 end
