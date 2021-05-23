@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.14.0 (2021-05-24)
+
 ### Added
 * Add basic polymorphism handling #103
 * Support empty schema as any type #109
