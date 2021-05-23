@@ -194,4 +194,37 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
       end
     end
   end
+
+  describe 'validate date format' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:params) { {} }
+    let(:replace_schema) do
+      {
+        date_str: {
+          type: 'string',
+          format: 'date',
+        },
+      }
+    end
+
+    context 'correct' do
+      let(:params) { { 'date_str' => '2021-02-12' } }
+      it { expect(subject).to eq({ 'date_str' => '2021-02-12' }) }
+    end
+
+    context 'invalid' do
+      context 'error pattern' do
+        let(:value) { 'not_date' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"not_date\" is not conformant with date format")
+          end
+        end
+      end
+    end
+  end
 end
