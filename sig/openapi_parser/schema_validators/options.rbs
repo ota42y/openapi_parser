@@ -1,0 +1,17 @@
+# Classes
+module OpenAPIParser
+  class SchemaValidator
+    class Options
+      attr_reader coerce_value: bool | nil
+      attr_reader datetime_coerce_class: singleton(Object) | nil
+      attr_reader validate_header: bool
+      def initialize: (?coerce_value: bool | nil, ?datetime_coerce_class: singleton(Object) | nil, ?validate_header: bool) -> untyped
+    end
+
+    class ResponseValidateOptions
+      attr_reader strict: bool
+      attr_reader validate_header: bool
+      def initialize: (?strict: bool, ?validate_header: bool) -> untyped
+    end
+  end
+end

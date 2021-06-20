@@ -3,6 +3,8 @@ target :lib do
   #check "lib"
 
   check "lib/openapi_parser.rb"
+  check "lib/openapi_parser/config.rb"
+  check "lib/openapi_parser/schema_validators/options.rb"
 
   library 'uri'
 end
