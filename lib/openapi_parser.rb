@@ -44,9 +44,9 @@ module OpenAPIParser
       # Open-uri doesn't open file scheme uri, so we try to open file path directly
       # File scheme uri which points to a remote file is not supported.
       content = if uri.scheme == 'file'
-        open(uri.path, &:read)
-      else
-        uri.open(&:read)
+        open(uri.path)&.read
+      elsif uri.is_a?(OpenURI::OpenRead)
+        uri.open()&.read
       end
 
       extension = Pathname.new(uri.path).extname
@@ -61,8 +61,8 @@ module OpenAPIParser
         URI.join("file:///",  path.to_s)
       end
 
-      def parse_file(content, extension)
-        case extension.downcase
+      def parse_file(content, ext)
+        case ext.downcase
         when '.yaml', '.yml'
           parse_yaml(content)
         when '.json'

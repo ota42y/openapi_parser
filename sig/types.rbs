@@ -1,0 +1,12 @@
+module OpenURI
+  module OpenRead
+    def open: () -> (IO | nil)
+    def path: () -> String
+    def scheme: () -> String
+  end
+end
+
+module OpenAPIParser
+  type readable_uri = URI::Generic | OpenURI::OpenRead
+end
+                 

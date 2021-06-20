@@ -1,7 +1,11 @@
-# target :lib do
-#   signature "sig"
-#
-#   check "lib"                       # Directory name
+target :lib do
+  signature "sig"
+  #check "lib"
+
+  check "lib/openapi_parser.rb"
+
+  library 'uri'
+end
 #   check "Gemfile"                   # File name
 #   check "app/models/**/*.rb"        # Glob
 #   # ignore "lib/templates/*.rb"
