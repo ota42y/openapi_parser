@@ -1,0 +1,47 @@
+module OpenAPIParser
+  type readable_uri = URI::Generic | OpenURI::OpenRead
+  type validate_error = nil
+end
+                 
+module OpenAPIParser
+  module Schemas
+    class Schema
+    end
+  end
+end
+
+class OpenAPIParser::SchemaValidator::Base
+end
+
+class OpenAPIParser::SchemaValidator::StringValidator
+end
+
+class OpenAPIParser::SchemaValidator::IntegerValidator
+end
+
+class OpenAPIParser::SchemaValidator::FloatValidator
+end
+
+class OpenAPIParser::SchemaValidator::BooleanValidator
+end
+
+class OpenAPIParser::SchemaValidator::ObjectValidator
+end
+
+class OpenAPIParser::SchemaValidator::ArrayValidator
+end
+
+class OpenAPIParser::SchemaValidator::AnyOfValidator
+end
+
+class OpenAPIParser::SchemaValidator::AllOfValidator
+end
+
+class OpenAPIParser::SchemaValidator::OneOfValidator
+end
+
+class OpenAPIParser::SchemaValidator::NilValidator
+end
+
+class OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
+end

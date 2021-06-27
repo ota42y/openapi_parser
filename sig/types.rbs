@@ -6,7 +6,3 @@ module OpenURI
   end
 end
 
-module OpenAPIParser
-  type readable_uri = URI::Generic | OpenURI::OpenRead
-end
-                 

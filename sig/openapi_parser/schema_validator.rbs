@@ -1,0 +1,46 @@
+# Classes
+module OpenAPIParser
+  class SchemaValidator
+    include Validatable
+    @value: Hash[bot, bot]
+    @schema: OpenAPIParser::Schemas::Schema
+    @coerce_value: bool | nil
+    @datetime_coerce_class: singleton(Object) | nil
+    @string_validator: OpenAPIParser::SchemaValidator::StringValidator | nil
+    @integer_validator: OpenAPIParser::SchemaValidator::IntegerValidator | nil
+    @float_validator: OpenAPIParser::SchemaValidator::FloatValidator | nil
+    @boolean_validator: OpenAPIParser::SchemaValidator::BooleanValidator | nil
+    @object_validator: OpenAPIParser::SchemaValidator::ObjectValidator | nil
+    @array_validator: OpenAPIParser::SchemaValidator::ArrayValidator | nil
+    @any_of_validator: OpenAPIParser::SchemaValidator::AnyOfValidator | nil
+    @all_of_validator: OpenAPIParser::SchemaValidator::AllOfValidator | nil
+    @one_of_validator: OpenAPIParser::SchemaValidator::OneOfValidator | nil
+    @nil_validator: OpenAPIParser::SchemaValidator::NilValidator | nil
+    @unspecified_type_validator: OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator | nil
+
+    def self.validate: (Hash[bot, bot] value, OpenAPIParser::Schemas::Schema schema, OpenAPIParser::SchemaValidator::Options options) -> Object
+    def initialize: (Hash[bot, bot] value, OpenAPIParser::Schemas::Schema schema, OpenAPIParser::SchemaValidator::Options options) -> untyped
+    def validate_data: -> Object
+    def validate_schema: (Object value, OpenAPIParser::Schemas::Schema schema, **bot) -> [Object, OpenAPIParser::validate_error]
+    def validate_integer: (Object value, OpenAPIParser::Schemas::Schema schema) -> [Object, OpenAPIParser::validate_error]
+
+    private
+    def validator: (Object value, OpenAPIParser::Schemas::Schema schema) -> [OpenAPIParser::SchemaValidator::Base, OpenAPIParser::validate_error]
+    def string_validator: -> OpenAPIParser::SchemaValidator::StringValidator
+    def integer_validator: -> OpenAPIParser::SchemaValidator::IntegerValidator
+    def float_validator: -> OpenAPIParser::SchemaValidator::FloatValidator
+    def boolean_validator: -> OpenAPIParser::SchemaValidator::BooleanValidator
+    def object_validator: -> OpenAPIParser::SchemaValidator::ObjectValidator
+    def array_validator: -> OpenAPIParser::SchemaValidator::ArrayValidator
+    def any_of_validator: -> OpenAPIParser::SchemaValidator::AnyOfValidator
+    def all_of_validator: -> OpenAPIParser::SchemaValidator::AllOfValidator
+    def one_of_validator: -> OpenAPIParser::SchemaValidator::OneOfValidator
+    def nil_validator: -> OpenAPIParser::SchemaValidator::NilValidator
+    def unspecified_type_validator: -> OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
+
+    module Validatable
+      def validate_schema: (Object value, OpenAPIParser::Schemas::Schema schema, **untyped) -> [Object, OpenAPIParser::validate_error]
+      def validate_integer: (Object _value, OpenAPIParser::Schemas::Schema _schema) -> [Object, OpenAPIParser::validate_error]
+    end
+  end
+end
