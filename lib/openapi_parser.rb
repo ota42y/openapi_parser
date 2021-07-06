@@ -93,6 +93,11 @@ module OpenAPIParser
 
         OpenAPIParser::ReferenceExpander.expand(root) if config.expand_reference
 
+        # TODO: use callbacks
+        root.paths&.path&.values&.each do | path_item |
+          path_item.set_path_item_to_operation
+        end
+
         root
       end
   end
