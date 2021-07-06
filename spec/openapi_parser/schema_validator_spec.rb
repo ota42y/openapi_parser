@@ -862,6 +862,35 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
   end
 
+  describe 'coerce query parameter' do
+    subject { request_operation.validate_request_parameter(params, headers) }
+
+    let(:root) { OpenAPIParser.parse(normal_schema, config) }
+    let(:content_type) { 'application/json' }
+
+    let(:http_method) { :get }
+    let(:request_path) { '/coerce_query_prams_in_operation_and_path_item' }
+    let(:request_operation) { root.request_operation(http_method, request_path) }
+    let(:params) { {} }
+    let(:headers) { {} }
+    let(:config) { { coerce_value: true } }
+
+    context 'correct in all params' do
+      let(:params) { {'operation_integer' => '1', 'path_item_integer' => '2'} }
+      let(:correct) { {'operation_integer' => 1, 'path_item_integer' => 2} }
+      it { expect(subject).to eq(correct) }
+    end
+
+    context 'invalid operation integer only' do
+      let(:params) { {'operation_integer' => '1'} }
+      it { expect{subject}.to raise_error(OpenAPIParser::NotExistRequiredKey) }
+    end
+    context 'invalid path_item integer only' do
+      let(:params) { {'path_item_integer' => '2'} }
+      it { expect{subject}.to raise_error(OpenAPIParser::NotExistRequiredKey) }
+    end
+  end
+
   describe 'validate header in parameter' do
     subject do
       request_operation.validate_request_parameter(params, headers)
