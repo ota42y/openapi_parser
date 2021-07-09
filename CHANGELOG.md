@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.14.1 (2021-07-9)
+### Fixed
+* Fix bug for using path parameter and coerce option #115
+
 ## 0.14.0 (2021-05-24)
 
 ### Added
