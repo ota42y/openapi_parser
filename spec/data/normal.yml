@@ -509,7 +509,37 @@ paths:
       responses:
         '204':
           description: no content
+  /coerce_query_prams_in_operation_and_path_item:
+    parameters:
+      - name: path_item_integer
+        in: query
+        required: true
+        schema:
+          type: integer
+    get:
+      parameters:
+      - name: operation_integer
+        in: query
+        required: true
+        schema:
+          type: integer
+      description: get characters
+      responses:
+        '204':
+          description: no content
   /coerce_path_params/{integer}:
+    parameters:
+      - name: integer
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      description: get characters
+      responses:
+        '204':
+          description: no content
+  /coerce_path_params_in_path_item/{integer}:
     get:
       description: get characters
       parameters:

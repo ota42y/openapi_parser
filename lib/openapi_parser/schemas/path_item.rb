@@ -3,8 +3,6 @@
 
 module OpenAPIParser::Schemas
   class PathItem < Base
-    include OpenAPIParser::ParameterValidatable
-
     openapi_attr_values :summary, :description
 
     openapi_attr_objects :get, :put, :post, :delete, :options, :head, :patch, :trace, Operation
@@ -15,6 +13,10 @@ module OpenAPIParser::Schemas
       public_send(method)
     rescue NoMethodError
       nil
+    end
+
+    def set_path_item_to_operation
+      [:get, :put, :post, :delete, :options, :head, :patch, :trace].each{ |method| operation(method)&.set_parent_path_item(self)}
     end
   end
 end

@@ -65,7 +65,6 @@ class OpenAPIParser::RequestOperation
   # @param [OpenAPIParser::SchemaValidator::Options] options request validator options
   def validate_request_parameter(params, headers, options = nil)
     options ||= config.request_validator_options
-    path_item&.validate_request_parameter(params, headers, options)
     operation_object&.validate_request_parameter(params, headers, options)
   end
 
