@@ -13,6 +13,12 @@ module OpenAPIParser::ParameterValidatable
     validate_query_parameter(params, object_reference, options)
   end
 
+  # @param [PathItem] path_item parent
+  def set_parent_path_item(path_item)
+    @merged_parameter = (parameters || []) + (path_item.parameters || [])
+    nil
+  end
+
   private
 
     # @param [Hash] params query parameter hash
@@ -44,7 +50,7 @@ module OpenAPIParser::ParameterValidatable
     # @return [Hash{String => Hash{String => Parameter}}] hash[in][name] => Parameter
     def divided_parameter_hash
       @divided_parameter_hash ||=
-        (parameters || []).
+        (@merged_parameter || []).
           group_by(&:in).
           map { |in_type, params| # rubocop:disable Style/BlockDelimiters
           [

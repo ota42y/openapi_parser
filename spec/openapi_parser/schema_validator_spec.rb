@@ -837,10 +837,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     let(:content_type) { 'application/json' }
     let(:request_operation) { root.request_operation(http_method, request_path) }
     let(:http_method) { :get }
-    let(:request_path) { '/coerce_path_params/1' }
     let(:config) { { coerce_value: true } }
 
-    context 'correct' do
+    context 'correct in operation object' do
+      let(:request_path) { '/coerce_path_params/1' }
       it do
         expect(request_operation.path_params).to eq({ 'integer' => '1' })
 
@@ -848,6 +848,46 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
         expect(request_operation.path_params).to eq({ 'integer' => 1 })
       end
+    end
+
+    context 'correct in path item object' do
+      let(:request_path) { '/coerce_path_params_in_path_item/1' }
+      it do
+        expect(request_operation.path_params).to eq({ 'integer' => '1' })
+
+        subject
+
+        expect(request_operation.path_params).to eq({ 'integer' => 1 })
+      end
+    end
+  end
+
+  describe 'coerce query parameter' do
+    subject { request_operation.validate_request_parameter(params, headers) }
+
+    let(:root) { OpenAPIParser.parse(normal_schema, config) }
+    let(:content_type) { 'application/json' }
+
+    let(:http_method) { :get }
+    let(:request_path) { '/coerce_query_prams_in_operation_and_path_item' }
+    let(:request_operation) { root.request_operation(http_method, request_path) }
+    let(:params) { {} }
+    let(:headers) { {} }
+    let(:config) { { coerce_value: true } }
+
+    context 'correct in all params' do
+      let(:params) { {'operation_integer' => '1', 'path_item_integer' => '2'} }
+      let(:correct) { {'operation_integer' => 1, 'path_item_integer' => 2} }
+      it { expect(subject).to eq(correct) }
+    end
+
+    context 'invalid operation integer only' do
+      let(:params) { {'operation_integer' => '1'} }
+      it { expect{subject}.to raise_error(OpenAPIParser::NotExistRequiredKey) }
+    end
+    context 'invalid path_item integer only' do
+      let(:params) { {'path_item_integer' => '2'} }
+      it { expect{subject}.to raise_error(OpenAPIParser::NotExistRequiredKey) }
     end
   end
 
