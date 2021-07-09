@@ -1,8 +1,8 @@
 require 'bundler'
-require 'yaml'
 require 'pry'
 require 'rspec-parameterized'
 require 'simplecov'
+require 'psych'
 
 SimpleCov.start do
   add_filter 'spec'
@@ -24,12 +24,16 @@ RSpec.configure do |config|
   end
 end
 
+def load_yaml_file(path)
+  Psych.safe_load(open(path).read, permitted_classes: [Date, Time])
+end
+
 def normal_schema
-  YAML.load_file('./spec/data/normal.yml')
+  load_yaml_file('./spec/data/normal.yml')
 end
 
 def petstore_schema
-  YAML.load_file(petstore_schema_path)
+  load_yaml_file(petstore_schema_path)
 end
 
 def petstore_schema_path
@@ -37,15 +41,15 @@ def petstore_schema_path
 end
 
 def petstore_with_discriminator_schema
-  YAML.load_file('./spec/data/petstore-with-discriminator.yaml')
+  load_yaml_file('./spec/data/petstore-with-discriminator.yaml')
 end
 
 def petstore_with_mapped_polymorphism_schema
-  YAML.load_file('./spec/data/petstore-with-mapped-polymorphism.yaml')
+  load_yaml_file('./spec/data/petstore-with-mapped-polymorphism.yaml')
 end
 
 def petstore_with_polymorphism_schema
-  YAML.load_file('./spec/data/petstore-with-polymorphism.yaml')
+  load_yaml_file('./spec/data/petstore-with-polymorphism.yaml')
 end
 
 def json_petstore_schema_path
@@ -61,11 +65,11 @@ def yaml_with_unsupported_extension_petstore_schema_path
 end
 
 def path_item_ref_schema
-  YAML.load_file('./spec/data/path-item-ref.yaml')
+  load_yaml_file('./spec/data/path-item-ref.yaml')
 end
 
 def build_validate_test_schema(new_properties)
-  b = YAML.load_file('./spec/data/validate_test.yaml')
+  b = load_yaml_file('./spec/data/validate_test.yaml')
   obj = b['paths']['/validate_test']['post']['requestBody']['content']['application/json']['schema']['properties']
   obj.merge!(change_string_key(new_properties))
   b
