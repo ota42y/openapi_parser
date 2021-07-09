@@ -46,14 +46,6 @@ end
 class OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
 end
 
-class OpenAPIParser::Schemas::Base 
-  include OpenAPIParser::Expandable
-  include OpenAPIParser::Findable
-
-  attr_reader object_reference: (String | nil)
-  attr_reader root: OpenAPIParser::Schemas::OpenAPI
-end
-
 class OpenAPIParser::Schemas::OpenAPI < OpenAPIParser::Schemas::Base 
 end
 

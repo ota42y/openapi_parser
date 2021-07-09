@@ -1,0 +1,17 @@
+# Classes
+module OpenAPIParser
+  module Schemas
+    class Base
+      include OpenAPIParser::Expandable
+      include OpenAPIParser::Findable
+    
+      attr_reader parent: OpenAPIParser::Schemas::Base | nil
+      attr_reader raw_schema: Hash[String, bot]
+      attr_reader object_reference: String
+      attr_reader root: OpenAPIParser::Schemas::OpenAPI
+      def initialize: (String object_reference, OpenAPIParser::Schemas::Base | nil parent, OpenAPIParser::Schemas::OpenAPI root, Hash[String, bot] raw_schema) -> nil
+      def after_init: -> nil
+      def inspect: -> String
+    end
+  end
+end
