@@ -46,8 +46,8 @@ module OpenAPIParser::Findable
   private
 
     def find_remote_object(reference)
-      reference_uri = URI(reference)
-      fragment = reference_uri.fragment
+      uri, fragment = reference.split("#")
+      reference_uri = URI(uri)
       reference_uri.fragment = nil
       root.load_another_schema(reference_uri)&.find_object("##{fragment}")
     end
