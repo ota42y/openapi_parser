@@ -19,19 +19,3 @@ paths:
       responses:
         "204":
           description: empty
-  /ref-sample/relative#included:
-    post:
-      description: override here
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                test:
-                  type: string
-              required:
-                - test
-      responses:
-        "204":
-          description: empty

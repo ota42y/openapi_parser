@@ -29,5 +29,3 @@ paths:
     $ref: '#/paths/~1sample~1%7Bsample_id%7D'
   /ref-sample/relative:
     $ref: 'path-item-ref-relative.yaml#/paths/~1ref-sample~1relative'
-  /ref-sample/relative#included:
-    $ref: 'path-item-ref-relative.yaml#/paths/~1ref-sample~1relative#included'
