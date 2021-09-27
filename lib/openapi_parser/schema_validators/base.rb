@@ -1,6 +1,5 @@
 class OpenAPIParser::SchemaValidator
   class Base
-    # @param [OpenAPIParser::SchemaValidator::Validatable] validatable
     def initialize(validatable, coerce_value)
       @validatable = validatable
       @coerce_value = coerce_value
@@ -8,21 +7,17 @@ class OpenAPIParser::SchemaValidator
 
     attr_reader :validatable
 
-    # @!attribute [r] validatable
-    #   @return [OpenAPIParser::SchemaValidator::Validatable]
-
     # need override
-    # @param [Array] _value
-    # @param [OpenAPIParser::Schemas::Schema] _schema
     def coerce_and_validate(_value, _schema, **_keyword_args)
       raise 'need implement'
     end
 
     def validate_discriminator_schema(discriminator, value, parent_discriminator_schemas: [])
-      unless value.key?(discriminator.property_name)
+      property_name = discriminator.property_name
+      unless (property_name && value.key?(property_name))
         return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
       end
-      mapping_key = value[discriminator.property_name]
+      mapping_key = value[property_name]
 
       # it's allowed to have discriminator without mapping, then we need to lookup discriminator.property_name
       # but the format is not the full path, just model name in the components

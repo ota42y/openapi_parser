@@ -1,0 +1,19 @@
+module OpenAPIParser
+  def self.parse: (Hash[bot, bot] schema, ?Hash[bot, bot] config) -> OpenAPIParser::Schemas::OpenAPI
+  def self.parse_with_filepath: (Hash[bot, bot] schema, String filepath, ?Hash[bot, bot] config) -> OpenAPIParser::Schemas::OpenAPI
+  def self.load: (String filepath, ?Hash[bot, bot] config) -> OpenAPIParser::Schemas::OpenAPI
+  def self.load_uri: (OpenAPIParser::readable_uri uri, config: untyped, schema_registry: Hash[bot, bot]) -> OpenAPIParser::Schemas::OpenAPI
+  def self.file_uri: (String filepath) -> URI::Generic
+  def self.parse_file: (String? content, String ext) -> Hash[bot, bot]
+  def self.parse_yaml: (String? content) -> Hash[bot, bot]
+  def self.parse_json: (String? content) -> Hash[bot, bot]
+  def self.load_hash: (Hash[bot, bot] hash, config: untyped, uri: OpenAPIParser::readable_uri?, schema_registry: Hash[bot, bot]) -> OpenAPIParser::Schemas::OpenAPI
+end
+
+module OpenAPIParser
+  module Schemas
+    class OpenAPI
+      def initialize: (Hash[bot, bot] hash, untyped config, uri: OpenAPIParser::readable_uri?, schema_registry: Hash[bot, bot]) -> OpenAPIParser::Schemas::OpenAPI
+    end
+  end
+end

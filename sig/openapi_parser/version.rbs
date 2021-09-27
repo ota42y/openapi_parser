@@ -1,0 +1,3 @@
+module OpenAPIParser
+  VERSION: String
+end

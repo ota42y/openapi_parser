@@ -1,0 +1,8 @@
+module OpenURI
+  module OpenRead
+    def open: () -> (IO | nil)
+    def path: () -> String
+    def scheme: () -> String
+  end
+end
+
