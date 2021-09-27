@@ -64,8 +64,12 @@ def yaml_with_unsupported_extension_petstore_schema_path
   './spec/data/petstore.yaml.unsupported_extension'
 end
 
+def path_item_ref_schema_path
+  './spec/data/path-item-ref.yaml'
+end
+
 def path_item_ref_schema
-  load_yaml_file('./spec/data/path-item-ref.yaml')
+  load_yaml_file(path_item_ref_schema_path)
 end
 
 def build_validate_test_schema(new_properties)
