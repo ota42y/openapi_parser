@@ -47,6 +47,7 @@ class OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
 end
 
 class OpenAPIParser::Schemas::OpenAPI < OpenAPIParser::Schemas::Base 
+  attr_reader paths: untyped
 end
 
 module OpenAPIParser::Expandable
