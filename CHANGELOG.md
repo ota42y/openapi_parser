@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.15.0 (2021-09-27)
+### Added
+* support: relative file path escape. #117
+
 ## 0.14.1 (2021-07-9)
 ### Fixed
 * Fix bug for using path parameter and coerce option #115
