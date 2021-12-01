@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OpenAPI3 Test
+paths:
+  /ref-sample/broken_reference:
+    post:
+      description: Broken Reference in YAML
+      requestBody:
+        $ref: '#/components/requestBodies/foobar'
+      responses:
+        "204":
+          description: empty
+requestBodies:
+  hoge:
+    type: object
+    description: This object is defined, but `foobar` is not

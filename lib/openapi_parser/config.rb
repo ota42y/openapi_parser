@@ -19,6 +19,10 @@ class OpenAPIParser::Config
     @config.fetch(:strict_response_validation, false)
   end
 
+  def strict_reference_validation
+    @config.fetch(:strict_reference_validation, false)
+  end
+
   def validate_header
     @config.fetch(:validate_header, true)
   end
