@@ -5,6 +5,12 @@ module OpenAPIParser
     end
   end
 
+  class MissingReferenceError < OpenAPIError
+    def message
+      "'#{@reference}' was referenced but could not be found"
+    end
+  end
+
   class ValidateError < OpenAPIError
     def initialize(data, type, reference)
       super(reference)

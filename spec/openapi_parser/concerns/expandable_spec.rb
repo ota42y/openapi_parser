@@ -19,16 +19,27 @@ RSpec.describe OpenAPIParser::Expandable do
       let(:invalid_reference) { '#/paths/~1ref-sample~1broken_reference/get/requestBody' }
       let(:not_configured) { {} }
       let(:raise_on_invalid_reference) { { strict_reference_validation: true } }
+      let(:misconfiguration) {
+        {
+          expand_reference: false,
+          strict_reference_validation: true
+        }
+      }
 
       it 'raises when configured to do so' do
-        subject = OpenAPIParser.parse(broken_reference_schema, raise_on_invalid_reference)
-        # TODO: expect a raise
-        # TODO: what should it raise?
-        # expect_raises(subject.find_object(invalid_reference))
+        raise_message = "'#/components/requestBodies/foobar' was referenced but could not be found"
+        expect { OpenAPIParser.parse(broken_reference_schema, raise_on_invalid_reference) }.to(
+          raise_error(OpenAPIParser::MissingReferenceError) { |error| expect(error.message).to eq(raise_message) }
+        )
       end
 
       it 'does not raise when not configured, returns nil reference' do
         subject = OpenAPIParser.parse(broken_reference_schema, not_configured)
+        expect(subject.find_object(invalid_reference)).to be_nil
+      end
+
+      it 'does not raise when configured, but expand_reference is false' do
+        subject = OpenAPIParser.parse(broken_reference_schema, misconfiguration)
         expect(subject.find_object(invalid_reference)).to be_nil
       end
     end

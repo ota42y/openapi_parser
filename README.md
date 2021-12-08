@@ -62,6 +62,31 @@ We support additional type validation.
 |---|---|---|
 |string|uuid|validate uuid string. But we don't check uuid layout|
 
+### Reference Checking on Load
+Invalid references (missing definitions, typos, etc.) can cause validation to fail in runtime,
+and these errors can be difficult to debug (see: https://github.com/ota42y/openapi_parser/issues/29).
+
+To detect invalid references at spec load time, pass the `strict_reference_validation: true` option to the parser.
+
+If the `expand_reference` configuration is explicitly `false` (default is `true`), then
+this configuration has no effect (and will not raise, even if references are invalid).
+
+Note: To maintain compatibility with the previous behavior, the default as of 0.15.0 is to
+ignore missing references (`strict_reference_validation: false`) if this configuration is not specified.
+
+```ruby
+yaml_file = YAML.load_file('open_api_3/schema_with_broken_references.yml')
+options = {
+  coerce_value: true,
+  datetime_coerce_class: DateTime,
+  # This defaults to false - passing `true` provides load-time validation of refs
+  strict_reference_validation: true
+}
+
+# Will raise with OpenAPIParser::MissingReferenceError
+OpenAPIParser.parse(yaml_file, options)
+```
+
 ## ToDo
 - correct schema checker
 - more detailed validator
