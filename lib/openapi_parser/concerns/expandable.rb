@@ -68,9 +68,7 @@ module OpenAPIParser::Expandable
     def expand_object(root, object, validate_references)
       if object.kind_of?(OpenAPIParser::Schemas::Reference)
         ref_object = referenced_object(root, object)
-        if ref_object.nil? && validate_references
-          raise OpenAPIParser::MissingReferenceError.new(object.ref)
-        end
+        raise OpenAPIParser::MissingReferenceError.new(object.ref) if ref_object.nil? && validate_references
 
         return ref_object
       end
