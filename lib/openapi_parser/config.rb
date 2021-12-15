@@ -1,5 +1,13 @@
 class OpenAPIParser::Config
   def initialize(config)
+    # TODO: This deprecation warning can be removed after we set the default to `true`
+    # in a later (major?) version update.
+    unless config.key?(:strict_reference_validation)
+      msg = "[DEPRECATION] strict_reference_validation config is not set. It defaults to `false` now, " +
+          "but will be `true` in a future version. Please explicitly set to `false` " +
+          "if you want to skip reference validation on schema load."
+      warn(msg)
+    end
     @config = config
   end
 
@@ -16,7 +24,13 @@ class OpenAPIParser::Config
   end
 
   def strict_response_validation
+    # TODO: in a major version update, change this to default to `true`.
+    # https://github.com/ota42y/openapi_parser/pull/123/files#r767142217
     @config.fetch(:strict_response_validation, false)
+  end
+
+  def strict_reference_validation
+    @config.fetch(:strict_reference_validation, false)
   end
 
   def validate_header

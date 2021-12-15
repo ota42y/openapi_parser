@@ -91,7 +91,7 @@ module OpenAPIParser
       def load_hash(hash, config:, uri:, schema_registry:)
         root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
 
-        OpenAPIParser::ReferenceExpander.expand(root) if config.expand_reference
+        OpenAPIParser::ReferenceExpander.expand(root, config.strict_reference_validation) if config.expand_reference
 
         # TODO: use callbacks
         root.paths&.path&.values&.each do | path_item |

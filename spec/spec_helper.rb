@@ -32,6 +32,10 @@ def normal_schema
   load_yaml_file('./spec/data/normal.yml')
 end
 
+def broken_reference_schema
+  load_yaml_file('./spec/data/reference-broken.yaml')
+end
+
 def petstore_schema
   load_yaml_file(petstore_schema_path)
 end
