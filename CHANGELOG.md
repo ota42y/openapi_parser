@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0.beta1 (2021-12-15)
+### Added
+* Add strict_reference_validation config and implementation to address/implement #29 #123
+
 ## 0.15.0 (2021-09-27)
 ### Added
 * support: relative file path escape. #117
