@@ -258,6 +258,10 @@ paths:
                     mapping:
                       obj1: '#/components/schemas/one_of_object1'
                       obj2: '#/components/schemas/one_of_object2'
+                one_of_with_nullable:
+                  oneOf:
+                    - nullable: true
+                    - $ref: '#/components/schemas/one_of_object1'
                 object_1:
                   type: object
                   properties:

@@ -114,7 +114,7 @@ class OpenAPIParser::SchemaValidator
       when 'array'
         array_validator
       else
-        unspecified_type_validator
+        schema.nullable ? nil : unspecified_type_validator
       end
     end
 

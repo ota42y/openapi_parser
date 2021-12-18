@@ -425,6 +425,26 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
         it { expect(subject).not_to eq nil }
       end
+
+      context 'nullable' do
+        subject { request_operation.validate_request_body(content_type, { 'one_of_with_nullable' => params }) }
+
+        let(:correct_params) do
+          {
+            'name' => 'name',
+            'integer_1' => 42,
+          }
+        end
+        let(:params) { correct_params }
+
+        it { expect(subject).not_to eq nil }
+
+        context 'null value' do
+          let(:params) { nil }
+
+          it { expect(subject).not_to eq nil }
+        end
+      end
     end
 
     it 'unknown param' do
