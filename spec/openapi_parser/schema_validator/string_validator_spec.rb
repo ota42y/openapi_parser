@@ -256,7 +256,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         let(:datetime_coerce_class) { Time }
 
         it 'return Time' do
-          expect(subject).to eq({ 'datetime_str' => Time.iso8601('2022-01-01T12:59:00.000+09:00') })
+          expect(subject).to eq({ 'datetime_str' => DateTime.rfc3339('2022-01-01T12:59:00.000+09:00').to_time })
         end
       end
 
@@ -264,19 +264,30 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         let(:datetime_coerce_class) { DateTime }
 
         it 'return DateTime' do
-          expect(subject).to eq({ 'datetime_str' => DateTime.iso8601('2022-01-01T12:59:00.000+09:00') })
+          expect(subject).to eq({ 'datetime_str' => DateTime.rfc3339('2022-01-01T12:59:00.000+09:00') })
         end
       end
     end
 
     context 'invalid' do
-      context 'error pattern' do
+      context 'arbitrary string' do
         let(:params) { { 'datetime_str' => 'not_date' } }
 
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidDateTimeFormat)
             expect(e.message).to end_with("Value: \"not_date\" is not conformant with date-time format")
+          end
+        end
+      end
+
+      context 'datetime without timezone' do
+        let(:params) { { 'datetime_str' => '2022-01-01T12:59:00.000' } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateTimeFormat)
+            expect(e.message).to end_with("Value: \"2022-01-01T12:59:00.000\" is not conformant with date-time format")
           end
         end
       end

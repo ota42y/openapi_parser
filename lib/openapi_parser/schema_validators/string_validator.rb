@@ -89,14 +89,18 @@ class OpenAPIParser::SchemaValidator
         begin
           if @datetime_coerce_class.nil?
             # validate only
-            Time.iso8601(value)
+            DateTime.rfc3339(value)
             [value, nil]
           else
             # validate and coerce
-            [@datetime_coerce_class.iso8601(value), nil]
+            if @datetime_coerce_class == Time
+              [DateTime.rfc3339(value).to_time, nil]
+            else
+              [@datetime_coerce_class.rfc3339(value), nil]
+            end
           end
         rescue ArgumentError
-          # when iso8601(value) failed
+          # when rfc3339(value) failed
           [nil, OpenAPIParser::InvalidDateTimeFormat.new(value, schema.object_reference)]
         end
       end
