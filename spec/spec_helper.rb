@@ -1,5 +1,7 @@
 require 'bundler'
-require 'pry'
+if Gem::Version.create(RUBY_VERSION) < Gem::Version.create("3.2.0")
+  require 'pry'
+end
 require 'rspec-parameterized'
 require 'simplecov'
 require 'psych'

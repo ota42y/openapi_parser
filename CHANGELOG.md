@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.0.0 (2021-02-03)
+### Added
+* Add date-time format validation #126
+
 ## 1.0.0.beta1 (2021-12-15)
 ### Added
 * Add strict_reference_validation config and implementation to address/implement #29 #123
