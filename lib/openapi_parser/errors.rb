@@ -206,6 +206,17 @@ module OpenAPIParser
     end
   end
 
+  class InvalidDateTimeFormat < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} Value: #{@value.inspect} is not conformant with date-time format"
+    end
+  end
+
   class NotExistStatusCodeDefinition < OpenAPIError
     def message
       "#{@reference} status code definition does not exist"
