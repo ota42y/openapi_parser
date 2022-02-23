@@ -209,6 +209,28 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         end
       end
 
+      context 'anyOf with nullable' do
+        subject { request_operation.validate_request_body(content_type, { 'any_of_with_nullable' => params }) }
+
+        context 'integer' do
+          let(:params) { 1 }
+
+          it { expect(subject).to eq({ 'any_of_with_nullable' => 1 }) }
+        end
+
+        context 'null' do
+          let(:params) { nil }
+
+          it { expect(subject).to eq({ 'any_of_with_nullable' => nil }) }
+        end
+
+        context 'invalid' do
+          let(:params) { 'foo' }
+
+          it { expect { subject }.to raise_error(OpenAPIParser::NotAnyOf) }
+        end
+      end
+
       context 'unspecified_type' do
         it do
           expect(request_operation.validate_request_body(content_type, { 'unspecified_type' => "foo" })).
@@ -369,6 +391,30 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
 
+    describe 'allOf with nullable' do
+      context 'with nullable' do
+        subject { request_operation.validate_request_body(content_type, { 'all_of_with_nullable' => params }) }
+
+        context 'integer' do
+          let(:params) { 1 }
+
+          it { expect(subject).to eq({ 'all_of_with_nullable' => 1 }) }
+        end
+
+        context 'null' do
+          let(:params) { nil }
+
+          it { expect(subject).to eq({ 'all_of_with_nullable' => nil }) }
+        end
+
+        context 'invalid' do
+          let(:params) { 'foo' }
+
+          it { expect { subject }.to raise_error(::OpenAPIParser::ValidateError) }
+        end
+      end
+    end
+
     describe 'one_of' do
       context 'normal' do
         subject { request_operation.validate_request_body(content_type, { 'one_of_data' => params }) }
@@ -429,6 +475,28 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         let(:params) { correct_params }
 
         it { expect(subject).not_to eq nil }
+      end
+
+      context 'with nullable' do
+        subject { request_operation.validate_request_body(content_type, { 'one_of_with_nullable' => params }) }
+
+        context 'integer' do
+          let(:params) { 1 }
+
+          it { expect(subject).to eq({ 'one_of_with_nullable' => 1 }) }
+        end
+
+        context 'null' do
+          let(:params) { nil }
+
+          it { expect(subject).to eq({ 'one_of_with_nullable' => nil }) }
+        end
+
+        context 'invalid' do
+          let(:params) { 'foo' }
+
+          it { expect { subject }.to raise_error(OpenAPIParser::NotOneOf) }
+        end
       end
     end
 

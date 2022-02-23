@@ -3,6 +3,9 @@ class OpenAPIParser::SchemaValidator
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def coerce_and_validate(value, schema, **_keyword_args)
+      if value.nil? && schema.nullable
+        return [value, nil]
+      end
       if schema.discriminator
         return validate_discriminator_schema(schema.discriminator, value)
       end

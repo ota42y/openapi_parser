@@ -5,6 +5,10 @@ class OpenAPIParser::SchemaValidator
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def coerce_and_validate(value, schema, **keyword_args)
+      if value.nil? && schema.nullable
+        return [value, nil]
+      end
+
       # if any schema return error, it's not valida all of value
       remaining_keys               = value.kind_of?(Hash) ? value.keys : []
       nested_additional_properties = false

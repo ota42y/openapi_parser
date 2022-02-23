@@ -245,6 +245,10 @@ paths:
                         id:
                           type: integer
                           format: int64
+                all_of_with_nullable:
+                  nullable: true
+                  allOf:
+                    - type: integer
                 one_of_data:
                   oneOf:
                     - $ref: '#/components/schemas/one_of_object1'
@@ -258,6 +262,10 @@ paths:
                     mapping:
                       obj1: '#/components/schemas/one_of_object1'
                       obj2: '#/components/schemas/one_of_object2'
+                one_of_with_nullable:
+                  nullable: true
+                  oneOf:
+                    - type: integer
                 object_1:
                   type: object
                   properties:
@@ -314,6 +322,10 @@ paths:
                     anyOf:
                       - type: string
                       - type: boolean
+                any_of_with_nullable:
+                  nullable: true
+                  anyOf:
+                    - type: integer
                 unspecified_type: {}
                 enum_string:
                   type: string
