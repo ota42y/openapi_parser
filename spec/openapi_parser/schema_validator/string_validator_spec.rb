@@ -160,6 +160,13 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         end
       end
     end
+
+    context "disabled" do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new validate_email_format: false }
+      let(:params) { { 'email_str' => "Hello (RFC2822 address) <hello@example.com>" } }
+
+      it { expect(subject).to eq({ 'email_str' => "Hello (RFC2822 address) <hello@example.com>" }) }
+    end
   end
 
   describe 'validate uuid format' do
