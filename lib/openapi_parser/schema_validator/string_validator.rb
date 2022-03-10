@@ -71,6 +71,8 @@ class OpenAPIParser::SchemaValidator
       def validate_date_format(value, schema)
         return [value, nil] unless schema.format == 'date'
 
+        return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)] unless value =~ /^\d{4}-\d{2}-\d{2}$/
+
         begin
           parsed_date = Date.iso8601(value)
         rescue ArgumentError

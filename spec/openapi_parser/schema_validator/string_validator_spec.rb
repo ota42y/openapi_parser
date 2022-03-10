@@ -236,7 +236,29 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         it do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
-            expect(e.message).to end_with("Value: \"not_date\" is not conformant with date format")
+            expect(e.message).to end_with("Value: \"#{value}\" is not conformant with date format")
+          end
+        end
+      end
+      context 'incomplete date string (2 digit year)' do
+        let(:value) { '12-12-12' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"#{value}\" is not conformant with date format")
+          end
+        end
+      end
+      context 'invalid date string format (/ separator)' do
+        let(:value) { '12/12/12' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"#{value}\" is not conformant with date format")
           end
         end
       end
