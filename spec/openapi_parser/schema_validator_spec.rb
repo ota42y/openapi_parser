@@ -214,6 +214,11 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           expect(request_operation.validate_request_body(content_type, { 'unspecified_type' => "foo" })).
             to eq({ 'unspecified_type' => "foo" })
         end
+
+        it do
+          expect(request_operation.validate_request_body(content_type, { 'unspecified_type' => [1, 2] })).
+            to eq({ 'unspecified_type' => [1, 2] })
+        end
       end
     end
 
