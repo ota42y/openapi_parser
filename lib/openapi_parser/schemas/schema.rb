@@ -93,6 +93,10 @@ module OpenAPIParser::Schemas
     #   @return [Array<Schema, Reference>, nil]
     openapi_attr_list_object :any_of, Schema, reference: true, schema_key: :anyOf
 
+    # @!attribute [r] not
+    #   @return [Schema, nil]
+    openapi_attr_object :not, Schema, reference: true
+
     # @!attribute [r] items
     #   @return [Schema, nil]
     openapi_attr_object :items, Schema, reference: true

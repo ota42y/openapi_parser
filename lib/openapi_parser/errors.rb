@@ -105,6 +105,17 @@ module OpenAPIParser
     end
   end
 
+  class NotNot < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@value.inspect} isn't 'not' of #{@reference}"
+    end
+  end
+
   class NotEnumInclude < OpenAPIError
     def initialize(value, reference)
       super(reference)

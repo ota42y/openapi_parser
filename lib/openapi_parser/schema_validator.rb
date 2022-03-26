@@ -11,6 +11,7 @@ require_relative 'schema_validators/array_validator'
 require_relative 'schema_validators/any_of_validator'
 require_relative 'schema_validators/all_of_validator'
 require_relative 'schema_validators/one_of_validator'
+require_relative 'schema_validators/not_validator'
 require_relative 'schema_validators/nil_validator'
 require_relative 'schema_validators/unspecified_type_validator'
 
@@ -98,6 +99,7 @@ class OpenAPIParser::SchemaValidator
       return any_of_validator if schema.any_of
       return all_of_validator if schema.all_of
       return one_of_validator if schema.one_of
+      return not_validator if schema.not
       return nil_validator if value.nil?
 
       case schema.type
@@ -152,6 +154,10 @@ class OpenAPIParser::SchemaValidator
 
     def one_of_validator
       @one_of_validator ||= OpenAPIParser::SchemaValidator::OneOfValidator.new(self, @coerce_value)
+    end
+
+    def not_validator
+      @not_validator ||= OpenAPIParser::SchemaValidator::NotValidator.new(self, @coerce_value)
     end
 
     def nil_validator
