@@ -25,7 +25,7 @@ module OpenAPIParser::Schemas
           raise ::OpenAPIParser::NotExistContentTypeDefinition, object_reference
         end
 
-        return nil
+        return true
       end
 
       options = ::OpenAPIParser::SchemaValidator::Options.new # response validator not support any options
