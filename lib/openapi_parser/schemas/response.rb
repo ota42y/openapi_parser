@@ -21,7 +21,9 @@ module OpenAPIParser::Schemas
 
       media_type = select_media_type(response_body.content_type)
       unless media_type
-        raise ::OpenAPIParser::NotExistContentTypeDefinition, object_reference if response_validate_options.strict
+        if response_validate_options.strict && response_body_not_blank(response_body)
+          raise ::OpenAPIParser::NotExistContentTypeDefinition, object_reference
+        end
 
         return nil
       end
@@ -38,6 +40,11 @@ module OpenAPIParser::Schemas
     end
 
     private
+
+      # @param [OpenAPIParser::RequestOperation::ValidatableResponseBody]
+      def response_body_not_blank(response_body)
+        !(response_body.response_data.nil? || response_body.response_data.empty?)
+      end
 
       # @param [Hash] response_headers
       def validate_header(response_headers)
