@@ -1,6 +1,7 @@
 require_relative 'schema_validator/options'
 require_relative 'schema_validator/enumable'
 require_relative 'schema_validator/minimum_maximum'
+require_relative 'schema_validator/properties_number'
 require_relative 'schema_validator/base'
 require_relative 'schema_validator/string_validator'
 require_relative 'schema_validator/integer_validator'
