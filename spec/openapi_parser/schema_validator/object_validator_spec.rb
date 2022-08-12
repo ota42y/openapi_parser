@@ -249,6 +249,50 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
       end
     end
 
+    context 'properties number check' do
+      let(:root) { OpenAPIParser.parse(schema, {}) }
+
+      let(:schema) do
+        s = build_validate_test_schema(replace_schema)
+        obj = s['paths']['/validate_test']['post']['requestBody']['content']['application/json']['schema']
+        obj['maxProperties'] = 3
+        obj['minProperties'] = 1
+        s
+      end
+
+      let(:content_type) { 'application/json' }
+      let(:request_operation) { root.request_operation(:post, '/validate_test') }
+      let(:params) { { 'query_string' => 'query' } }
+      let(:replace_schema) { {} }
+
+      it { expect(request_operation.validate_request_body(content_type, params)).to eq(params) }
+
+      context 'invalid' do
+        context 'less than minProperties' do
+          let(:params) { {} }
+
+          it do
+            expect { expect(request_operation.validate_request_body(content_type, params)) }.to raise_error do |e|
+              expect(e).to be_kind_of(OpenAPIParser::LessThanMinProperties)
+              expect(e.message).to end_with("0 is less than minProperties value")
+            end
+          end
+        end
+
+        context 'more than maxProperties' do
+          let(:params) { super().merge({ a: 1,  b: 1, c: 2 }) }
+
+          it do
+            expect { expect(request_operation.validate_request_body(content_type, params)) }.to raise_error do |e|
+              p e
+              expect(e).to be_kind_of(OpenAPIParser::MoreThanMaxProperties)
+              expect(e.message).to end_with("4 is more than maxProperties value")
+            end
+          end
+        end
+      end
+    end
+
     context 'additional_properties check' do
       subject { request_operation.validate_request_body(content_type, JSON.load(params.to_json)) }
 

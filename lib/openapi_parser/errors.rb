@@ -160,6 +160,28 @@ module OpenAPIParser
     end
   end
 
+  class LessThanMinProperties < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} #{@value.size} is less than minProperties value"
+    end
+  end
+
+  class MoreThanMaxProperties < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} #{@value.size} is more than maxProperties value"
+    end
+  end
+
   class InvalidPattern < OpenAPIError
     def initialize(value, pattern, reference, example)
       super(reference)
