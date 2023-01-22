@@ -7,5 +7,5 @@ target :lib do
   check "lib/openapi_parser/schema_validators/options.rb"
   check "lib/openapi_parser/schema_validators/base.rb"
 
-  library 'uri'
+  library 'uri', 'json', 'pathname'
 end

@@ -62,6 +62,3 @@ class OpenAPIParser::Schemas::Discriminator < OpenAPIParser::Schemas::Base
   attr_reader property_name: (String | nil)
   attr_reader mapping: Hash[String, String] 
 end
-
-class OpenAPIParser::OpenAPIError
-end
