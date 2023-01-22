@@ -1,5 +1,7 @@
 class OpenAPIParser::SchemaValidator
   class ObjectValidator < Base
+    include ::OpenAPIParser::SchemaValidator::PropertiesNumber
+
     # @param [Hash] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     # @param [Boolean] parent_all_of true if component is nested under allOf
@@ -50,7 +52,7 @@ class OpenAPIParser::SchemaValidator
 
       value.merge!(coerced_values.to_h) if @coerce_value
 
-      [value, nil]
+      check_properties_number(value, schema)
     end
   end
 end
