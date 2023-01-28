@@ -432,6 +432,59 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
 
+    describe 'not' do
+      context 'not_integer' do
+        it do
+          expect(request_operation.validate_request_body(content_type, { 'not_integer' => "This is string" })).
+            to eq({ 'not_integer' => "This is string" })
+        end
+
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'not_integer' => 1 }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("1 isn't 'not' of")).to eq true
+          end
+        end
+      end
+
+      context 'null_value' do
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'null_value' => 'abc' }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("\"abc\" isn't 'not' of")).to eq true
+          end
+        end
+
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'null_value' => 1 }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("1 isn't 'not' of")).to eq true
+          end
+        end
+
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'null_value' => true }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("true isn't 'not' of")).to eq true
+          end
+        end
+
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'null_value' => {} }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("{} isn't 'not' of")).to eq true
+          end
+        end
+
+        it 'invalid' do
+          expect { request_operation.validate_request_body(content_type, { 'null_value' => [1] }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotNot)).to eq true
+            expect(e.message.start_with?("[1] isn't 'not' of")).to eq true
+          end
+        end
+      end
+    end
+
     it 'unknown param' do
       expect { request_operation.validate_request_body(content_type, { 'unknown' => 1 }) }.to raise_error do |e|
         expect(e).to be_kind_of(OpenAPIParser::NotExistPropertyDefinition)

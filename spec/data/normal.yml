@@ -334,6 +334,22 @@ paths:
                   type: boolean
                   enum:
                     - true
+                not_integer:
+                  not:
+                    type: integer
+                # The idea of null value comes from
+                # https://github.com/OAI/OpenAPI-Specification/issues/1368#issuecomment-487314681
+                null_value:
+                  not:
+                    anyOf:
+                    - type: string
+                    - type: number
+                    - type: boolean
+                    - type: object
+                    - type: array
+                      # Array schema must specify items, so we'll use an
+                      # empty object to mean arrays of any type are included.
+                      items: {}
 
       responses:
         '200':
