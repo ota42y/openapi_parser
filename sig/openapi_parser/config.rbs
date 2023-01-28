@@ -2,6 +2,8 @@
 module OpenAPIParser
   class Config
     @config: untyped
+    @request_validator_options: OpenAPIParser::SchemaValidator::Options
+    @response_validate_options: OpenAPIParser::SchemaValidator::ResponseValidateOptions
     alias request_body_options request_validator_options
     alias path_params_options request_validator_options
 

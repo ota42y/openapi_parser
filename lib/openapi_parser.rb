@@ -43,13 +43,16 @@ module OpenAPIParser
     def load_uri(uri, config:, schema_registry:)
       # Open-uri doesn't open file scheme uri, so we try to open file path directly
       # File scheme uri which points to a remote file is not supported.
+      uri_path = uri.path
+      raise "file not found" if uri_path.nil?
+
       content = if uri.scheme == 'file'
-        open(uri.path)&.read
+        open(uri_path)&.read
       elsif uri.is_a?(OpenURI::OpenRead)
         uri.open()&.read
       end
 
-      extension = Pathname.new(uri.path).extname
+      extension = Pathname.new(uri_path).extname
       load_hash(parse_file(content, extension), config: config, uri: uri, schema_registry: schema_registry)
     end
 
@@ -85,6 +88,7 @@ module OpenAPIParser
       end
 
       def parse_json(content)
+        raise "json content is nil" unless content 
         JSON.parse(content)
       end
 

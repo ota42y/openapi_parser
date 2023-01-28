@@ -6,3 +6,8 @@ module OpenURI
   end
 end
 
+
+module Psych
+  def self.safe_load: (untyped content, untyped parmitted_classes) -> Hash[bot, bot]
+end
+

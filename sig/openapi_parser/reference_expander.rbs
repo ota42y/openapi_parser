@@ -1,0 +1,3 @@
+class OpenAPIParser::ReferenceExpander
+  def self.expand: (OpenAPIParser::Schemas::OpenAPI openapi, untyped validate_references) -> nil
+end

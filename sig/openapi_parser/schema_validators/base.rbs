@@ -4,14 +4,15 @@ module OpenAPIParser
     class Base
       @coerce_value: bool | nil
 
-      def initialize: (OpenAPIParser::SchemaValidator::Validatable validatable, (bool | nil) coerce_value) -> untyped
       attr_reader validatable: OpenAPIParser::SchemaValidator::Validatable
-      def coerce_and_validate: (Object _value, OpenAPIParser::Schemas::Schema _schema, **untyped) -> bot
+
+      def initialize: (OpenAPIParser::SchemaValidator::Validatable validatable, (bool | nil) coerce_value) -> untyped
+      def coerce_and_validate: (Object _value, OpenAPIParser::Schemas::Schema _schema, **untyped) -> [untyped, (ValidateError | NotExistDiscriminatorMappedSchema | nil)]
       def validate_discriminator_schema: (
         OpenAPIParser::Schemas::Discriminator discriminator, 
         Hash[String, bot] value,
         ?parent_discriminator_schemas: Array[OpenAPIParser::Schemas::Schema]
-      ) -> [Object | nil, OpenAPIParser::validate_error]
+      ) -> [Object | nil, OpenAPIParser::OpenAPIError]
     end
   end
 end
