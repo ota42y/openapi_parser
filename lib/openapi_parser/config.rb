@@ -37,11 +37,16 @@ class OpenAPIParser::Config
     @config.fetch(:validate_header, true)
   end
 
+  def validate_email_format
+    @config.fetch(:validate_email_format, true)
+  end
+
   # @return [OpenAPIParser::SchemaValidator::Options]
   def request_validator_options
     @request_validator_options ||= OpenAPIParser::SchemaValidator::Options.new(coerce_value: coerce_value,
                                                                                datetime_coerce_class: datetime_coerce_class,
-                                                                               validate_header: validate_header)
+                                                                               validate_header: validate_header,
+                                                                               validate_email_format: validate_email_format)
   end
 
   alias_method :request_body_options, :request_validator_options
@@ -49,7 +54,8 @@ class OpenAPIParser::Config
 
   # @return [OpenAPIParser::SchemaValidator::ResponseValidateOptions]
   def response_validate_options
-    @response_validate_options ||= OpenAPIParser::SchemaValidator::ResponseValidateOptions.
-                                     new(strict: strict_response_validation, validate_header: validate_header)
+    @response_validate_options ||= OpenAPIParser::SchemaValidator::ResponseValidateOptions.new(strict: strict_response_validation,
+                                                                                               validate_header: validate_header,
+                                                                                               validate_email_format: validate_email_format)
   end
 end

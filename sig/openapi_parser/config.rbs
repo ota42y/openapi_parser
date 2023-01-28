@@ -13,6 +13,7 @@ module OpenAPIParser
     def expand_reference: -> bool
     def strict_response_validation: -> bool
     def validate_header: -> bool
+    def validate_email_format: -> bool
     def request_validator_options: -> OpenAPIParser::SchemaValidator::Options
     def response_validate_options: -> OpenAPIParser::SchemaValidator::ResponseValidateOptions
   end

@@ -2,9 +2,10 @@ class OpenAPIParser::SchemaValidator
   class StringValidator < Base
     include ::OpenAPIParser::SchemaValidator::Enumable
 
-    def initialize(validator, coerce_value, datetime_coerce_class)
+    def initialize(validator, coerce_value, datetime_coerce_class, validate_email_format)
       super(validator, coerce_value)
       @datetime_coerce_class = datetime_coerce_class
+      @validate_email_format = validate_email_format
     end
 
     def coerce_and_validate(value, schema, **_keyword_args)
@@ -53,7 +54,7 @@ class OpenAPIParser::SchemaValidator
       end
 
       def validate_email_format(value, schema)
-        return [value, nil] unless schema.format == 'email'
+        return [value, nil] unless @validate_email_format && schema.format == 'email'
 
         # match? method is good performance.
         # So when we drop ruby 2.3 support we use match? method because this method add ruby 2.4
