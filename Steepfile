@@ -4,8 +4,8 @@ target :lib do
 
   check "lib/openapi_parser.rb"
   check "lib/openapi_parser/config.rb"
-  check "lib/openapi_parser/schema_validators/options.rb"
-  check "lib/openapi_parser/schema_validators/base.rb"
+  check "lib/openapi_parser/schema_validator/options.rb"
+  check "lib/openapi_parser/schema_validator/base.rb"
 
   library 'uri', 'json', 'pathname'
 end
