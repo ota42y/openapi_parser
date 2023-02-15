@@ -16,4 +16,6 @@ module OpenAPIParser::Schemas
   class Schema < Base; end
   class Components < Base; end
   class Header < Base; end
+  class SecurityScheme < Base; end
+  class Jwt < Base; end
 end
