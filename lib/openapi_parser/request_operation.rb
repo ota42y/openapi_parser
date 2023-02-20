@@ -50,7 +50,6 @@ class OpenAPIParser::RequestOperation
   def validate_request_body(content_type, params, options = nil)
     options ||= config.request_body_options
     operation_object&.validate_request_body(content_type, params, options)
-    operation_object.validate_security(params, options)
   end
 
   # @param [OpenAPIParser::RequestOperation::ValidatableResponseBody] response_body
