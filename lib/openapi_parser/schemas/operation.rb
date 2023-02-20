@@ -7,10 +7,10 @@ module OpenAPIParser::Schemas
   class Operation < Base
     include OpenAPIParser::ParameterValidatable
 
-    openapi_attr_values :tags, :summary, :description, :deprecated
+    openapi_attr_values :tags, :summary, :description, :deprecated, :security
 
     openapi_attr_value :operation_id, schema_key: :operationId
-
+    
     openapi_attr_list_object :parameters, Parameter, reference: true
 
     # @!attribute [r] request_body
@@ -29,6 +29,13 @@ module OpenAPIParser::Schemas
     # @param [OpenAPIParser::SchemaValidator::ResponseValidateOptions] response_validate_options
     def validate_response(response_body, response_validate_options)
       responses&.validate(response_body, response_validate_options)
+    end
+
+    def validate_security(params, options)
+      # test - will show the list of security options
+      security.each do |sec|
+        puts sec
+      end
     end
   end
 end
