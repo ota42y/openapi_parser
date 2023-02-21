@@ -25,12 +25,12 @@ module OpenAPIParser::Schemas
     #   @return [Hash{String => Header}, nil] header objects
     openapi_attr_hash_object :headers, Header, reference: true
 
-    # @!attribute [r] securitySchemes
-    #   @return [Hash{String => SecurityScheme}, nil]
-    openapi_attr_hash_object :security_schemes, SecurityScheme, reference: false, schema_key: :securitySchemes
+    # @!attribute [r] security_schemes
+    #   @return [Hash{String => Header}, nil]
+    openapi_attr_hash_object :security_schemes, SecuritySchemes, reference: true, schema_key: :securitySchemes
 
-    def validate_security_schemes(params, options)
-      security_schemes&.validate(params, options)
-    end
+    #def validate_sec
+    #  security_schemes.validate_security_schemes
+    #end
   end
 end
