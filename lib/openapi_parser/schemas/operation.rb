@@ -32,7 +32,10 @@ module OpenAPIParser::Schemas
     end
 
     def validate_security_schemes(securitySchemes)
-        securitySchemes.validate_security_schemes(security)
+        securitySchemes.each do |securityScheme|
+          securityScheme[1].validate_security_schemes(securityScheme[1])
+        end
+        #securitySchemes.validate_security_schemes(security)
     end
   end
 end

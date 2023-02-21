@@ -27,6 +27,6 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] security_schemes
     #   @return [Hash{String => Header}, nil]
-    openapi_attr_object :security_schemes, SecuritySchemes, reference: true, schema_key: :securitySchemes
+    openapi_attr_hash_object :security_schemes, SecuritySchemes, reference: true, schema_key: :securitySchemes
   end
 end
