@@ -30,5 +30,12 @@ module OpenAPIParser::Schemas
     def validate_response(response_body, response_validate_options)
       responses&.validate(response_body, response_validate_options)
     end
+
+    def validate_servers(servers)
+      servers.each do |server|
+        #puts "server url: #{server.url}"
+        #puts "server description: #{server.description}"
+      end
+    end
   end
 end
