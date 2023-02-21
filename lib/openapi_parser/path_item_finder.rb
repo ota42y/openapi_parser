@@ -9,8 +9,6 @@ class OpenAPIParser::PathItemFinder
   # @param [String] request_path
   # @return [Result, nil]
   def operation_object(http_method, request_path)
-    puts "@paths: #{@paths.inspect}"
-    puts "@paths.path #{@paths.path}"
     if (path_item_object = @paths.path[request_path])
       if (op = path_item_object.operation(http_method))
         return Result.new(path_item_object, op, request_path, {}) # find no path_params path

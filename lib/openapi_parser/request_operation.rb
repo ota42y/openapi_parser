@@ -5,11 +5,11 @@ class OpenAPIParser::RequestOperation
     # @param [OpenAPIParser::Config] config
     # @param [OpenAPIParser::PathItemFinder] path_item_finder
     # @return [OpenAPIParser::RequestOperation, nil]
-    def create(http_method, request_path, path_item_finder, config, components)
+    def create(http_method, request_path, path_item_finder, config, security_schemes)
       result = path_item_finder.operation_object(http_method, request_path)
       return nil unless result
 
-      self.new(http_method, result, config, components.security_schemes)
+      self.new(http_method, result, config, security_schemes)
     end
   end
 
@@ -54,8 +54,9 @@ class OpenAPIParser::RequestOperation
   # @param [OpenAPIParser::SchemaValidator::Options] options
   def validate_request_body(content_type, params, options = nil)
     options ||= config.request_body_options
-    operation_object&.validate_request_body(content_type, params, options)
+
     validate_security(security_schemes)
+    operation_object&.validate_request_body(content_type, params, options)
   end
 
   # @param [OpenAPIParser::RequestOperation::ValidatableResponseBody] response_body

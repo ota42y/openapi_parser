@@ -31,9 +31,8 @@ module OpenAPIParser::Schemas
       responses&.validate(response_body, response_validate_options)
     end
 
-    #def validate_security_schemes(security_schemes)
-    #  puts "SECURITY SCHEME: #{security_schemes}"
-    #  # test - will show the list of security options
-    #end
+    def validate_security_schemes(securitySchemes)
+        securitySchemes.validate_security_schemes(security)
+    end
   end
 end

@@ -27,10 +27,6 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] security_schemes
     #   @return [Hash{String => Header}, nil]
-    openapi_attr_hash_object :security_schemes, SecuritySchemes, reference: true, schema_key: :securitySchemes
-
-    #def validate_sec
-    #  security_schemes.validate_security_schemes
-    #end
+    openapi_attr_object :security_schemes, SecuritySchemes, reference: true, schema_key: :securitySchemes
   end
 end
