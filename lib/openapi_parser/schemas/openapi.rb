@@ -29,9 +29,13 @@ module OpenAPIParser::Schemas
     #   @return [Components, nil]
     openapi_attr_object :components, Components, reference: false
 
+    # @!attribute [r] servers
+    #   @return [Servers, nil]
+    openapi_attr_list_object :servers, Servers, reference: false
+
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
-      OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
+      OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config, servers)
     end
 
     # load another schema with shared config and schema_registry
