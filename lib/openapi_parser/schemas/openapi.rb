@@ -31,7 +31,7 @@ module OpenAPIParser::Schemas
 
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
-      OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
+      OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config, components)
     end
 
     # load another schema with shared config and schema_registry

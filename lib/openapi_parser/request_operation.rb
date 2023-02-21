@@ -5,11 +5,11 @@ class OpenAPIParser::RequestOperation
     # @param [OpenAPIParser::Config] config
     # @param [OpenAPIParser::PathItemFinder] path_item_finder
     # @return [OpenAPIParser::RequestOperation, nil]
-    def create(http_method, request_path, path_item_finder, config)
+    def create(http_method, request_path, path_item_finder, config, components)
       result = path_item_finder.operation_object(http_method, request_path)
       return nil unless result
 
-      self.new(http_method, result, config)
+      self.new(http_method, result, config, components.security_schemes)
     end
   end
 
@@ -25,18 +25,23 @@ class OpenAPIParser::RequestOperation
   #   @return [String]
   # @!attribute [r] path_item
   #   @return [OpenAPIParser::Schemas::PathItem]
-  attr_reader :operation_object, :path_params, :config, :http_method, :original_path, :path_item
+  attr_reader :operation_object, :path_params, :config, :http_method, :original_path, :path_item, :security_schemes
 
   # @param [String] http_method
   # @param [OpenAPIParser::PathItemFinder::Result] result
   # @param [OpenAPIParser::Config] config
-  def initialize(http_method, result, config)
+  def initialize(http_method, result, config, security_schemes)
     @http_method = http_method.to_s
     @original_path = result.original_path
     @operation_object = result.operation_object
     @path_params = result.path_params || {}
     @path_item = result.path_item_object
     @config = config
+    @security_schemes = security_schemes
+  end
+
+  def validate_security(security_schemes)
+    operation_object.validate_security_schemes(security_schemes)
   end
 
   def validate_path_params(options = nil)
@@ -50,6 +55,7 @@ class OpenAPIParser::RequestOperation
   def validate_request_body(content_type, params, options = nil)
     options ||= config.request_body_options
     operation_object&.validate_request_body(content_type, params, options)
+    validate_security(security_schemes)
   end
 
   # @param [OpenAPIParser::RequestOperation::ValidatableResponseBody] response_body

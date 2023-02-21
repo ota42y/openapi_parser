@@ -306,6 +306,11 @@ paths:
                 $ref: '#/components/schemas/Pet'
 
 components:
+  securitySchemes:
+    jwt:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
   parameters:
     test:
       name: limit
