@@ -31,11 +31,10 @@ module OpenAPIParser::Schemas
       responses&.validate(response_body, response_validate_options)
     end
 
-    def validate_security_schemes(securitySchemes)
-        securitySchemes.each do |securityScheme|
-          securityScheme[1].validate_security_schemes(securityScheme[1])
-        end
-        #securitySchemes.validate_security_schemes(security)
+    def validate_security_schemes(securitySchemes, headers)
+      securitySchemes.each do |securityScheme|
+        securityScheme[1].validate_security_schemes(securityScheme[1], headers)
+      end
     end
   end
 end

@@ -40,8 +40,8 @@ class OpenAPIParser::RequestOperation
     @security_schemes = security_schemes
   end
 
-  def validate_security(security_schemes)
-    operation_object.validate_security_schemes(security_schemes)
+  def validate_security(security_schemes, headers)
+    operation_object.validate_security_schemes(security_schemes, headers)
   end
 
   def validate_path_params(options = nil)
@@ -54,8 +54,6 @@ class OpenAPIParser::RequestOperation
   # @param [OpenAPIParser::SchemaValidator::Options] options
   def validate_request_body(content_type, params, options = nil)
     options ||= config.request_body_options
-
-    validate_security(security_schemes)
     operation_object&.validate_request_body(content_type, params, options)
   end
 
@@ -72,6 +70,7 @@ class OpenAPIParser::RequestOperation
   # @param [OpenAPIParser::SchemaValidator::Options] options request validator options
   def validate_request_parameter(params, headers, options = nil)
     options ||= config.request_validator_options
+    validate_security(security_schemes, headers)
     operation_object&.validate_request_parameter(params, headers, options)
   end
 
