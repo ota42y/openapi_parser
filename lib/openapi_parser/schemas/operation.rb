@@ -32,7 +32,7 @@ module OpenAPIParser::Schemas
     end
 
     def validate_security_schemes(securitySchemes, headers)
-      securitySchemes.each do |securityScheme|
+      securitySchemes&.each do |securityScheme|
         # check if the endpoint has security in schema
         if security
           # if security exists, check what securitySchemas used for enforcing

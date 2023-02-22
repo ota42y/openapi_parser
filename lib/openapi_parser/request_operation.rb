@@ -5,7 +5,7 @@ class OpenAPIParser::RequestOperation
     # @param [OpenAPIParser::Config] config
     # @param [OpenAPIParser::PathItemFinder] path_item_finder
     # @return [OpenAPIParser::RequestOperation, nil]
-    def create(http_method, request_path, path_item_finder, config, security_schemes)
+    def create(http_method, request_path, path_item_finder, config, security_schemes = {})
       result = path_item_finder.operation_object(http_method, request_path)
       return nil unless result
 
