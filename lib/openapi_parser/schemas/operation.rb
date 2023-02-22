@@ -33,7 +33,17 @@ module OpenAPIParser::Schemas
 
     def validate_security_schemes(securitySchemes, headers)
       securitySchemes.each do |securityScheme|
-        securityScheme[1].validate_security_schemes(securityScheme[1], headers)
+        # check if the endpoint has security in schema
+        if security
+          # if security exists, check what securitySchemas used for enforcing
+          security.each do |s|
+            # securityScheme[0] is the securitySchema name
+            if s == securityScheme[0] 
+              # securitySchema[1] is the values like "type", "scheme" and bearerFormat
+              securityScheme[1].validate_security_schemes(securityScheme[1], headers)
+            end
+          end
+        end
       end
     end
   end
