@@ -272,4 +272,10 @@ module OpenAPIParser
       "#{@reference} #{@value.inspect} contains fewer than min items"
     end
   end
+
+  class ValidateSecurityError < OpenAPIError
+    def message
+      "access denied"
+    end
+  end
 end
