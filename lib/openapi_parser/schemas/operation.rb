@@ -36,12 +36,12 @@ module OpenAPIParser::Schemas
     def validate_security_schemes(securitySchemes, headers)
       validate_results = security.map do |s| # s is security requirement object
         # check all security
-        s.validate_security_schemes(securitySchemes, headers)
+        s.validate_security_requirements(securitySchemes, headers)
       end
       if validate_results.count(true) == 1
         return true # accept 
       end
-      return ValidateSecurityError
+      return OpenAPIParser::ValidateSecurityError
 
     #  securitySchemes&.each do |securityScheme|
     #    # check if the endpoint has security in schema
