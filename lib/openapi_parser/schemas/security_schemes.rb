@@ -13,7 +13,7 @@ module OpenAPIParser::Schemas
         # check if the JWT token is being sent and try to decode.
         # if JWT token does not exist or token cannot decode, then deny access
         token = headers["AUTHORIZATION"].split[1]
-        value = JWT.decode token, nil, false
+        JWT.decode token, nil, false
       end
     end
   end
