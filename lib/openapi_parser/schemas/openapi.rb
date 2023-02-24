@@ -29,6 +29,10 @@ module OpenAPIParser::Schemas
     #   @return [Components, nil]
     openapi_attr_object :components, Components, reference: false
 
+    # @!attribute [r] info
+    #   @return [Info, nil]
+    openapi_attr_object :info, Info, reference: false
+
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config, components&.security_schemes)
