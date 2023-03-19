@@ -190,6 +190,9 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     context 'invalid' do
       %w[
         not_uuid
+        zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz
+        204730d-fd3f5-364b-9aeb-d1372aba0d35
+        204730df_d3f5_364b_9aeb_d1372aba0d35
         204730df-d3f5-364b-9aeb-d1372aba0d35-deadbeef
         deadbeef-204730df-d3f5-364b-9aeb-d1372aba0d35
       ].each do |invalid_uuid|
