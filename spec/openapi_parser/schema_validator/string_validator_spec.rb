@@ -176,8 +176,15 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     end
 
     context 'correct' do
-      let(:params) { { 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' } }
-      it { expect(subject).to eq({ 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' }) }
+      context 'lowercase' do
+        let(:params) { { 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' } }
+        it { expect(subject).to eq({ 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' }) }
+      end
+
+      context 'uppercase' do
+        let(:params) { { 'uuid_str' => 'FD33FB1E-B1F6-401E-994D-8A2545E1AEF7' } }
+        it { expect(subject).to eq({ 'uuid_str' => 'FD33FB1E-B1F6-401E-994D-8A2545E1AEF7' }) }
+      end
     end
 
     context 'invalid' do
