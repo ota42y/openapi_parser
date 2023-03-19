@@ -181,14 +181,19 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     end
 
     context 'invalid' do
-      context 'error pattern' do
-        let(:value) { 'not_uuid' }
-        let(:params) { { 'uuid_str' => value } }
+      %w[
+        not_uuid
+        204730df-d3f5-364b-9aeb-d1372aba0d35-deadbeef
+        deadbeef-204730df-d3f5-364b-9aeb-d1372aba0d35
+      ].each do |invalid_uuid|
+        context 'error pattern' do
+          let(:params) { { 'uuid_str' => invalid_uuid } }
 
-        it do
-          expect { subject }.to raise_error do |e|
-            expect(e).to be_kind_of(OpenAPIParser::InvalidUUIDFormat)
-            expect(e.message).to end_with("Value: \"not_uuid\" is not conformant with UUID format")
+          it do
+            expect { subject }.to raise_error do |e|
+              expect(e).to be_kind_of(OpenAPIParser::InvalidUUIDFormat)
+              expect(e.message).to end_with("Value: \"#{invalid_uuid}\" is not conformant with UUID format")
+            end
           end
         end
       end
