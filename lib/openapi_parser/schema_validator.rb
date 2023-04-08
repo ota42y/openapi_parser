@@ -12,6 +12,7 @@ require_relative 'schema_validator/any_of_validator'
 require_relative 'schema_validator/all_of_validator'
 require_relative 'schema_validator/one_of_validator'
 require_relative 'schema_validator/nil_validator'
+require_relative 'schema_validator/pass_validator'
 require_relative 'schema_validator/unspecified_type_validator'
 
 class OpenAPIParser::SchemaValidator
@@ -95,7 +96,7 @@ class OpenAPIParser::SchemaValidator
 
     # @return [OpenAPIParser::SchemaValidator::Base, nil]
     def validator(value, schema)
-      return nil_validator if schema.nullable && value.nil? # avoid validation-error when use nullable: true with any_of and all_of and one_of
+      return pass_validator if schema.nullable && value.nil? # avoid validation-error when use nullable: true with any_of and all_of and one_of
       return any_of_validator if schema.any_of
       return all_of_validator if schema.all_of
       return one_of_validator if schema.one_of

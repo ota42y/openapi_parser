@@ -16,6 +16,7 @@ module OpenAPIParser
     @all_of_validator: OpenAPIParser::SchemaValidator::AllOfValidator | nil
     @one_of_validator: OpenAPIParser::SchemaValidator::OneOfValidator | nil
     @nil_validator: OpenAPIParser::SchemaValidator::NilValidator | nil
+    @pass_validator: OpenAPIParser::SchemaValidator::PassValidator | nil
     @unspecified_type_validator: OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator | nil
 
     def self.validate: (Hash[bot, bot] value, OpenAPIParser::Schemas::Schema schema, OpenAPIParser::SchemaValidator::Options options) -> Object
@@ -36,6 +37,7 @@ module OpenAPIParser
     def all_of_validator: -> OpenAPIParser::SchemaValidator::AllOfValidator
     def one_of_validator: -> OpenAPIParser::SchemaValidator::OneOfValidator
     def nil_validator: -> OpenAPIParser::SchemaValidator::NilValidator
+    def pass_validator: -> OpenAPIParser::SchemaValidator::PassValidator
     def unspecified_type_validator: -> OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
 
     module Validatable

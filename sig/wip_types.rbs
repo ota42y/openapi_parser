@@ -43,6 +43,9 @@ end
 class OpenAPIParser::SchemaValidator::NilValidator
 end
 
+class OpenAPIParser::SchemaValidator::PassValidator
+end
+
 class OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
 end
 
