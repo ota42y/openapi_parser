@@ -150,6 +150,26 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
         request_operation.validate_request_body(content_type, body)
       end
 
+      it 'passing when sending nil nested to allOf with nullable that is allowed' do
+        body = {
+            "baskets" => [
+                {
+                    "name"    => "turtles",
+                    "content" => [
+                        {
+                            "name"                  => "Mr. Cat",
+                            "born_at"               => "2019-05-16T11:37:02.160Z",
+                            "description"           => "Cat gentleman",
+                            "nullable_combat_style" => nil,
+                        }
+                    ]
+                },
+            ]
+        }
+
+        request_operation.validate_request_body(content_type, body)
+      end
+
       it 'throws error when unknown attribute nested in allOf' do
         body = {
             "baskets" => [

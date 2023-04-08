@@ -178,6 +178,13 @@ components:
               - "$ref": "#/components/schemas/MichelangeloStyle"
             - nullable: false
               type: object
+        nullable_combat_style:
+          allOf:
+            - anyOf:
+              - "$ref": "#/components/schemas/DonatelloStyle"
+              - "$ref": "#/components/schemas/MichelangeloStyle"
+            - nullable: true
+              type: object
         optional_combat_style:
           anyOf:
             - "$ref": "#/components/schemas/DonatelloStyle"
