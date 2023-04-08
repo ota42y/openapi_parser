@@ -95,6 +95,7 @@ class OpenAPIParser::SchemaValidator
 
     # @return [OpenAPIParser::SchemaValidator::Base, nil]
     def validator(value, schema)
+      return nil_validator if schema.nullable && value.nil? # avoid validation-error when use nullable: true with any_of and all_of and one_of
       return any_of_validator if schema.any_of
       return all_of_validator if schema.all_of
       return one_of_validator if schema.one_of
@@ -156,6 +157,10 @@ class OpenAPIParser::SchemaValidator
 
     def nil_validator
       @nil_validator ||= OpenAPIParser::SchemaValidator::NilValidator.new(self, @coerce_value)
+    end
+
+    def pass_validator
+      @pass_validator ||= OpenAPIParser::SchemaValidator::PassValidator.new(self, @coerce_value)
     end
 
     def unspecified_type_validator
