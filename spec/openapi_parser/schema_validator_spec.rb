@@ -694,6 +694,57 @@ RSpec.describe OpenAPIParser::SchemaValidator do
         end
       end
 
+      context 'with style=form exploded=false array' do
+        let(:params) do
+          {
+            'form_unexploded_array' => 'apple,banana,coconut'
+          }
+        end
+
+        it do
+          expect(subject['form_unexploded_array'][0]).to eq 'apple'
+          expect(params['form_unexploded_array'][0]).to eq 'apple'
+          expect(subject['form_unexploded_array'][1]).to eq 'banana'
+          expect(params['form_unexploded_array'][1]).to eq 'banana'
+          expect(subject['form_unexploded_array'][2]).to eq 'coconut'
+          expect(params['form_unexploded_array'][2]).to eq 'coconut'
+        end
+      end
+
+      context 'with style=spaceDelimited exploded=false array' do
+        let(:params) do
+          {
+            'space_unexploded_array' => '5 10 15'
+          }
+        end
+
+        it do
+          expect(subject['space_unexploded_array'][0]).to eq 5
+          expect(params['space_unexploded_array'][0]).to eq 5
+          expect(subject['space_unexploded_array'][1]).to eq 10
+          expect(params['space_unexploded_array'][1]).to eq 10
+          expect(subject['space_unexploded_array'][2]).to eq 15
+          expect(params['space_unexploded_array'][2]).to eq 15
+        end
+      end
+
+      context 'with style=pipeDelimited exploded=false array' do
+        let(:params) do
+          {
+            'pipe_unexploded_array' => 'first|second|last'
+          }
+        end
+
+        it do
+          expect(subject['pipe_unexploded_array'][0]).to eq 'first'
+          expect(params['pipe_unexploded_array'][0]).to eq 'first'
+          expect(subject['pipe_unexploded_array'][1]).to eq 'second'
+          expect(params['pipe_unexploded_array'][1]).to eq 'second'
+          expect(subject['pipe_unexploded_array'][2]).to eq 'last'
+          expect(params['pipe_unexploded_array'][2]).to eq 'last'
+        end
+      end
+
       context 'nested_array' do
         let(:params) do
           { 'nested_array' => nested_array }
