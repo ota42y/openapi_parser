@@ -8,6 +8,9 @@ class OpenAPIParser::SchemaValidator
       value, err = validate_max_min_items(value, schema)
       return [nil, err] if err
 
+      value, err = validate_unique_items(value, schema)
+      return [nil, err] if err
+
       # array type have an schema in items property
       items_schema = schema.items
       coerced_values = value.map do |v|
@@ -25,6 +28,12 @@ class OpenAPIParser::SchemaValidator
     def validate_max_min_items(value, schema)
       return [nil, OpenAPIParser::MoreThanMaxItems.new(value, schema.object_reference)] if schema.maxItems && value.length > schema.maxItems
       return [nil, OpenAPIParser::LessThanMinItems.new(value, schema.object_reference)] if schema.minItems && value.length < schema.minItems
+
+      [value, nil]
+    end
+
+    def validate_unique_items(value, schema)
+      return [nil, OpenAPIParser::NotUniqueItems.new(value, schema.object_reference)] if schema.uniqueItems && value.length != value.uniq.length
 
       [value, nil]
     end
