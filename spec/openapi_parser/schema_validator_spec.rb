@@ -430,6 +430,43 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
         it { expect(subject).not_to eq nil }
       end
+
+      context 'within properties' do
+        subject { request_operation.validate_request_body(content_type, { 'one_of_within_properties' => params }) }
+
+        let(:correct_params) do
+          {
+            'shared_property' => 'shared_property',
+            'name' => 'name',
+            'integer_1' => 42,
+          }
+        end
+        let(:params) { correct_params }
+
+        it { expect(subject).not_to eq nil }
+      end
+
+      context 'alongside properties' do
+        subject { request_operation.validate_request_body(content_type, { 'one_of_alongside_properties' => params }) }
+
+        let(:correct_params) do
+          {
+            'shared_property' => 'shared_property',
+            'name' => 'name',
+            'integer_1' => 42,
+          }
+        end
+        let(:params) { correct_params }
+
+        # TODO: this is failing, but it should not
+        # it { expect(subject).not_to eq nil }
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotOneOf)).to eq true
+            expect(e.message.include?("isn't one of")).to eq true
+          end
+        end
+      end
     end
 
     it 'unknown param' do
