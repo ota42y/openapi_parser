@@ -258,6 +258,28 @@ paths:
                     mapping:
                       obj1: '#/components/schemas/one_of_object1'
                       obj2: '#/components/schemas/one_of_object2'
+                one_of_within_properties:
+                  additionalProperties: false
+                  required:
+                    - shared_property
+                    - sample_one_of
+                  properties:
+                    shared_property:
+                      type: string
+                    sample_one_of:
+                      oneOf:
+                        - $ref: '#/components/schemas/one_of_object1'
+                        - $ref: '#/components/schemas/one_of_object2'
+                one_of_alongside_properties:
+                  additionalProperties: false
+                  required:
+                    - shared_property
+                  properties:
+                    shared_property:
+                      type: string
+                  oneOf:
+                    - $ref: '#/components/schemas/one_of_object1'
+                    - $ref: '#/components/schemas/one_of_object2'
                 object_1:
                   type: object
                   properties:
