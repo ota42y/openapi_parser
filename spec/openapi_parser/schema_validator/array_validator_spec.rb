@@ -19,7 +19,8 @@ RSpec.describe OpenAPIParser::SchemaValidator::ArrayValidator do
           type: 'array',
           items: { 'type': 'integer' },
           maxItems: 2,
-          minItems: 1
+          minItems: 1,
+          uniqueItems: true
         },
       }
     end
@@ -50,6 +51,18 @@ RSpec.describe OpenAPIParser::SchemaValidator::ArrayValidator do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::LessThanMinItems)
             expect(e.message).to end_with("#{invalid_array} contains fewer than min items")
+          end
+        end
+      end
+
+      context 'unique items breached' do
+        let(:invalid_array) { [1, 1] }
+        let(:params) { { 'ids' => invalid_array } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::NotUniqueItems)
+            expect(e.message).to end_with("#{invalid_array} contains duplicate items")
           end
         end
       end

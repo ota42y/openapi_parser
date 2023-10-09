@@ -272,4 +272,15 @@ module OpenAPIParser
       "#{@reference} #{@value.inspect} contains fewer than min items"
     end
   end
+
+  class NotUniqueItems < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} #{@value.inspect} contains duplicate items"
+    end
+  end
 end
