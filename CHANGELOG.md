@@ -4,6 +4,7 @@
 ### Added
 * Support for uniqueItems in array #154
 * Fix nullable field does not work with allOf, anyOf and oneOf keyword #128
+* drop ruby 2.6 #158
 
 ## 1.0.0 (2021-02-03)
 ### Added
