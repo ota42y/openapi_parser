@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 1.1.0 (2023-10-15)
+### Added
+* Support for uniqueItems in array #154
+* Fix nullable field does not work with allOf, anyOf and oneOf keyword #128
+
 ## 1.0.0 (2021-02-03)
 ### Added
 * Add date-time format validation #126
