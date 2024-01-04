@@ -1,0 +1,704 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: OpenAPI3 Test
+  description: A Sample file
+servers:
+  - url: https://github.com/interagent/committee/
+paths:
+  /characters:
+    summary: summary_text
+    description: desc
+    get:
+      description: get characters
+      parameters:
+        - name: school_name
+          in: query
+          description: school name to filter by
+          required: false
+          style: form
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          in: query
+          description: maximum number of characters
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  string_1:
+                    type: string
+                  array_1:
+                    type: array
+                    items:
+                      type: string
+    post:
+      description: new characters
+      responses:
+        '200':
+          description: correct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_1:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                string_post_1:
+                  type: string
+    delete:
+      description: new characters
+      responses:
+        '200':
+          description: correct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response_1:
+                    type: string
+      parameters:
+        - name: limit
+          in: query
+          description: maximum number of characters
+          required: false
+          schema:
+            type: integer
+            format: int32
+
+  /string_params_coercer:
+    get:
+      description: string_params_coercer test data
+      parameters:
+        - name: integer_1
+          in: query
+          description: integer 32
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: string_1
+          in: query
+          description: string data
+          required: false
+          schema:
+            type: string
+        - name: boolean_1
+          in: query
+          description: boolean data
+          required: false
+          schema:
+            type: boolean
+        - name: number_1
+          in: query
+          description: number data
+          required: false
+          schema:
+            type: 
+              - "number"
+              - "null"
+        - name: datetime_string
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: normal_array
+          in: query
+          description: number data
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: nested_array
+          in: query
+          description: nested_array
+          required: false
+          schema:
+            "$ref": '#/components/schemas/nested_array'
+        - name: any_of
+          in: query
+          description: coercing to any of types
+          required: false
+          schema:
+            anyOf:
+              - type: integer
+              - type: number
+              - type: boolean
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      description: string_params_coercer test data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                any_of:
+                  anyOf:
+                    - type: number
+                    - type: integer
+                    - type: boolean
+                    - type: string
+                nested_array:
+                  "$ref": '#/components/schemas/nested_array'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /validate:
+    get:
+      description: get characters
+      parameters:
+        - name: query_string
+          in: query
+          required: true
+          style: form
+          schema:
+            type: string
+        - name: query_string
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: query_integer_list
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: optional_integer
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: queryString
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: no content
+    post:
+      description: validate test data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              type: object
+              properties:
+                string:
+                  type: string
+                datetime:
+                  type: string
+                  format: date-time
+                integer:
+                  type: integer
+                boolean:
+                  type: boolean
+                number:
+                  type: number
+                array:
+                  type: array
+                  items:
+                    type: integer
+                all_of_data:
+                  allOf:
+                    - $ref: '#/components/schemas/all_of_base'
+                    - type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                all_of_with_nullable:
+                  allOf:
+                    - type: 
+                      - "integer"
+                      - "null"
+                one_of_data:
+                  oneOf:
+                    - $ref: '#/components/schemas/one_of_object1'
+                    - $ref: '#/components/schemas/one_of_object2'
+                one_of_with_discriminator:
+                  oneOf:
+                    - $ref: '#/components/schemas/one_of_object1'
+                    - $ref: '#/components/schemas/one_of_object2'
+                  discriminator:
+                    propertyName: objType
+                    mapping:
+                      obj1: '#/components/schemas/one_of_object1'
+                      obj2: '#/components/schemas/one_of_object2'
+                one_of_with_nullable:
+                  oneOf:
+                    - type: 
+                      - "integer"
+                      - "null"
+                object_1:
+                  type: object
+                  properties:
+                    string_1:
+                      type: 
+                        - "string"
+                        - "null"
+                    integer_1:
+                      type: 
+                        - "integer"
+                        - "null"
+
+                    boolean_1:
+                      type: 
+                       - "boolean"
+                       - "null"
+                    number_1:
+                      type: 
+                        - "number"
+                        - "null"
+                object_2:
+                  type: object
+                  required:
+                    - string_2
+                    - integer_2
+                    - boolean_2
+                    - number_2
+                  properties:
+                    string_2:
+                      type: string
+                    integer_2:
+                      type: integer
+                    boolean_2:
+                      type: boolean
+                    number_2:
+                      type: number
+                required_object:
+                  type: object
+                  required:
+                    - need_object
+                  properties:
+                    need_object:
+                      type: object
+                      required:
+                        - string
+                      properties:
+                        string:
+                          type: string
+                    no_need_object:
+                      type: object
+                      required:
+                        - integer
+                      properties:
+                        integer:
+                          type: integer
+                any_of:
+                  type: array
+                  items:
+                    anyOf:
+                      - type: string
+                      - type: boolean
+                any_of_with_nullable:
+                  anyOf:
+                    - type: 
+                      - "integer"
+                      - "null"
+                unspecified_type: {}
+                enum_string:
+                  type: string
+                  enum:
+                    - a
+                    - b
+                enum_integer:
+                  type: integer
+                  enum:
+                    - 1
+                    - 2
+                enum_number:
+                  type: number
+                  enum:
+                    - 1.0
+                    - 2.1
+                enum_boolean:
+                  type: boolean
+                  enum:
+                    - true
+
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  string:
+                    type: string
+        '204':
+          description: no content
+        default:
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  integer:
+                    type: integer
+    put:
+      description: validate put metodhd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                string:
+                  type: string
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  string:
+                    type: string
+    patch:
+      description: validate patch metodhd
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                integer:
+                  type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  string:
+                    type: string
+
+  /validate_no_parameter:
+    patch:
+      description: validate no body
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  integer:
+                    type: integer
+
+  /validate_response_array:
+    get:
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /path_template_test/no_template:
+    get:
+      responses:
+        '204':
+          description: no content
+  /path_template_test/{template_name}:
+    parameters:
+      - name: template_name
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /path_template_test/{template_name}/nested:
+    parameters:
+      - name: template_name
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /path_template_test/{template_name}/nested/{nested_parameter}:
+    parameters:
+      - name: template_name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: nested_parameter
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /path_template_test/{template_name}/{nested_parameter}:
+    parameters:
+      - name: template_name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: nested_parameter
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /path_template_test/{template_name}/{nested_parameter}/finish:
+    parameters:
+      - name: template_name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: nested_parameter
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /{ambiguous}/no_template:
+    parameters:
+      - name: ambiguous
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '204':
+          description: no content
+  /coerce_query_prams_in_operation_and_path_item:
+    parameters:
+      - name: path_item_integer
+        in: query
+        required: true
+        schema:
+          type: integer
+    get:
+      parameters:
+      - name: operation_integer
+        in: query
+        required: true
+        schema:
+          type: integer
+      description: get characters
+      responses:
+        '204':
+          description: no content
+  /coerce_path_params/{integer}:
+    parameters:
+      - name: integer
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      description: get characters
+      responses:
+        '204':
+          description: no content
+  /coerce_path_params_in_path_item/{integer}:
+    get:
+      description: get characters
+      parameters:
+        - name: integer
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: no content
+  /reference:
+    get:
+      parameters:
+        - "$ref": '#/components/parameters/ref1'
+      responses:
+        default:
+          "$ref": '#/components/responses/ref1'
+
+    post:
+      requestBody:
+        "$ref": '#/components/requestBodies/ref1'
+      responses:
+        default:
+          "$ref": '#/components/responses/ref2'
+
+  /date_time:
+    get:
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date
+                  date-time:
+                    type: string
+                    format: date-time
+              example:
+                date: 2020-05-12
+                date-time: 2020-05-12T00:00:00.00Z
+
+
+components:
+  parameters:
+    ref1:
+      name: integer
+      in: path
+      required: true
+      schema:
+        type: integer
+  requestBodies:
+    ref1:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              integer:
+                type: integer
+  responses:
+    ref1:
+      description: no content
+      content:
+        application/json:
+          schema:
+            "$ref": '#/components/schemas/nested_array'
+    ref2:
+      "$ref": '#/components/responses/ref1'
+  schemas:
+    all_of_base:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+    nested_array:
+      type: array
+      items:
+        type: object
+        properties:
+          update_time:
+            type: string
+            format: date-time
+          per_page:
+            type: integer
+          threshold:
+            type: number
+          nested_coercer_object:
+            type: object
+            properties:
+              update_time:
+                type: string
+                format: date-time
+              threshold:
+                type: number
+          nested_no_coercer_object:
+            type: object
+          nested_coercer_array:
+            type: array
+            items:
+              type: object
+              properties:
+                update_time:
+                  type: string
+                  format: date-time
+                threshold:
+                  type: number
+          nested_no_coercer_array:
+            type: array
+            items:
+              type: object
+    one_of_object1:
+      type: object
+      required:
+        - name
+        - integer_1
+      properties:
+        name:
+          type: string
+        integer_1:
+          type: integer
+      additionalProperties: false
+    one_of_object2:
+      type: object
+      required:
+        - name
+        - string_1
+      properties:
+        name:
+          type: string
+        string_1:
+          type: string
+      additionalProperties: false

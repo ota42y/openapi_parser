@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OpenAPI3 Test
+paths:
+  /local_file_reference:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: normal.yml#/components/schemas/all_of_base
+      responses:
+        '200':
+          description: correct
+          content:
+            application/json:
+              schema:
+                type: object
+  /reference_to_path_item_with_path_param:
+    $ref: 'path-item-ref.yaml#/paths/~1sample~1%7Bsample_id%7D'

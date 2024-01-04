@@ -1,0 +1,245 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Petstore
+  description: A sample API that uses a petstore as an example to demonstrate features in the OpenAPI 3.0 specification
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Swagger API Team
+    email: apiteam@swagger.io
+    url: http://swagger.io
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://petstore.swagger.io/api
+paths:
+  /save_the_pets:
+    post:
+      description: Creates a new pet in the store.  Duplicates are allowed
+      operationId: addPet
+      requestBody:
+        description: Pet to add to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetBaskets'
+      responses:
+        '200':
+          description: pet response
+          content:
+            application/json:
+              schema:
+                type: object
+  /save_the_pets_without_mapping:
+    post:
+      description: Creates a new pet in the store.  Duplicates are allowed
+      operationId: addPet
+      requestBody:
+        description: Pet to add to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetBasketsWithoutMapping'
+      responses:
+        '200':
+          description: pet response
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    PetBaskets:
+      type: object
+      properties:
+        baskets:
+          type: array
+          items:
+            anyOf:
+              - "$ref": "#/components/schemas/SquirrelBasket"
+              - "$ref": "#/components/schemas/CatBasket"
+              - "$ref": "#/components/schemas/TurtleBasket"
+              - "$ref": "#/components/schemas/Dragon"
+              - "$ref": "#/components/schemas/Hydra"
+            discriminator:
+              propertyName: name
+              mapping:
+                cats: "#/components/schemas/CatBasket"
+                squirrels: "#/components/schemas/SquirrelBasket"
+                turtles: "#/components/schemas/TurtleBasket"
+                dragon: "#/components/schemas/Dragon"
+                hydra: "#/components/schemas/Hydra"
+    PetBasketsWithoutMapping:
+      type: object
+      properties:
+        baskets:
+          type: array
+          items:
+            anyOf:
+              - "$ref": "#/components/schemas/SquirrelBasket"
+              - "$ref": "#/components/schemas/CatBasket"
+            discriminator:
+              propertyName: name
+    SquirrelBasket:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Squirrel"
+      additionalProperties: false
+    Squirrel:
+      type: object
+      required:
+        - name
+        - nut_stock
+      properties:
+        name:
+          type: string
+        born_at:
+          format: date-time
+          type: 
+            - "string"
+            - "null"
+        description:
+          type: string
+        nut_stock:
+          type: 
+          - "integer"
+          - "null"
+      additionalProperties: true
+    CatBasket:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Cat"
+      additionalProperties: false
+    Cat:
+      type: object
+      required:
+        - name
+        - milk_stock
+      properties:
+        name:
+          type: string
+        born_at:
+          format: date-time
+          type: 
+            - "string"
+            - "null"
+        description:
+          type: string
+            - "string"
+            - "null"
+        milk_stock:
+          type: 
+            - "integer"
+            - "null"
+      additionalProperties: false
+    TurtleBasket:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/NinjaTurtle"
+      additionalProperties: false
+    NinjaTurtle:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        born_at:
+          format: date-time
+          type:
+            - "string"
+            - "null"
+        description:
+          type:
+            - "string"
+            - "null"
+        required_combat_style:
+          allOf:
+            - anyOf:
+              - "$ref": "#/components/schemas/DonatelloStyle"
+              - "$ref": "#/components/schemas/MichelangeloStyle"
+              type: 
+                - "object"
+                - "null"
+        optional_combat_style:
+          anyOf:
+            - "$ref": "#/components/schemas/DonatelloStyle"
+            - "$ref": "#/components/schemas/MichelangeloStyle"
+    DonatelloStyle:
+      type: 
+        - "object"
+        - "null"
+      properties:
+        bo_color:
+          type: string
+        shuriken_count:
+          type: integer
+      additionalProperties: false
+    MichelangeloStyle:
+      type: 
+        - "object"
+        - "null"
+      properties:
+        nunchaku_color:
+          type: string
+        grappling_hook_length:
+          type: number
+          format: double
+      additionalProperties: false
+    Dragon:
+      allOf:
+      - $ref: '#/components/schemas/DragonBody'
+      - type: object
+        required:
+        - fire_range
+        properties:
+          fire_range:
+            type: integer
+            format: int64
+        additionalProperties: false
+    Hydra:
+      allOf:
+        - $ref: '#/components/schemas/DragonBody'
+        - type: object
+          required:
+            - head_count
+          properties:
+            head_count:
+              type: integer
+              format: int64
+          additionalProperties:
+            type: string
+    DragonBody:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        mass:
+          type: integer
+      additionalProperties: false

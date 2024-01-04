@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OpenAPI3 Test
+paths:
+  /sample/{sample_id}:
+    parameters:
+      - name: sample_id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      description: override here
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                test:
+                  type: string
+              required:
+                - test
+      responses:
+        '204':
+          description: empty
+  /ref-sample:
+    $ref: '#/paths/~1sample~1%7Bsample_id%7D'
+  /ref-sample/relative:
+    $ref: 'path-item-ref-relative.yaml#/paths/~1ref-sample~1relative'

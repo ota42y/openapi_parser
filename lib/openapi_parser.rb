@@ -10,6 +10,7 @@ require 'openapi_parser/config'
 require 'openapi_parser/errors'
 require 'openapi_parser/concern'
 require 'openapi_parser/schemas'
+require 'openapi_parser/schemas_3_1'
 require 'openapi_parser/path_item_finder'
 require 'openapi_parser/request_operation'
 require 'openapi_parser/schema_validator'
@@ -93,7 +94,16 @@ module OpenAPIParser
       end
 
       def load_hash(hash, config:, uri:, schema_registry:)
-        root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
+        case hash["openapi"].split('.')
+        in ['3', '0', _]
+          root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
+        in ['3', '1', _]
+          root = Schemas31::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
+        else
+          # Too avoid breaking changes, we don't raise error here.
+          # raise NotSupportedSpecificationVersionError.new("Unsupported specification version: #{hash['openapi']}")
+          root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
+        end
 
         OpenAPIParser::ReferenceExpander.expand(root, config.strict_reference_validation) if config.expand_reference
 
