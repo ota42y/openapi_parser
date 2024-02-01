@@ -571,12 +571,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           nested_array = params['nested_array']
           first_data = nested_array[0]
           expect(first_data['update_time'].class).to eq DateTime
-
-          if Gem::Version.create(RUBY_VERSION) <= Gem::Version.create('2.4.0')
-            expect(first_data['per_page'].class).to eq Fixnum # rubocop:disable Lint/UnifiedInteger
-          else
-            expect(first_data['per_page'].class).to eq Integer
-          end
+          expect(first_data['per_page'].class).to eq Integer
         end
       end
 
@@ -774,27 +769,15 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           nested_array = params['nested_array']
           first_data = nested_array[0]
           expect(first_data['update_time'].class).to eq String
-          if Gem::Version.create(RUBY_VERSION) <= Gem::Version.create('2.4.0')
-            expect(first_data['per_page'].class).to eq Fixnum # rubocop:disable Lint/UnifiedInteger
-          else
-            expect(first_data['per_page'].class).to eq Integer
-          end
+          expect(first_data['per_page'].class).to eq Integer
 
           second_data = nested_array[1]
           expect(second_data['update_time'].class).to eq String
-          if Gem::Version.create(RUBY_VERSION) <= Gem::Version.create('2.4.0')
-            expect(first_data['per_page'].class).to eq Fixnum # rubocop:disable Lint/UnifiedInteger
-          else
-            expect(first_data['per_page'].class).to eq Integer
-          end
+          expect(first_data['per_page'].class).to eq Integer
           expect(second_data['threshold'].class).to eq Float
 
           third_data = nested_array[2]
-          if Gem::Version.create(RUBY_VERSION) <= Gem::Version.create('2.4.0')
-            expect(first_data['per_page'].class).to eq Fixnum # rubocop:disable Lint/UnifiedInteger
-          else
-            expect(first_data['per_page'].class).to eq Integer
-          end
+          expect(first_data['per_page'].class).to eq Integer
           expect(third_data['threshold'].class).to eq Float
 
           expect(first_data['nested_coercer_object']['update_time'].class).to eq String
