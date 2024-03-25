@@ -75,8 +75,12 @@ class OpenAPIParser::SchemaValidator
         return [value, nil] unless schema.format == 'date'
 
         begin
-          Date.strptime(value, "%Y-%m-%d")
+          parsed_date = Date.iso8601(value)
         rescue ArgumentError
+          return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
+        end
+
+        unless parsed_date.strftime('%Y-%m-%d') == value
           return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
         end
 
