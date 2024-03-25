@@ -214,7 +214,7 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     end
 
     context 'invalid' do
-      context 'error pattern' do
+      context 'arbitrary string' do
         let(:value) { 'not_date' }
         let(:params) { { 'date_str' => value } }
 
@@ -222,6 +222,42 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
             expect(e.message).to end_with("Value: \"not_date\" is not conformant with date format")
+          end
+        end
+      end
+
+      context 'date not compliant with iso8601' do
+        let(:value) { '21-02-12' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"21-02-12\" is not conformant with date format")
+          end
+        end
+      end
+
+      context 'datetime compliant with iso8601' do
+        let(:value) { '2021-02-12T12:59:00.000+09:00' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"2021-02-12T12:59:00.000+09:00\" is not conformant with date format")
+          end
+        end
+      end
+
+      context 'datetime not compliant with iso8601' do
+        let(:value) { '2021-02-12 12:59:00 +0900' }
+        let(:params) { { 'date_str' => value } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"2021-02-12 12:59:00 +0900\" is not conformant with date format")
           end
         end
       end
