@@ -20,8 +20,18 @@ RSpec.describe OpenAPIParser::ParameterValidator do
       end
 
       context 'with optional' do
-        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1 } }
-        it { expect(subject).to eq({ 'optional_integer' => 1, 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'query_string' => 'query' }) }
+        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1, 'query_exploded_integer_list' => [1, 2] } }
+        it { expect(subject).to eq({ 'optional_integer' => 1, 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'query_string' => 'query', 'query_exploded_integer_list' => [1, 2] }) }
+      end
+
+      context 'persist [] suffix if passed in' do
+        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1, 'query_exploded_integer_list[]' => [1, 2] } }
+        it { expect(subject).to eq({ 'optional_integer' => 1, 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'query_string' => 'query', 'query_exploded_integer_list[]' => [1, 2] }) }
+      end
+
+      context 'ignore array param without [] suffix if passed with' do
+        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1, 'query_exploded_integer_list[]' => [1, 2], 'query_exploded_integer_list' => "abc" } }
+        it { expect(subject).to eq({ 'optional_integer' => 1, 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'query_string' => 'query', 'query_exploded_integer_list[]' => [1, 2], 'query_exploded_integer_list' => "abc" }) }
       end
     end
 
@@ -59,6 +69,28 @@ RSpec.describe OpenAPIParser::ParameterValidator do
         context 'optional' do
           let(:params) { { 'query_string' => 'query', 'query_integer_list' => nil, 'queryString' => 'Query' } }
           it { expect { subject }.to raise_error(OpenAPIParser::NotNullError) }
+        end
+      end
+
+      context 'invalid items in exploded list' do
+        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1, 'query_exploded_integer_list' => ["abc", "def"] } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::ValidateError)
+            expect(e.message).to end_with('items expected integer, but received String: "abc"')
+          end
+        end
+      end
+
+      context 'invalid items in exploded list with [] suffix' do
+        let(:params) { { 'query_string' => 'query', 'query_integer_list' => [1, 2], 'queryString' => 'Query', 'optional_integer' => 1, 'query_exploded_integer_list[]' => ["abc", "def"] } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::ValidateError)
+            expect(e.message).to end_with('items expected integer, but received String: "abc"')
+          end
         end
       end
     end
