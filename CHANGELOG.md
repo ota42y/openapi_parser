@@ -1,5 +1,11 @@
 ## Unreleased
+
+## 2.1.0 (2024-04-03)
+### Fixed
+* Add full-date compliant date format validation #164
+
 ## 2.0.0 (2023-10-15)
+
 ### Added
 
 * Support for uniqueItems in array #154
