@@ -24,22 +24,20 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
         request_operation.validate_request_body(content_type, body)
       end
 
-      it 'fails when sending unknown properties' do
+      it 'works when sending unknown properties' do
         body = {
           "baskets" => [
             {
               "name"       => "dragon",
               "mass"       => 10,
               "fire_range" => 20,
-              "speed"      => 20
+              "speed"      => 20,
+              "color"      => 'gold'
             }
           ]
         }
 
-        expect { request_operation.validate_request_body(content_type, body) }.to raise_error do |e|
-          expect(e).to be_kind_of(OpenAPIParser::NotExistPropertyDefinition)
-          expect(e.message).to end_with("does not define properties: speed")
-        end
+        request_operation.validate_request_body(content_type, body)
       end
 
       it 'fails when missing required property' do
@@ -88,7 +86,7 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
         request_operation.validate_request_body(content_type, body)
       end
 
-      it 'fails when sending unknown properties of correct type based on additionalProperties' do
+      it 'fails when sending unknown properties of incorrect type based on additionalProperties' do
         body = {
           "baskets" => [
             {
@@ -100,8 +98,10 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
           ]
         }
 
-        # TODO for now we don't validate on additionalProperites, but this should fail on speed have to be string
-        request_operation.validate_request_body(content_type, body)
+        expect { request_operation.validate_request_body(content_type, body) }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::ValidateError)
+          expect(e.message).to end_with("expected string, but received Integer: 20")
+        end
       end
 
       it 'fails when missing required property' do

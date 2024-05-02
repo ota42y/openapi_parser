@@ -211,7 +211,6 @@ components:
           fire_range:
             type: integer
             format: int64
-        additionalProperties: false
     Hydra:
       allOf:
         - $ref: '#/components/schemas/DragonBody'
@@ -222,6 +221,8 @@ components:
             head_count:
               type: integer
               format: int64
+            mass:
+              type: integer
           additionalProperties:
             type: string
     DragonBody:
@@ -233,4 +234,3 @@ components:
           type: string
         mass:
           type: integer
-      additionalProperties: false
