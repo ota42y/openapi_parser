@@ -5,29 +5,40 @@ module OpenAPIParser
     end
   end
 
+  class ValueError < OpenAPIError
+    def initialize(value, reference, options:)
+      super(reference)
+      @options = options
+      @value = value
+    end
+
+    def redacted_value
+      @options.redact_errors ? '<redacted>' : @value.inspect
+    end
+  end
+
   class MissingReferenceError < OpenAPIError
     def message
       "'#{@reference}' was referenced but could not be found"
     end
   end
 
-  class ValidateError < OpenAPIError
-    def initialize(data, type, reference)
-      super(reference)
-      @data = data
+  class ValidateError < ValueError
+    def initialize(value, type, reference, options:)
+      super(value, reference, options: options)
       @type = type
     end
 
     def message
-      "#{@reference} expected #{@type}, but received #{@data.class}: #{@data.inspect}"
+      "#{@reference} expected #{@type}, but received #{@value.class}: #{redacted_value}"
     end
 
     class << self
       # create ValidateError for SchemaValidator return data
       # @param [Object] value
       # @param [OpenAPIParser::Schemas::Base] schema
-      def build_error_result(value, schema)
-        [nil, OpenAPIParser::ValidateError.new(value, schema.type, schema.object_reference)]
+      def build_error_result(value, schema, options:)
+        [nil, OpenAPIParser::ValidateError.new(value, schema.type, schema.object_reference, options: options)]
       end
     end
   end
@@ -71,149 +82,136 @@ module OpenAPIParser
     end
   end
 
-  class NotExistDiscriminatorPropertyName < OpenAPIError
-    def initialize(key, value, reference)
-      super(reference)
+  class NotExistDiscriminatorPropertyName < ValueError
+    def initialize(key, value, reference, options:)
+      super(value, reference, options: options)
       @key   = key
-      @value = value
     end
 
     def message
-      "discriminator propertyName #{@key} does not exist in value #{@value.inspect} in #{@reference}"
+      "discriminator propertyName #{@key} does not exist in value #{redacted_value} in #{@reference}"
     end
   end
 
-  class NotOneOf < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class NotOneOf < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@value.inspect} isn't one of in #{@reference}"
+      "#{redacted_value} isn't one of in #{@reference}"
     end
   end
 
-  class NotAnyOf < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class NotAnyOf < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@value.inspect} isn't any of in #{@reference}"
+      "#{redacted_value} isn't any of in #{@reference}"
     end
   end
 
-  class NotEnumInclude < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class NotEnumInclude < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@value.inspect} isn't part of the enum in #{@reference}"
+      "#{redacted_value} isn't part of the enum in #{@reference}"
     end
   end
 
-  class LessThanMinimum < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class LessThanMinimum < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} is less than minimum value"
+      "#{@reference} #{redacted_value} is less than minimum value"
     end
   end
 
-  class LessThanExclusiveMinimum < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class LessThanExclusiveMinimum < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} cannot be less than or equal to exclusive minimum value"
+      "#{@reference} #{redacted_value} cannot be less than or equal to exclusive minimum value"
     end
   end
 
-  class MoreThanMaximum < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class MoreThanMaximum < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} is more than maximum value"
+      "#{@reference} #{redacted_value} is more than maximum value"
     end
   end
 
-  class MoreThanExclusiveMaximum < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class MoreThanExclusiveMaximum < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} cannot be more than or equal to exclusive maximum value"
+      "#{@reference} #{redacted_value} cannot be more than or equal to exclusive maximum value"
     end
   end
 
-  class InvalidPattern < OpenAPIError
-    def initialize(value, pattern, reference, example)
-      super(reference)
-      @value = value
+  class InvalidPattern < ValueError
+    def initialize(value, pattern, reference, example, options:)
+      super(value, reference, options: options)
       @pattern = pattern
       @example = example
     end
 
     def message
-      "#{@reference} pattern #{@pattern} does not match value: #{@value.inspect}#{@example ? ", example: #{@example}" : ""}"
+      "#{@reference} pattern #{@pattern} does not match value: #{redacted_value}#{@example ? ", example: #{@example}" : ""}"
     end
   end
 
-  class InvalidEmailFormat < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class InvalidEmailFormat < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} email address format does not match value: #{@value.inspect}"
+      "#{@reference} email address format does not match value: #{redacted_value}"
     end
   end
 
-  class InvalidUUIDFormat < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class InvalidUUIDFormat < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} Value: #{@value.inspect} is not conformant with UUID format"
+      "#{@reference} Value: #{redacted_value} is not conformant with UUID format"
     end
   end
 
-  class InvalidDateFormat < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class InvalidDateFormat < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} Value: #{@value.inspect} is not conformant with date format"
+      "#{@reference} Value: #{redacted_value} is not conformant with date format"
     end
   end
 
-  class InvalidDateTimeFormat < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class InvalidDateTimeFormat < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} Value: #{@value.inspect} is not conformant with date-time format"
+      "#{@reference} Value: #{redacted_value} is not conformant with date-time format"
     end
   end
 
@@ -229,58 +227,53 @@ module OpenAPIParser
     end
   end
 
-  class MoreThanMaxLength < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class MoreThanMaxLength < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} is longer than max length"
+      "#{@reference} #{redacted_value} is longer than max length"
     end
   end
 
-  class LessThanMinLength < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class LessThanMinLength < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} is shorter than min length"
+      "#{@reference} #{redacted_value} is shorter than min length"
     end
   end
 
-  class MoreThanMaxItems < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class MoreThanMaxItems < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} contains more than max items"
+      "#{@reference} #{redacted_value} contains more than max items"
     end
   end
 
-  class LessThanMinItems < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class LessThanMinItems < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} contains fewer than min items"
+      "#{@reference} #{redacted_value} contains fewer than min items"
     end
   end
 
-  class NotUniqueItems < OpenAPIError
-    def initialize(value, reference)
-      super(reference)
-      @value = value
+  class NotUniqueItems < ValueError
+    def initialize(value, reference, options:)
+      super(value, reference, options: options)
     end
 
     def message
-      "#{@reference} #{@value.inspect} contains duplicate items"
+      "#{@reference} #{redacted_value} contains duplicate items"
     end
   end
 end

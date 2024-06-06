@@ -3,11 +3,20 @@ module OpenAPIParser
     def initialize: (untyped reference) -> untyped
   end
 
-  class ValidateError < OpenAPIError
-    def initialize: (untyped data, (String | nil) type, untyped reference) -> untyped
+  class ValueError < OpenAPIError
+    @redact: bool
+
+    @options: SchemaValidator::ResponseValidateOptions
+
+    def initialize: (untyped value, untyped reference, options: SchemaValidator::Options) -> untyped
+    def redacted_value: -> string
+  end
+
+  class ValidateError < ValueError
+    def initialize: (untyped value, (String | nil) type, untyped reference, options: SchemaValidator::Options) -> untyped
     def message: -> String
                
-    def self.build_error_result: (Object value, OpenAPIParser::Schemas::Schema schema) -> [nil, OpenAPIParser::ValidateError]
+    def self.build_error_result: (Object value, OpenAPIParser::Schemas::Schema schema, options: SchemaValidator::Options) -> [nil, OpenAPIParser::ValidateError]
   end
 
   class NotExistDiscriminatorMappedSchema < OpenAPIError
@@ -15,8 +24,8 @@ module OpenAPIParser
     def message: -> String
   end
 
-  class NotExistDiscriminatorPropertyName < OpenAPIError
-    def initialize: (untyped mapped_schema_reference, untyped value, untyped reference) -> untyped
+  class NotExistDiscriminatorPropertyName < ValueError
+    def initialize: (untyped mapped_schema_reference, untyped value, untyped reference, options: SchemaValidator::Options) -> untyped
     def message: -> String
   end
 end

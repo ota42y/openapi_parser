@@ -15,7 +15,7 @@ class OpenAPIParser::SchemaValidator
         coerced, err = validatable.validate_schema(value, s)
         return [coerced, nil] if err.nil?
       end
-      [nil, OpenAPIParser::NotAnyOf.new(value, schema.object_reference)]
+      [nil, OpenAPIParser::NotAnyOf.new(value, schema.object_reference, options: @options)]
     end
   end
 end

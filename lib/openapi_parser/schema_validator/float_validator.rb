@@ -17,7 +17,7 @@ class OpenAPIParser::SchemaValidator
     private
 
       def coercer_and_validate_numeric(value, schema)
-        return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Numeric)
+        return OpenAPIParser::ValidateError.build_error_result(value, schema, options: @options) unless value.kind_of?(Numeric)
 
         value, err = check_enum_include(value, schema)
         return [nil, err] if err

@@ -5,7 +5,7 @@ class OpenAPIParser::SchemaValidator
     # @param [Boolean] parent_all_of true if component is nested under allOf
     # @param [String, nil] discriminator_property_name discriminator.property_name to ignore checking additional_properties
     def coerce_and_validate(value, schema, parent_all_of: false, parent_discriminator_schemas: [], discriminator_property_name: nil)
-      return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Hash)
+      return OpenAPIParser::ValidateError.build_error_result(value, schema, options: @options) unless value.kind_of?(Hash)
 
       properties = schema.properties || {}
 

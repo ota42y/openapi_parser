@@ -18,7 +18,7 @@ class OpenAPIParser::SchemaValidator
       if result
         [value, nil]
       else
-        [nil, OpenAPIParser::NotOneOf.new(value, schema.object_reference)]
+        [nil, OpenAPIParser::NotOneOf.new(value, schema.object_reference, options: @options)]
       end
     end
   end

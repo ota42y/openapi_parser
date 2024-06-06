@@ -11,7 +11,8 @@ module OpenAPIParser
     class ResponseValidateOptions
       attr_reader strict: bool
       attr_reader validate_header: bool
-      def initialize: (?strict: bool, ?validate_header: bool) -> untyped
+      attr_reader redact_errors: bool
+      def initialize: (?strict: bool, ?validate_header: bool, ?redact_errors: bool) -> untyped
     end
   end
 end

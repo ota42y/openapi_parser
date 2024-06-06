@@ -1,8 +1,9 @@
 class OpenAPIParser::SchemaValidator
   class Base
-    def initialize(validatable, coerce_value)
+    def initialize(validatable, coerce_value, options:)
       @validatable = validatable
       @coerce_value = coerce_value
+      @options = options
     end
 
     attr_reader :validatable
@@ -15,7 +16,7 @@ class OpenAPIParser::SchemaValidator
     def validate_discriminator_schema(discriminator, value, parent_discriminator_schemas: [])
       property_name = discriminator.property_name
       if property_name.nil? || !value.key?(property_name)
-        return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
+        return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference, options: @options)]
       end
       mapping_key = value[property_name]
 
