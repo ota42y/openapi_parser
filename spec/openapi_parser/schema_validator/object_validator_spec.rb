@@ -2,7 +2,7 @@ require_relative '../../spec_helper'
 
 RSpec.describe OpenAPIParser::SchemaValidator::ObjectValidator do
   before do
-    @validator = OpenAPIParser::SchemaValidator::ObjectValidator.new(nil, nil, options: OpenAPIParser::SchemaValidator::Options.new)
+    @validator = OpenAPIParser::SchemaValidator::ObjectValidator.new(nil, options: OpenAPIParser::SchemaValidator::Options.new)
     @root = OpenAPIParser.parse(
       'openapi' => '3.0.0',
       'components' => {

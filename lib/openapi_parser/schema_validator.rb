@@ -52,8 +52,6 @@ class OpenAPIParser::SchemaValidator
   def initialize(value, schema, options)
     @value = value
     @schema = schema
-    @coerce_value = options.coerce_value
-    @datetime_coerce_class = options.datetime_coerce_class
     @options = options
   end
 
@@ -120,46 +118,46 @@ class OpenAPIParser::SchemaValidator
     end
 
     def string_validator
-      @string_validator ||= OpenAPIParser::SchemaValidator::StringValidator.new(self, @coerce_value, @datetime_coerce_class, options: @options)
+      @string_validator ||= OpenAPIParser::SchemaValidator::StringValidator.new(self, options: @options)
     end
 
     def integer_validator
-      @integer_validator ||= OpenAPIParser::SchemaValidator::IntegerValidator.new(self, @coerce_value, options: @options)
+      @integer_validator ||= OpenAPIParser::SchemaValidator::IntegerValidator.new(self, options: @options)
     end
 
     def float_validator
-      @float_validator ||= OpenAPIParser::SchemaValidator::FloatValidator.new(self, @coerce_value, options: @options)
+      @float_validator ||= OpenAPIParser::SchemaValidator::FloatValidator.new(self, options: @options)
     end
 
     def boolean_validator
-      @boolean_validator ||= OpenAPIParser::SchemaValidator::BooleanValidator.new(self, @coerce_value, options: @options)
+      @boolean_validator ||= OpenAPIParser::SchemaValidator::BooleanValidator.new(self, options: @options)
     end
 
     def object_validator
-      @object_validator ||= OpenAPIParser::SchemaValidator::ObjectValidator.new(self, @coerce_value, options: @options)
+      @object_validator ||= OpenAPIParser::SchemaValidator::ObjectValidator.new(self, options: @options)
     end
 
     def array_validator
-      @array_validator ||= OpenAPIParser::SchemaValidator::ArrayValidator.new(self, @coerce_value, options: @options)
+      @array_validator ||= OpenAPIParser::SchemaValidator::ArrayValidator.new(self, options: @options)
     end
 
     def any_of_validator
-      @any_of_validator ||= OpenAPIParser::SchemaValidator::AnyOfValidator.new(self, @coerce_value, options: @options)
+      @any_of_validator ||= OpenAPIParser::SchemaValidator::AnyOfValidator.new(self, options: @options)
     end
 
     def all_of_validator
-      @all_of_validator ||= OpenAPIParser::SchemaValidator::AllOfValidator.new(self, @coerce_value, options: @options)
+      @all_of_validator ||= OpenAPIParser::SchemaValidator::AllOfValidator.new(self, options: @options)
     end
 
     def one_of_validator
-      @one_of_validator ||= OpenAPIParser::SchemaValidator::OneOfValidator.new(self, @coerce_value, options: @options)
+      @one_of_validator ||= OpenAPIParser::SchemaValidator::OneOfValidator.new(self, options: @options)
     end
 
     def nil_validator
-      @nil_validator ||= OpenAPIParser::SchemaValidator::NilValidator.new(self, @coerce_value, options: @options)
+      @nil_validator ||= OpenAPIParser::SchemaValidator::NilValidator.new(self, options: @options)
     end
 
     def unspecified_type_validator
-      @unspecified_type_validator ||= OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator.new(self, @coerce_value, options: @options)
+      @unspecified_type_validator ||= OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator.new(self, options: @options)
     end
 end

@@ -6,7 +6,7 @@ class OpenAPIParser::SchemaValidator
     FALSE_VALUES = ['false', '0'].freeze
 
     def coerce_and_validate(value, schema, **_keyword_args)
-      value = coerce(value) if @coerce_value
+      value = coerce(value) if @options.coerce_value
 
       return OpenAPIParser::ValidateError.build_error_result(value, schema, options: @options) unless value.kind_of?(TrueClass) || value.kind_of?(FalseClass)
 

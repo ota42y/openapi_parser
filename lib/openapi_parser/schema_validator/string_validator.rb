@@ -2,11 +2,6 @@ class OpenAPIParser::SchemaValidator
   class StringValidator < Base
     include ::OpenAPIParser::SchemaValidator::Enumable
 
-    def initialize(validator, coerce_value, datetime_coerce_class, options:)
-      super(validator, coerce_value, options: options)
-      @datetime_coerce_class = datetime_coerce_class
-    end
-
     def coerce_and_validate(value, schema, **_keyword_args)
       return OpenAPIParser::ValidateError.build_error_result(value, schema, options: @options) unless value.kind_of?(String)
 
@@ -91,16 +86,16 @@ class OpenAPIParser::SchemaValidator
         return [value, nil] unless schema.format == 'date-time'
 
         begin
-          if @datetime_coerce_class.nil?
+          if @options.datetime_coerce_class.nil?
             # validate only
             DateTime.rfc3339(value)
             [value, nil]
           else
             # validate and coerce
-            if @datetime_coerce_class == Time
+            if @options.datetime_coerce_class == Time
               [DateTime.rfc3339(value).to_time, nil]
             else
-              [@datetime_coerce_class.rfc3339(value), nil]
+              [@options.datetime_coerce_class.rfc3339(value), nil]
             end
           end
         rescue ArgumentError

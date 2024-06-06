@@ -20,7 +20,7 @@ class OpenAPIParser::SchemaValidator
         coerced
       end
 
-      value.each_index { |idx| value[idx] = coerced_values[idx] } if @coerce_value
+      value.each_index { |idx| value[idx] = coerced_values[idx] } if @options.coerce_value
 
       [value, nil]
     end

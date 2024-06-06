@@ -1,8 +1,7 @@
 class OpenAPIParser::SchemaValidator
   class Base
-    def initialize(validatable, coerce_value, options:)
+    def initialize(validatable, options:)
       @validatable = validatable
-      @coerce_value = coerce_value
       @options = options
     end
 

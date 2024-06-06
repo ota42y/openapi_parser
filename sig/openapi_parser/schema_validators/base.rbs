@@ -6,7 +6,7 @@ module OpenAPIParser
 
       attr_reader validatable: OpenAPIParser::SchemaValidator::Validatable
 
-      def initialize: (OpenAPIParser::SchemaValidator::Validatable validatable, (bool | nil) coerce_value, options: Options) -> untyped
+      def initialize: (OpenAPIParser::SchemaValidator::Validatable validatable, options: Options) -> untyped
       def coerce_and_validate: (Object _value, OpenAPIParser::Schemas::Schema _schema, **untyped) -> [untyped, (ValidateError | NotExistDiscriminatorMappedSchema | nil)]
       def validate_discriminator_schema: (
         OpenAPIParser::Schemas::Discriminator discriminator, 
