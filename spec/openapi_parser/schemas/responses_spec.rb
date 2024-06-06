@@ -22,7 +22,7 @@ RSpec.describe OpenAPIParser::Schemas::Responses do
     end
   end
 
-  describe '#validate_response_body(status_code, content_type, params)' do
+  describe '#validate_response_body' do
     subject { responses.validate(response_body, response_validate_options) }
 
     let(:root) { OpenAPIParser.parse(petstore_schema, {}) }
@@ -92,6 +92,28 @@ RSpec.describe OpenAPIParser::Schemas::Responses do
         let(:params) { { 'message' => 'error' } }
 
         it { expect { subject }.to raise_error(OpenAPIParser::NotExistRequiredKey) }
+      end
+    end
+
+    context 'invalid body' do
+      let(:params) { [{ 'id' => 'not-an-integer', 'name' => 'name' }] }
+      let(:status_code) { 200 }
+
+      it do
+        expect { subject }.to raise_error(OpenAPIParser::ValidateError).with_message(
+          '#/components/schemas/Pet/allOf/1/properties/id expected integer, but received String: "not-an-integer"'
+        )
+      end
+
+      context 'when error redaction is enabled' do
+        let(:response_validate_options) {  }
+        let(:response_validate_options) { OpenAPIParser::SchemaValidator::ResponseValidateOptions.new(redact_errors: true) }
+
+        it do
+          expect { subject }.to raise_error(OpenAPIParser::ValidateError).with_message(
+            '#/components/schemas/Pet/allOf/1/properties/id expected integer, but received String: <redacted>'
+          )
+        end
       end
     end
   end
