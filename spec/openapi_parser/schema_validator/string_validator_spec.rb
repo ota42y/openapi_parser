@@ -176,19 +176,34 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     end
 
     context 'correct' do
-      let(:params) { { 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' } }
-      it { expect(subject).to eq({ 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' }) }
+      context 'lowercase' do
+        let(:params) { { 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' } }
+        it { expect(subject).to eq({ 'uuid_str' => 'fd33fb1e-b1f6-401e-994d-8a2545e1aef7' }) }
+      end
+
+      context 'uppercase' do
+        let(:params) { { 'uuid_str' => 'FD33FB1E-B1F6-401E-994D-8A2545E1AEF7' } }
+        it { expect(subject).to eq({ 'uuid_str' => 'FD33FB1E-B1F6-401E-994D-8A2545E1AEF7' }) }
+      end
     end
 
     context 'invalid' do
-      context 'error pattern' do
-        let(:value) { 'not_uuid' }
-        let(:params) { { 'uuid_str' => value } }
+      %w[
+        not_uuid
+        zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz
+        204730d-fd3f5-364b-9aeb-d1372aba0d35
+        204730df_d3f5_364b_9aeb_d1372aba0d35
+        204730df-d3f5-364b-9aeb-d1372aba0d35-deadbeef
+        deadbeef-204730df-d3f5-364b-9aeb-d1372aba0d35
+      ].each do |invalid_uuid|
+        context 'error pattern' do
+          let(:params) { { 'uuid_str' => invalid_uuid } }
 
-        it do
-          expect { subject }.to raise_error do |e|
-            expect(e).to be_kind_of(OpenAPIParser::InvalidUUIDFormat)
-            expect(e.message).to end_with("Value: \"not_uuid\" is not conformant with UUID format")
+          it do
+            expect { subject }.to raise_error do |e|
+              expect(e).to be_kind_of(OpenAPIParser::InvalidUUIDFormat)
+              expect(e.message).to end_with("Value: \"#{invalid_uuid}\" is not conformant with UUID format")
+            end
           end
         end
       end
