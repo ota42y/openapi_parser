@@ -20,17 +20,17 @@ class OpenAPIParser::SchemaValidator
 
         if schema.minimum
           if schema.exclusiveMinimum && value <= schema.minimum
-            raise OpenAPIParser::LessThanExclusiveMinimum.new(value, reference)
+            raise OpenAPIParser::LessThanExclusiveMinimum.new(value, reference, options: @options)
           elsif value < schema.minimum
-            raise OpenAPIParser::LessThanMinimum.new(value, reference)
+            raise OpenAPIParser::LessThanMinimum.new(value, reference, options: @options)
           end
         end
 
         if schema.maximum
           if schema.exclusiveMaximum && value >= schema.maximum
-            raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference)
+            raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference, options: @options)
           elsif value > schema.maximum
-            raise OpenAPIParser::MoreThanMaximum.new(value, reference)
+            raise OpenAPIParser::MoreThanMaximum.new(value, reference, options: @options)
           end
         end
       end

@@ -37,6 +37,10 @@ class OpenAPIParser::Config
     @config.fetch(:validate_header, true)
   end
 
+  def redact_response_errors
+    @config.fetch(:redact_response_errors, false)
+  end
+
   # @return [OpenAPIParser::SchemaValidator::Options]
   def request_validator_options
     @request_validator_options ||= OpenAPIParser::SchemaValidator::Options.new(coerce_value: coerce_value,
@@ -49,7 +53,10 @@ class OpenAPIParser::Config
 
   # @return [OpenAPIParser::SchemaValidator::ResponseValidateOptions]
   def response_validate_options
-    @response_validate_options ||= OpenAPIParser::SchemaValidator::ResponseValidateOptions.
-                                     new(strict: strict_response_validation, validate_header: validate_header)
+    @response_validate_options ||= OpenAPIParser::SchemaValidator::ResponseValidateOptions.new(
+      strict: strict_response_validation,
+      validate_header: validate_header,
+      redact_errors: redact_response_errors
+      )
   end
 end

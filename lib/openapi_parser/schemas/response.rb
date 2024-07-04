@@ -26,7 +26,8 @@ module OpenAPIParser::Schemas
         return nil
       end
 
-      options = ::OpenAPIParser::SchemaValidator::Options.new # response validator not support any options
+      # response validator only supports redacted errors
+      options = ::OpenAPIParser::SchemaValidator::Options.new(redact_errors: response_validate_options.redact_errors)
       media_type.validate_parameter(response_body.response_data, options)
     end
 
