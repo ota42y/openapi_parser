@@ -82,13 +82,13 @@ module OpenAPIParser
 
       def parse_yaml(content)
         # FIXME: when drop ruby 2.5, we should use permitted_classes
-        (Gem::Version.create(RUBY_VERSION) < Gem::Version.create("2.6.0")) ? 
-          Psych.safe_load(content, [Date, Time]) : 
+        (Gem::Version.create(RUBY_VERSION) < Gem::Version.create("2.6.0")) ?
+          Psych.safe_load(content, [Date, Time]) :
           Psych.safe_load(content, permitted_classes: [Date, Time])
       end
 
       def parse_json(content)
-        raise "json content is nil" unless content 
+        raise "json content is nil" unless content
         JSON.parse(content)
       end
 
