@@ -17,7 +17,11 @@ class OpenAPIParser::SchemaValidator
       required_set = schema.required ? schema.required.to_set : Set.new
 
       if @handle_readOnly == :ignore
-        required_set.reject! { |name| schema.properties[name]&.read_only == true }
+        schema.properties.each do |name, property_value|
+          next unless property_value.read_only
+          required_set.delete(name)
+          value.delete(name)
+        end
       end
 
       remaining_keys = value.keys
