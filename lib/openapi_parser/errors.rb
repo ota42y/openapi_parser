@@ -106,14 +106,19 @@ module OpenAPIParser
   end
 
   class NotEnumInclude < OpenAPIError
-    def initialize(value, reference)
+    def initialize(value, reference, allowed_enum_values)
       super(reference)
       @value = value
+      @allowed_enum_values = allowed_enum_values
     end
 
     def message
-      "#{@value.inspect} isn't part of the enum in #{@reference}"
+      "#{@value.inspect} isn't part of the enum in #{@reference} " \
+      "(allowed values are: #{allowed_enum_values})"
     end
+
+    private
+    attr_reader :allowed_enum_values
   end
 
   class LessThanMinimum < OpenAPIError
