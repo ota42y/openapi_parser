@@ -35,7 +35,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-parameterized'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency "steep"
-  # for steep 
+  # for steep + ruby-head
+  spec.add_development_dependency 'base64', '~> 0.2.0'
   # https://github.com/soutaro/steep/issues/466
   spec.add_development_dependency "activesupport", '~> 6.0'
 end
