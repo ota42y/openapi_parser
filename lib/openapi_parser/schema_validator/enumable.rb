@@ -7,7 +7,7 @@ class OpenAPIParser::SchemaValidator
       return [value, nil] unless schema.enum
       return [value, nil] if schema.enum.include?(value)
 
-      [nil, OpenAPIParser::NotEnumInclude.new(value, schema.object_reference)]
+      [nil, OpenAPIParser::NotEnumInclude.new(value, schema.object_reference, schema.enum)]
     end
   end
 end

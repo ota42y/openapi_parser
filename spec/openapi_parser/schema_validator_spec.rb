@@ -286,6 +286,13 @@ RSpec.describe OpenAPIParser::SchemaValidator do
             expect(e.message.start_with?("\"\" isn't part of the enum")).to eq true
           end
         end
+
+        it "includes allowed values" do
+          expect { request_operation.validate_request_body(content_type, { 'enum_string' => 'x' }) }.to raise_error do |e|
+            expect(e.kind_of?(OpenAPIParser::NotEnumInclude)).to eq true
+            expect(e.message).to match(/isn't part of the enum.*\(allowed values are: \[\"a\", \"b\"\]\)/)
+          end
+        end
       end
 
       context 'enum integer' do
