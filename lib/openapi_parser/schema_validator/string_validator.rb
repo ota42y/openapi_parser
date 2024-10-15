@@ -55,10 +55,7 @@ class OpenAPIParser::SchemaValidator
       def validate_email_format(value, schema)
         return [value, nil] unless schema.format == 'email'
 
-        # match? method is good performance.
-        # So when we drop ruby 2.3 support we use match? method because this method add ruby 2.4
-        #return [value, nil] if value.match?(URI::MailTo::EMAIL_REGEXP)
-        return [value, nil] if value.match(URI::MailTo::EMAIL_REGEXP)
+        return [value, nil] if value.match?(URI::MailTo::EMAIL_REGEXP)
 
         return [nil, OpenAPIParser::InvalidEmailFormat.new(value, schema.object_reference)]
       end
