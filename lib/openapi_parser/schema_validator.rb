@@ -54,6 +54,7 @@ class OpenAPIParser::SchemaValidator
     @schema = schema
     @coerce_value = options.coerce_value
     @datetime_coerce_class = options.datetime_coerce_class
+    @handle_readOnly = options.handle_readOnly
   end
 
   # execute validate data
@@ -135,7 +136,7 @@ class OpenAPIParser::SchemaValidator
     end
 
     def object_validator
-      @object_validator ||= OpenAPIParser::SchemaValidator::ObjectValidator.new(self, @coerce_value)
+      @object_validator ||= OpenAPIParser::SchemaValidator::ObjectValidator.new(self, @coerce_value, @handle_readOnly)
     end
 
     def array_validator

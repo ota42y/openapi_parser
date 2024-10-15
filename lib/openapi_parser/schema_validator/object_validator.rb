@@ -1,5 +1,10 @@
 class OpenAPIParser::SchemaValidator
   class ObjectValidator < Base
+
+    def initialize(validator, coerce_value, handle_readOnly)
+      super(validator, coerce_value)
+      @handle_readOnly = handle_readOnly
+    end
     # @param [Hash] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     # @param [Boolean] parent_all_of true if component is nested under allOf
@@ -10,6 +15,15 @@ class OpenAPIParser::SchemaValidator
       properties = schema.properties || {}
 
       required_set = schema.required ? schema.required.to_set : Set.new
+
+      if @handle_readOnly == :ignore
+        schema.properties.each do |name, property_value|
+          next unless property_value.read_only
+          required_set.delete(name)
+          value.delete(name)
+        end
+      end
+
       remaining_keys = value.keys
 
       if schema.discriminator && !parent_discriminator_schemas.include?(schema)
