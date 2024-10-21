@@ -63,7 +63,7 @@ class OpenAPIParser::SchemaValidator
       def validate_uuid_format(value, schema)
         return [value, nil] unless schema.format == 'uuid'
 
-        return [value, nil] if value.match(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
+        return [value, nil] if value.match(/^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$/)
 
         return [nil, OpenAPIParser::InvalidUUIDFormat.new(value, schema.object_reference)]
       end
