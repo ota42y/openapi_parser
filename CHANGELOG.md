@@ -1,5 +1,17 @@
 ## Unreleased
 
+## 2.2.0 (2024-10-23)
+### Fixed
+* support schemas validation in additionalProperties and remove additionalProperties logic from allof
+* suppress method redefined warning
+* add base64 dev dependency for ruby-head compatibility
+* remove no longer needed activesupport dev dep thanks to a fix upstream
+* add dependabot config
+* remove no longer used code for old rubies
+* bump actions/checkout
+* add ruby 3.3 to test matrix
+* fix uuid validation logic (make it more strict)
+
 ## 2.1.0 (2024-04-03)
 ### Fixed
 * Add full-date compliant date format validation #164
