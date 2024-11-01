@@ -89,6 +89,25 @@ options = {
 OpenAPIParser.parse(yaml_file, options)
 ```
 
+### Response error redaction
+Errors generated during response validation often contain sensitive customer information which you may not
+want to appear in logs and exception reporting. You can configure the parser to redact data values from exceptions by 
+passing the `redact_response_errors: true` option.
+
+```ruby
+normal_schema = YAML.safe_load_file('spec/data/normal.yml', permitted_classes: [Date, Time])
+root = OpenAPIParser.parse(normal_schema, redact_response_errors: true)
+op = root.request_operation(:get, '/characters')
+op.validate_response_body(
+  OpenAPIParser::RequestOperation::ValidatableResponseBody.new(
+    200,
+    {'string_1' => 12},
+    { 'Content-Type' => 'application/json' })
+)
+
+# Will raise with OpenAPIParser::ValidateError: #/paths/~1characters/get/responses/200/content/application~1json/schema/properties/string_1 expected string, but received Integer: <redacted>
+```
+
 ## ToDo
 - correct schema checker
 - more detailed validator

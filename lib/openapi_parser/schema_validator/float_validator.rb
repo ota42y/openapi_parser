@@ -7,7 +7,7 @@ class OpenAPIParser::SchemaValidator
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def coerce_and_validate(value, schema, **_keyword_args)
-      value = coerce(value) if @coerce_value
+      value = coerce(value) if @options.coerce_value
 
       return validatable.validate_integer(value, schema) if value.kind_of?(Integer)
 
@@ -17,7 +17,7 @@ class OpenAPIParser::SchemaValidator
     private
 
       def coercer_and_validate_numeric(value, schema)
-        return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Numeric)
+        return OpenAPIParser::ValidateError.build_error_result(value, schema, options: @options) unless value.kind_of?(Numeric)
 
         value, err = check_enum_include(value, schema)
         return [nil, err] if err
