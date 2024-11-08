@@ -517,7 +517,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     let(:http_method) { :get }
     let(:request_path) { '/string_params_coercer' }
     let(:request_operation) { root.request_operation(http_method, request_path) }
-    let(:params) { { key.to_s => value.to_s } }
+    let(:params) { { key.to_s => value&.to_s } }
 
     let(:nested_array) do
       [
@@ -714,6 +714,15 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
     context 'number' do
       let(:key) { 'number_1' }
+
+      context 'null value is valid' do
+        let(:value) { nil }
+
+        it do
+          expect(subject).to eq({ key.to_s => nil })
+          expect(params[key]).to eq(nil)
+        end
+      end
 
       context 'coerces valid values for number param' do
         where(:before_value, :result_value) do
