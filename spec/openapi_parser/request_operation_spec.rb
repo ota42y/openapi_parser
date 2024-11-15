@@ -67,7 +67,7 @@ RSpec.describe OpenAPIParser::RequestOperation do
       let(:content_type) { nil }
       let(:data) { { 'string' => 1 } }
 
-      it { expect(subject).to eq nil }
+      it { expect(subject).to eq true }
     end
 
     context 'with header' do
@@ -155,12 +155,25 @@ RSpec.describe OpenAPIParser::RequestOperation do
 
           context 'not exist content type' do
             let(:content_type) { 'application/xml' }
+            let(:data) { '<something></something>' }
 
             it do
               expect { subject }.to raise_error do |e|
                 expect(e).to be_kind_of(OpenAPIParser::NotExistContentTypeDefinition)
                 expect(e.message).to end_with("response definition does not exist")
               end
+            end
+          end
+
+          context 'with nil content type when the response body is blank' do
+            let(:status_code) { 204 }
+            let(:content_type) { nil }
+            let(:data) { '' }
+            let(:http_method) { :get }
+
+            it do
+              expect { subject }.to_not raise_error
+              expect(subject).to eq true
             end
           end
         end
@@ -189,6 +202,7 @@ RSpec.describe OpenAPIParser::RequestOperation do
 
           context 'not exist content type' do
             let(:content_type) { 'application/xml' }
+            let(:data) { '<something></something>' }
 
             it do
               expect { subject }.to raise_error do |e|
