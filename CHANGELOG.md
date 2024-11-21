@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.2.2 (2024-11-21)
+* make content-type lookup case-insensitive #178
+
 ## 2.2.1 (2024-10-23)
 * revert schemas validation in additionalProperties and remove additionalProperties logic from allof (breaking things for me, will revisit)
 
