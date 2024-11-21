@@ -216,3 +216,24 @@ RSpec.describe OpenAPIParser::RequestOperation do
     end
   end
 end
+
+RSpec.describe OpenAPIParser::RequestOperation::ValidatableResponseBody do
+  describe '#content_type' do
+    context 'when key is lowercase' do
+      let(:headers) { {"content-type" => "application/json"} }
+        it 'finds the key' do
+          expect(
+            OpenAPIParser::RequestOperation::ValidatableResponseBody.new(nil, nil, headers).content_type
+          ).to eq "application/json"
+      end
+    end
+    context 'when key is mixed case' do
+      let(:headers) { {"Content-Type" => "application/json"} }
+        it 'finds the key' do
+          expect(
+            OpenAPIParser::RequestOperation::ValidatableResponseBody.new(nil, nil, headers).content_type
+          ).to eq "application/json"
+      end
+    end
+  end
+end

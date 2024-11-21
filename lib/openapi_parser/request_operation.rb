@@ -78,7 +78,8 @@ class OpenAPIParser::RequestOperation
     end
 
     def content_type
-      headers['Content-Type'].to_s.split(';').first.to_s
+      content_type_key = headers.keys.detect { |k| k.casecmp?('Content-Type') }
+      headers[content_type_key].to_s.split(';').first.to_s
     end
   end
 end
