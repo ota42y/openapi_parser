@@ -18,7 +18,7 @@ class OpenAPIParser::SchemaValidator
           value,
           s,
           :parent_all_of => true,
-          parent_discriminator_schemas: keyword_args[:parent_discriminator_schemas]
+          parent_discriminator_schemas: keyword_args[:parent_discriminator_schemas] || []
         )
 
         if s.type == "object"
