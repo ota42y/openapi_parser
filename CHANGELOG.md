@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.2.3 (2024-12-12)
+* fix parent_discriminator_schema nil from all_of_validator #179
+
 ## 2.2.2 (2024-11-21)
 * make content-type lookup case-insensitive #178
 
