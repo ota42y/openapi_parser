@@ -378,4 +378,24 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
       end
     end
   end
+
+  describe 'validate binary format' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:replace_schema) do
+      {
+        binary: {
+          type: 'string',
+          format: 'binary',
+        },
+      }
+    end
+
+    context 'correct' do
+      context 'arbitrary object except string' do
+        let(:params) { { 'binary' => ['b', 'i', 'n', 'a', 'r', 'y'] } }
+        it { expect(subject).to eq({ 'binary' => ['b', 'i', 'n', 'a', 'r', 'y'] }) }
+      end
+    end
+  end
 end

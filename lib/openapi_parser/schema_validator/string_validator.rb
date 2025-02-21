@@ -8,7 +8,18 @@ class OpenAPIParser::SchemaValidator
     end
 
     def coerce_and_validate(value, schema, **_keyword_args)
-      return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(String)
+      unless value.kind_of?(String)
+        # Skip validation if the format is `binary`, even if the value is not an actual string.
+        # ref: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#data-types
+        if schema.format == 'binary'
+          # TODO:
+          # It would be better to check whether the value is an instance of `Rack::Multipart::UploadFile`,
+          # `ActionDispatch::Http::UploadedFile`, or another similar class.
+          return [value, nil]
+        end
+
+        return OpenAPIParser::ValidateError.build_error_result(value, schema)
+      end
 
       value, err = check_enum_include(value, schema)
       return [nil, err] if err
