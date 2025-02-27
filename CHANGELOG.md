@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.2.4 (2025-02-27)
+* skip validation if format is set to `binary` #180
+
 ## 2.2.3 (2024-12-12)
 * fix parent_discriminator_schema nil from all_of_validator #179
 
