@@ -1,0 +1,196 @@
+---
+path: ".gem_rbs_collection"
+gems:
+- name: activesupport
+  version: '6.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: ast
+  version: '2.4'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: binding_of_caller
+  version: '1.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: concurrent-ruby
+  version: '1.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: date
+  version: '0'
+  source:
+    type: stdlib
+- name: dbm
+  version: '0'
+  source:
+    type: stdlib
+- name: diff-lcs
+  version: '1.5'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: erb
+  version: '0'
+  source:
+    type: stdlib
+- name: fileutils
+  version: '0'
+  source:
+    type: stdlib
+- name: i18n
+  version: '1.10'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: json
+  version: '0'
+  source:
+    type: stdlib
+- name: logger
+  version: '0'
+  source:
+    type: stdlib
+- name: minitest
+  version: '0'
+  source:
+    type: stdlib
+- name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: mutex_m
+  version: '0'
+  source:
+    type: stdlib
+- name: open-uri
+  version: '0'
+  source:
+    type: stdlib
+- name: parallel
+  version: '1.20'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: parser
+  version: '3.2'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: pathname
+  version: '0'
+  source:
+    type: stdlib
+- name: pstore
+  version: '0'
+  source:
+    type: stdlib
+- name: psych
+  version: '0'
+  source:
+    type: stdlib
+- name: rainbow
+  version: '3.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rake
+  version: '13.0'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: regexp_parser
+  version: '2.8'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rspec-parameterized-core
+  version: 1.0.0
+  source:
+    type: rubygems
+- name: rspec-parameterized-table_syntax
+  version: 1.0.1
+  source:
+    type: rubygems
+- name: rubocop
+  version: '1.57'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: rubocop-ast
+  version: '1.30'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: securerandom
+  version: '0'
+  source:
+    type: stdlib
+- name: simplecov
+  version: '0.22'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
+- name: singleton
+  version: '0'
+  source:
+    type: stdlib
+- name: tempfile
+  version: '0'
+  source:
+    type: stdlib
+- name: time
+  version: '0'
+  source:
+    type: stdlib
+- name: uri
+  version: '0'
+  source:
+    type: stdlib
+gemfile_lock_path: Gemfile.lock
