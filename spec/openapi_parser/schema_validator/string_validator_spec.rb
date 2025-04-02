@@ -311,6 +311,30 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
         end
       end
     end
+
+    context 'when allow_empty_date_and_datetime is true' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(allow_empty_date_and_datetime: true) }
+
+      context 'empty string' do
+        let(:params) { { 'date_str' => '' } }
+        it { expect(subject).to eq({ 'date_str' => '' }) }
+      end
+    end
+
+    context 'when allow_empty_date_and_datetime is false' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(allow_empty_date_and_datetime: false) }
+
+      context 'empty string' do
+        let(:params) { { 'date_str' => '' } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+            expect(e.message).to end_with("Value: \"\" is not conformant with date format")
+          end
+        end
+      end
+    end
   end
 
   describe 'validate date-time format' do
@@ -373,6 +397,30 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
           expect { subject }.to raise_error do |e|
             expect(e).to be_kind_of(OpenAPIParser::InvalidDateTimeFormat)
             expect(e.message).to end_with("Value: \"2022-01-01T12:59:00.000\" is not conformant with date-time format")
+          end
+        end
+      end
+    end
+
+    context 'when allow_empty_date_and_datetime is true' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(allow_empty_date_and_datetime: true) }
+
+      context 'empty string' do
+        let(:params) { { 'datetime_str' => '' } }
+        it { expect(subject).to eq({ 'datetime_str' => '' }) }
+      end
+    end
+
+    context 'when allow_empty_date_and_datetime is false' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(allow_empty_date_and_datetime: false) }
+
+      context 'empty string' do
+        let(:params) { { 'datetime_str' => '' } }
+
+        it do
+          expect { subject }.to raise_error do |e|
+            expect(e).to be_kind_of(OpenAPIParser::InvalidDateTimeFormat)
+            expect(e.message).to end_with("Value: \"\" is not conformant with date-time format")
           end
         end
       end
