@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.2.5 (2025-04-05)
+* add allow_empty_date_and_datetime option for more lenient format parsing #182
+
 ## 2.2.4 (2025-02-27)
 * skip validation if format is set to `binary` #180
 
