@@ -53,6 +53,7 @@ class OpenAPIParser::SchemaValidator
   def initialize(value, schema, options)
     @value = value
     @schema = schema
+    @allow_empty_date_and_datetime = options.allow_empty_date_and_datetime
     @coerce_value = options.coerce_value
     @datetime_coerce_class = options.datetime_coerce_class
   end
@@ -120,7 +121,7 @@ class OpenAPIParser::SchemaValidator
     end
 
     def string_validator
-      @string_validator ||= OpenAPIParser::SchemaValidator::StringValidator.new(self, @coerce_value, @datetime_coerce_class)
+      @string_validator ||= OpenAPIParser::SchemaValidator::StringValidator.new(self, @allow_empty_date_and_datetime, @coerce_value, @datetime_coerce_class)
     end
 
     def integer_validator

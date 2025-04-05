@@ -8,10 +8,12 @@ module OpenAPIParser
     alias path_params_options request_validator_options
 
     def initialize: (untyped config) -> untyped
+    def allow_empty_date_and_datetime: -> bool
     def datetime_coerce_class: -> (singleton(Object) | nil)
     def coerce_value: -> bool
     def expand_reference: -> bool
     def strict_response_validation: -> bool
+    def strict_reference_validation: -> bool
     def validate_header: -> bool
     def request_validator_options: -> OpenAPIParser::SchemaValidator::Options
     def response_validate_options: -> OpenAPIParser::SchemaValidator::ResponseValidateOptions

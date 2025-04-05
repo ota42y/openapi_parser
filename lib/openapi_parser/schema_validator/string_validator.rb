@@ -2,8 +2,9 @@ class OpenAPIParser::SchemaValidator
   class StringValidator < Base
     include ::OpenAPIParser::SchemaValidator::Enumable
 
-    def initialize(validator, coerce_value, datetime_coerce_class)
+    def initialize(validator, allow_empty_date_and_datetime, coerce_value, datetime_coerce_class)
       super(validator, coerce_value)
+      @allow_empty_date_and_datetime = allow_empty_date_and_datetime
       @datetime_coerce_class = datetime_coerce_class
     end
 
@@ -80,6 +81,10 @@ class OpenAPIParser::SchemaValidator
       end
 
       def validate_date_format(value, schema)
+        if @allow_empty_date_and_datetime && value.to_s.empty?
+          return [value, nil] if schema.format == 'date'
+        end
+
         return [value, nil] unless schema.format == 'date'
 
         return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)] unless value =~ /^\d{4}-\d{2}-\d{2}$/
@@ -98,6 +103,10 @@ class OpenAPIParser::SchemaValidator
       end
 
       def validate_datetime_format(value, schema)
+        if @allow_empty_date_and_datetime && value.to_s.empty?
+          return [value, nil] if schema.format == 'date-time'
+        end
+
         return [value, nil] unless schema.format == 'date-time'
 
         begin
