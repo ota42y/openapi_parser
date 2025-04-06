@@ -96,6 +96,109 @@ RSpec.describe OpenAPIParser::Schemas::Responses do
     end
   end
 
+  describe 'response_validate_options' do
+    subject { responses.validate(response_body, response_validate_options) }
+
+    let(:root) { OpenAPIParser.parse(normal_schema, {}) }
+
+    let(:paths) { root.paths }
+    let(:path_item) { paths.path['/date_time'] }
+    let(:operation) { path_item.get }
+    let(:responses) { operation.responses }
+    let(:content_type) { 'application/json' }
+    let(:validator_options) { {} }
+    let(:response_validate_options) { OpenAPIParser::SchemaValidator::ResponseValidateOptions.new(**validator_options) }
+
+    let(:response_body) do
+      OpenAPIParser::RequestOperation::ValidatableResponseBody.new(status_code, params, headers)
+    end
+    let(:headers) { { 'Content-Type' => content_type } }
+
+    context 'allow_empty_date_and_datetime' do
+      context 'true' do
+        let(:validator_options) { { allow_empty_date_and_datetime: true } }
+
+        context 'date' do
+          context '200' do
+            let(:params) { { 'date' => '' } }
+            let(:status_code) { 200 }
+
+            it { expect(subject).to eq({ 'date' => '' }) }
+          end
+
+          context '400' do
+            let(:params) { { 'date' => '' } }
+            let(:status_code) { 400 }
+
+            it { expect(subject).to eq(nil) }
+          end
+        end
+
+        context 'date-time' do
+          context '200' do
+            let(:params) { { 'date-time' => '' } }
+            let(:status_code) { 200 }
+
+            it { expect(subject).to eq({ 'date-time' => '' }) }
+          end
+
+          context '400' do
+            let(:params) { { 'date-time' => '' } }
+            let(:status_code) { 400 }
+
+            it { expect(subject).to eq(nil) }
+          end
+        end
+      end
+
+      context 'false' do
+        let(:validator_options) { { allow_empty_date_and_datetime: false } }
+
+        context 'date' do
+          context '200' do
+            let(:params) { { 'date' => '' } }
+            let(:status_code) { 200 }
+
+            it do
+              expect { subject }.to raise_error do |e|
+                expect(e).to be_kind_of(OpenAPIParser::InvalidDateFormat)
+                expect(e.message).to end_with("Value: \"\" is not conformant with date format")
+              end
+            end
+          end
+
+          context '400' do
+            let(:params) { { 'date' => '' } }
+            let(:status_code) { 400 }
+
+            it { expect(subject).to eq(nil) }
+          end
+        end
+
+        context 'date-time' do
+          context '200' do
+            let(:params) { { 'date-time' => '' } }
+            let(:status_code) { 200 }
+
+            it do
+              expect { subject }.to raise_error do |e|
+                expect(e).to be_kind_of(OpenAPIParser::InvalidDateTimeFormat)
+                expect(e.message).to end_with("Value: \"\" is not conformant with date-time format")
+              end
+            end
+          end
+
+          context '400' do
+            let(:params) { { 'date-time' => '' } }
+            let(:status_code) { 400 }
+
+            it { expect(subject).to eq(nil) }
+          end
+        end
+      end
+    end
+  end
+
   describe 'resolve reference init' do
     subject { operation.responses }
 
