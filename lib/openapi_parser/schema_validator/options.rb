@@ -22,9 +22,10 @@ class OpenAPIParser::SchemaValidator
   class ResponseValidateOptions
     # @!attribute [r] strict
     #   @return [Boolean] validate by strict (when not exist definition, raise error)
-    attr_reader :strict, :validate_header
+    attr_reader :strict, :validate_header, :validator_options
 
-    def initialize(strict: false, validate_header: true)
+    def initialize(strict: false, validate_header: true, **validator_options)
+      @validator_options = validator_options
       @strict = strict
       @validate_header = validate_header
     end

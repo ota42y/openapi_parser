@@ -28,7 +28,7 @@ module OpenAPIParser::Schemas
         return true
       end
 
-      options = ::OpenAPIParser::SchemaValidator::Options.new # response validator not support any options
+      options = ::OpenAPIParser::SchemaValidator::Options.new(**response_validate_options.validator_options)
       media_type.validate_parameter(response_body.response_data, options)
     end
 
