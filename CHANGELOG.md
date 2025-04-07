@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.2.6 (2025-04-07)
+* support validator options and allow_empty_date_and_datetime for response validate options #183
+
 ## 2.2.5 (2025-04-05)
 * add allow_empty_date_and_datetime option for more lenient format parsing #182
 
