@@ -11,9 +11,14 @@ class OpenAPIParser::ParameterValidator
       params_key_converted = params.keys.map { |k| [convert_key(k, is_header), k] }.to_h
       parameters_hash.each do |k, v|
         key = params_key_converted[convert_key(k, is_header)]
+        array_key = array_key(k) if !is_header && k.end_with?('[]')
+
         if params.include?(key)
           coerced = v.validate_params(params[key], options)
           params[key] = coerced if options.coerce_value
+        elsif !is_header && params.include?(array_key)
+          coerced = v.validate_params(params[array_key], options)
+          params[array_key] = coerced if options.coerce_value
         elsif v.required
           no_exist_required_key << k
         end
@@ -28,6 +33,10 @@ class OpenAPIParser::ParameterValidator
 
     def convert_key(k, is_header)
       is_header ? k&.downcase : k
+    end
+
+    def array_key(k)
+      k.sub(/\[\]$/, '')
     end
   end
 end
