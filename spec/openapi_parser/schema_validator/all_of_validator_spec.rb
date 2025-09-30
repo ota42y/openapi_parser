@@ -84,11 +84,10 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
             }
           ]
         }
-
         request_operation.validate_request_body(content_type, body)
       end
 
-      it 'fails when sending unknown properties of correct type based on additionalProperties' do
+      it 'allows sending unknown properties of incorrect type based on additionalProperties when nested' do
         body = {
           "baskets" => [
             {

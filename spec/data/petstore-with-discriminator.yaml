@@ -62,6 +62,7 @@ components:
               - "$ref": "#/components/schemas/SquirrelBasket"
               - "$ref": "#/components/schemas/CatBasket"
               - "$ref": "#/components/schemas/TurtleBasket"
+              - "$ref": "#/components/schemas/Rabbit"
               - "$ref": "#/components/schemas/Dragon"
               - "$ref": "#/components/schemas/Hydra"
             discriminator:
@@ -70,6 +71,7 @@ components:
                 cats: "#/components/schemas/CatBasket"
                 squirrels: "#/components/schemas/SquirrelBasket"
                 turtles: "#/components/schemas/TurtleBasket"
+                rabbit: "#/components/schemas/Rabbit"
                 dragon: "#/components/schemas/Dragon"
                 hydra: "#/components/schemas/Hydra"
     PetBasketsWithoutMapping:
@@ -201,6 +203,15 @@ components:
           type: number
           format: double
       additionalProperties: false
+    Rabbit:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+      additionalProperties:
+        type: string
     Dragon:
       allOf:
       - $ref: '#/components/schemas/DragonBody'

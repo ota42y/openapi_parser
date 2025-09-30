@@ -9,7 +9,7 @@ class OpenAPIParser::SchemaValidator
         return [value, nil]
       end
 
-      # if any schema return error, it's not valida all of value
+      # if any schema return error, it's not a valid all_of
       remaining_keys               = value.kind_of?(Hash) ? value.keys : []
       nested_additional_properties = false
       schema.all_of.each do |s|
@@ -32,7 +32,7 @@ class OpenAPIParser::SchemaValidator
         return [nil, err] if err
       end
 
-      # If there are nested additionalProperites, we allow not defined extra properties and lean on the specific
+      # If there are nested additionalProperties, we allow not defined extra properties and lean on the specific
       # additionalProperties validation
       if !nested_additional_properties && !remaining_keys.empty?
         return [nil, OpenAPIParser::NotExistPropertyDefinition.new(remaining_keys, schema.object_reference)]

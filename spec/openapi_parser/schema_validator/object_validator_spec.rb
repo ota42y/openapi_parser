@@ -85,8 +85,7 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
         end
       end
 
-      it 'ignores unknown property key if additionalProperties is defined' do
-        # TODO: we have to use additional properties to do the validation
+      it 'succeeds with unknown property key if additionalProperties is true' do
         body = {
             "baskets" => [
                 {
@@ -105,6 +104,35 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
         }
 
         request_operation.validate_request_body(content_type, body)
+      end
+
+      it 'succeeds with typed additionalProperties with correct type' do
+        body = {
+          "baskets" => [
+            {
+              "name" => "rabbit",
+              "ears" => "floppy"
+            }
+          ]
+        }
+
+        request_operation.validate_request_body(content_type, body)
+      end
+
+      it 'fails with typed additionalProperties with incorrect type' do
+        body = {
+          "baskets" => [
+            {
+              "name" => "rabbit",
+              "ears" => 2
+            }
+          ]
+        }
+
+        expect { request_operation.validate_request_body(content_type, body) }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::ValidateError)
+          expect(e.message).to end_with("additionalProperties expected string, but received Integer: 2")
+        end
       end
 
       it 'throws error when sending nil disallowed in allOf' do
