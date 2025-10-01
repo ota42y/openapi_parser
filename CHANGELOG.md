@@ -1,5 +1,10 @@
 ## Unreleased
 
+## 2.3.0 (2025-10-01)
+* bump base64 dep
+* bump actions checkout dep
+* improvements for additionalProperties validation #187
+
 ## 2.2.6 (2025-04-07)
 * support validator options and allow_empty_date_and_datetime for response validate options #183
 
