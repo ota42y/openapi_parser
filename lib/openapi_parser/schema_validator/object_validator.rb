@@ -10,6 +10,7 @@ class OpenAPIParser::SchemaValidator
       return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Hash)
 
       properties = schema.properties || {}
+      additional_properties = schema.additional_properties
 
       required_set = schema.required ? schema.required.to_set : Set.new
       remaining_keys = value.keys
@@ -29,9 +30,11 @@ class OpenAPIParser::SchemaValidator
         coerced, err = if s
                          remaining_keys.delete(name)
                          validatable.validate_schema(v, s)
+                       # TODO: better handling for parent_all_of with additional_properties
+                       elsif !parent_all_of && additional_properties.is_a?(OpenAPIParser::Schemas::Schema)
+                         remaining_keys.delete(name)
+                         validatable.validate_schema(v, additional_properties)
                        else
-                         # TODO: we need to perform a validation based on schema.additional_properties here, if
-                         # additionalProperties are defined
                          [v, nil]
                        end
 
@@ -43,7 +46,7 @@ class OpenAPIParser::SchemaValidator
 
       remaining_keys.delete(discriminator_property_name) if discriminator_property_name
 
-      if !remaining_keys.empty? && !parent_all_of && !schema.additional_properties
+      if !remaining_keys.empty? && !parent_all_of && !additional_properties
         # If object is nested in all of, the validation is already done in allOf validator. Or if
         # additionalProperties are defined, we will validate using that
         return [nil, OpenAPIParser::NotExistPropertyDefinition.new(remaining_keys, schema.object_reference)]
