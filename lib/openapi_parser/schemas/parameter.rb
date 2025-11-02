@@ -14,7 +14,27 @@ module OpenAPIParser::Schemas
     # @return [Object] coerced or original params
     # @param [OpenAPIParser::SchemaValidator::Options] options
     def validate_params(params, options)
-      ::OpenAPIParser::SchemaValidator.validate(params, schema, options)
+      ::OpenAPIParser::SchemaValidator.validate(deserialize(params), schema, options)
+    end
+
+    # Parameters can be serialized in several different ways
+    # See [documentation](https://swagger.io/docs/specification/serialization/) for details
+    # @return [Object] deserialized version of parameters
+    def deserialize(params)
+      # binding.pry
+      return params unless params.kind_of?(String)
+      if explode == false
+        delimiter = case style
+        when 'spaceDelimited'
+          ' '
+        when 'pipeDelimited'
+          '|'
+        else
+          ','
+        end
+        params = params.split(delimiter)
+      end
+      params
     end
   end
 end
