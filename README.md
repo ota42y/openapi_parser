@@ -27,7 +27,7 @@ request_operation.path_params
 # => {"template_name"=>"1"}
 
 # coerce parameter
-root = OpenAPIParser.parse(YAML.load_file('open_api_3/schema.yml'), {coerce_value: true, datetime_coerce_class: DateTime})
+root = OpenAPIParser.parse(YAML.load_file('open_api_3/schema.yml'), {coerce_value: true, datetime_coerce_class: DateTime, date_coerce_class: Date})
 request_operation = root.request_operation(:get, '/string_params_coercer')
 request_operation.validate_request_parameter({'integer_1' => '1', 'datetime_string' => '2016-04-01T16:00:00+09:00'})
 # => {"integer_1"=>1, "datetime_string"=>#<DateTime: 2016-04-01T16:00:00+09:00 ((2457480j,25200s,0n),+32400s,2299161j)>

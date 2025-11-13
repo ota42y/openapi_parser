@@ -19,6 +19,10 @@ class OpenAPIParser::Config
     @config[:datetime_coerce_class]
   end
 
+  def date_coerce_class
+    @config[:date_coerce_class]
+  end
+
   def coerce_value
     @config[:coerce_value]
   end
@@ -46,6 +50,7 @@ class OpenAPIParser::Config
     @request_validator_options ||= OpenAPIParser::SchemaValidator::Options.new(allow_empty_date_and_datetime: allow_empty_date_and_datetime,
                                                                                coerce_value: coerce_value,
                                                                                datetime_coerce_class: datetime_coerce_class,
+                                                                               date_coerce_class: date_coerce_class,
                                                                                validate_header: validate_header)
   end
 

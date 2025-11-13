@@ -6,6 +6,7 @@ module OpenAPIParser
     @schema: OpenAPIParser::Schemas::Schema
     @coerce_value: bool | nil
     @datetime_coerce_class: singleton(Object) | nil
+    @date_coerce_class: singleton(Object) | nil
     @string_validator: OpenAPIParser::SchemaValidator::StringValidator | nil
     @integer_validator: OpenAPIParser::SchemaValidator::IntegerValidator | nil
     @float_validator: OpenAPIParser::SchemaValidator::FloatValidator | nil
