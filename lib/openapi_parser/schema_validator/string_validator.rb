@@ -101,7 +101,7 @@ class OpenAPIParser::SchemaValidator
           end
         rescue ArgumentError
           # when rfc3339(value) failed
-          [nil, OpenAPIParser::InvalidDateTimeFormat.new(value, schema.object_reference)]
+          [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
         end
       end
 
