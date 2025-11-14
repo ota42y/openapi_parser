@@ -2,10 +2,11 @@ class OpenAPIParser::SchemaValidator
   class StringValidator < Base
     include ::OpenAPIParser::SchemaValidator::Enumable
 
-    def initialize(validator, allow_empty_date_and_datetime, coerce_value, datetime_coerce_class)
+    def initialize(validator, allow_empty_date_and_datetime, coerce_value, datetime_coerce_class, date_coerce_class)
       super(validator, coerce_value)
       @allow_empty_date_and_datetime = allow_empty_date_and_datetime
       @datetime_coerce_class = datetime_coerce_class
+      @date_coerce_class = date_coerce_class
     end
 
     def coerce_and_validate(value, schema, **_keyword_args)
@@ -90,16 +91,18 @@ class OpenAPIParser::SchemaValidator
         return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)] unless value =~ /^\d{4}-\d{2}-\d{2}$/
 
         begin
-          parsed_date = Date.iso8601(value)
+          if @date_coerce_class.nil?
+            # validate only
+            Date.iso8601(value)
+            [value, nil]
+          else
+            # validate and coerce
+            [@date_coerce_class.iso8601(value), nil]
+          end
         rescue ArgumentError
-          return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
+          # when rfc3339(value) failed
+          [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
         end
-
-        unless parsed_date.strftime('%Y-%m-%d') == value
-          return [nil, OpenAPIParser::InvalidDateFormat.new(value, schema.object_reference)]
-        end
-
-        return [value, nil]
       end
 
       def validate_datetime_format(value, schema)

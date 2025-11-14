@@ -6,14 +6,17 @@ class OpenAPIParser::SchemaValidator
     #   @return [Boolean] coerce value option on/off
     # @!attribute [r] datetime_coerce_class
     #   @return [Object, nil] coerce datetime string by this Object class
+    # @!attribute [r] date_coerce_class
+    #   @return [Object, nil] coerce date string by this Object class
     # @!attribute [r] validate_header
     #   @return [Boolean] validate header or not
-    attr_reader :allow_empty_date_and_datetime, :coerce_value, :datetime_coerce_class, :validate_header
+    attr_reader :allow_empty_date_and_datetime, :coerce_value, :datetime_coerce_class, :validate_header, :date_coerce_class
 
-    def initialize(allow_empty_date_and_datetime: false, coerce_value: nil, datetime_coerce_class: nil, validate_header: true)
+    def initialize(allow_empty_date_and_datetime: false, coerce_value: nil, datetime_coerce_class: nil, validate_header: true, date_coerce_class: nil)
       @allow_empty_date_and_datetime = allow_empty_date_and_datetime
       @coerce_value = coerce_value
       @datetime_coerce_class = datetime_coerce_class
+      @date_coerce_class = date_coerce_class
       @validate_header = validate_header
     end
   end

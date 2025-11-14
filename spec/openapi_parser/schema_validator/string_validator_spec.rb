@@ -224,8 +224,24 @@ RSpec.describe OpenAPIParser::SchemaValidator::StringValidator do
     end
 
     context 'correct' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true, date_coerce_class: date_coerce_class) }
       let(:params) { { 'date_str' => '2021-02-12' } }
-      it { expect(subject).to eq({ 'date_str' => '2021-02-12' }) }
+
+      context 'when date_coerce_class is nil' do
+        let(:date_coerce_class) { nil }
+
+        it 'return String' do
+          expect(subject).to eq({ 'date_str' => '2021-02-12' })
+        end
+      end
+
+      context 'when date_coerce_class is Date' do
+        let(:date_coerce_class) { Date }
+
+        it 'return Date' do
+          expect(subject).to eq({ 'date_str' => Date.iso8601('2021-02-12') })
+        end
+      end
     end
 
     context 'invalid' do
