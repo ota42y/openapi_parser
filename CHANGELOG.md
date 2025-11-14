@@ -1,5 +1,8 @@
 ## Unreleased
 
+## 2.3.1 (2025-11-14)
+* add optional date coercion with behavior matching existing datetime coercion
+
 ## 2.3.0 (2025-10-01)
 * bump base64 dep
 * bump actions checkout dep
