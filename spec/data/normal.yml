@@ -208,6 +208,15 @@ paths:
           required: true
           schema:
             type: string
+        - name: query_exploded_integer_list[]
+          in: query
+          description: exploded style of integer list
+          required: false
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
       responses:
         '204':
           description: no content
