@@ -71,7 +71,8 @@ module OpenAPIParser::Schemas
                         :type,
                         :nullable,
                         :example,
-                        :deprecated
+                        :deprecated,
+                        :const
 
     # @!attribute [r] read_only
     #   @return [Boolean, nil]

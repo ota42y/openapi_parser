@@ -8,6 +8,7 @@ require_relative 'spec_validator/rules/nullable_deprecation'
 require_relative 'spec_validator/rules/example_singular_deprecation'
 require_relative 'spec_validator/rules/type_null_in_30'
 require_relative 'spec_validator/rules/webhooks_in_30'
+require_relative 'spec_validator/rules/const_in_30'
 
 module OpenAPIParser
   class SpecViolationError < OpenAPIError
@@ -63,6 +64,7 @@ module OpenAPIParser
           Rules::ExampleSingularDeprecation,
           Rules::TypeNullIn30,
           Rules::WebhooksIn30,
+          Rules::ConstIn30,
         ]
       end
   end

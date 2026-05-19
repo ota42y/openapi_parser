@@ -1034,11 +1034,17 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
 
     context 'when value equals const' do
-      it 'passes validation'
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate('fixed', schema, options)).to eq 'fixed'
+      end
     end
 
     context 'when value does not equal const' do
-      it 'raises a validation error'
+      it 'raises a validation error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate('different', schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError)
+      end
     end
   end
 end
