@@ -98,6 +98,10 @@ module OpenAPIParser::Schemas
     #   @return [Schema, nil]
     openapi_attr_object :items, Schema, reference: true
 
+    # @!attribute [r] prefix_items
+    #   @return [Array<Schema>, nil] tuple-style positional schemas (OpenAPI 3.1+)
+    openapi_attr_list_object :prefix_items, Schema, reference: true, schema_key: :prefixItems
+
     # @!attribute [r] properties
     #   @return [Hash{String => Schema}, nil]
     openapi_attr_hash_object :properties, Schema, reference: true

@@ -11,10 +11,14 @@ class OpenAPIParser::SchemaValidator
       value, err = validate_unique_items(value, schema)
       return [nil, err] if err
 
-      # array type have an schema in items property
+      # 3.1: prefixItems positionally validates the leading N elements.
+      # Elements past the prefix fall back to schema.items, matching how
+      # JSON Schema 2020-12 layers the two keywords.
+      prefix_schemas = schema.prefix_items || []
       items_schema = schema.items
-      coerced_values = value.map do |v|
-        coerced, err = validatable.validate_schema(v, items_schema)
+      coerced_values = value.each_with_index.map do |v, idx|
+        sub_schema = prefix_schemas[idx] || items_schema
+        coerced, err = validatable.validate_schema(v, sub_schema)
         return [nil, err] if err
 
         coerced
