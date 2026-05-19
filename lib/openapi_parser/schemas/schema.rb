@@ -103,6 +103,10 @@ module OpenAPIParser::Schemas
     #   @return [Array<Schema>, nil] tuple-style positional schemas (OpenAPI 3.1+)
     openapi_attr_list_object :prefix_items, Schema, reference: true, schema_key: :prefixItems
 
+    # @!attribute [r] content_schema
+    #   @return [Schema, nil] schema describing the content payload (OpenAPI 3.1+)
+    openapi_attr_object :content_schema, Schema, reference: true, schema_key: :contentSchema
+
     # @!attribute [r] properties
     #   @return [Hash{String => Schema}, nil]
     openapi_attr_hash_object :properties, Schema, reference: true
