@@ -46,6 +46,10 @@ module OpenAPIParser::Schemas
     #   @return [Info, nil]
     openapi_attr_object :info, Info, reference: false
 
+    # @!attribute [r] webhooks
+    #   @return [Hash{String => PathItem}, nil] webhook path items (OpenAPI 3.1+)
+    openapi_attr_hash_object :webhooks, PathItem, reference: true
+
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
