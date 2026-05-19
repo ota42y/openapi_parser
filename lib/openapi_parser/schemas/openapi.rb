@@ -50,6 +50,10 @@ module OpenAPIParser::Schemas
     #   @return [Hash{String => PathItem}, nil] webhook path items (OpenAPI 3.1+)
     openapi_attr_hash_object :webhooks, PathItem, reference: true
 
+    # @!attribute [r] json_schema_dialect
+    #   @return [String, nil] dialect URI for embedded JSON Schemas (OpenAPI 3.1+)
+    openapi_attr_value :json_schema_dialect, schema_key: :jsonSchemaDialect
+
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
