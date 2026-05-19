@@ -73,7 +73,8 @@ module OpenAPIParser::Schemas
                         :example,
                         :deprecated,
                         :const,
-                        :contentMediaType
+                        :contentMediaType,
+                        :contentEncoding
 
     # @!attribute [r] read_only
     #   @return [Boolean, nil]
