@@ -22,18 +22,33 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::PathItemsIn30' do
   end
 
   context 'with a 3.1 document using components.pathItems' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_with_path_items('3.1.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a 3.0 document using components.pathItems' do
-    it 'reports one violation pointing at #/components/pathItems'
+    it 'reports one violation pointing at #/components/pathItems' do
+      root = doc_with_path_items('3.0.0')
+      violations = run_rule_for(root)
+      expect(violations.size).to eq 1
+      expect(violations.first.path).to eq '#/components/pathItems'
+      expect(violations.first.rule_name).to eq :path_items_in30
+    end
   end
 
   context 'with a 3.0 document without components.pathItems' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_with_path_items('3.0.0', include_path_items: false)
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with an :unknown version document using components.pathItems' do
-    it 'reports no violation (rule skipped)'
+    it 'reports no violation (rule skipped)' do
+      root = doc_with_path_items('4.0.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 end
