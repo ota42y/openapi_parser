@@ -157,4 +157,17 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('webhooks_31.yaml')
     end
   end
+  describe 'const (JSON Schema 2020-12 keyword new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('const_30.yaml', [:const_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('const_30.yaml', [:const_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('const_31.yaml')
+    end
+  end
 end

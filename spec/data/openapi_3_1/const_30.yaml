@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Webhook Envelope API
+  version: '1.0'
+paths:
+  /events:
+    post:
+      summary: Receive an event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Envelope'
+      responses:
+        '202':
+          description: Accepted
+components:
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        # `const` is a JSON Schema 2020-12 keyword adopted by 3.1; 3.0 has no
+        # equivalent, so its use on a 3.0 document is a spec violation.
+        version:
+          type: string
+          const: '2020-12'
