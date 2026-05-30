@@ -1,0 +1,20 @@
+openapi: 3.1.0
+info:
+  title: Billing API
+  version: '1.0'
+paths:
+  /invoices:
+    get:
+      summary: List invoices
+      responses:
+        '200':
+          description: OK
+# `webhooks` is a legitimate root-level field in 3.1, so no violation is
+# expected here.
+webhooks:
+  invoicePaid:
+    post:
+      summary: Notify that an invoice was paid
+      responses:
+        '200':
+          description: Acknowledged
