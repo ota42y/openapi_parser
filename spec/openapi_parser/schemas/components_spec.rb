@@ -30,15 +30,23 @@ RSpec.describe OpenAPIParser::Schemas::Components do
     subject { root.find_object('#/components') }
 
     context 'with a literal Path Item Object entry' do
-      it 'is parsed as a PathItem'
+      it 'is parsed as a PathItem' do
+        expect(subject.path_items['LiteralPathItem'].class).to eq OpenAPIParser::Schemas::PathItem
+      end
     end
 
     context 'with a $ref entry pointing to another Path Item' do
-      it 'resolves to the referenced Path Item'
+      it 'resolves to the referenced Path Item' do
+        expect(subject.path_items['ReferencedPathItem'].class).to eq OpenAPIParser::Schemas::PathItem
+      end
     end
 
     context 'referenced from a path via $ref' do
-      it 'is expanded into the path'
+      it 'is expanded into the path' do
+        path_item = root.paths.path['/books']
+        expect(path_item.class).to eq OpenAPIParser::Schemas::PathItem
+        expect(path_item.get.summary).to eq 'Get something'
+      end
     end
   end
 end
