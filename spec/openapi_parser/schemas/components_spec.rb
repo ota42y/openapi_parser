@@ -24,4 +24,21 @@ RSpec.describe OpenAPIParser::Schemas::Components do
       expect(subject.headers['X-Rate-Limit-Limit'].class).to eq OpenAPIParser::Schemas::Header
     end
   end
+
+  describe 'pathItems (OpenAPI 3.1)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_1/components_path_items.yaml'), {}) }
+    subject { root.find_object('#/components') }
+
+    context 'with a literal Path Item Object entry' do
+      it 'is parsed as a PathItem'
+    end
+
+    context 'with a $ref entry pointing to another Path Item' do
+      it 'resolves to the referenced Path Item'
+    end
+
+    context 'referenced from a path via $ref' do
+      it 'is expanded into the path'
+    end
+  end
 end
