@@ -74,6 +74,20 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
     end
   end
 
+  describe 'prefixItems (JSON Schema tuple keyword new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('prefix_items_30.yaml', [:prefix_items_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('prefix_items_30.yaml', [:prefix_items_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('prefix_items_31.yaml')
+    end
+  end
+
   describe 'jsonSchemaDialect (3.1 root-level addition)' do
     it 'warns on the version-mismatched document under :warn' do
       expect_mismatch_warns('json_schema_dialect_30.yaml', [:json_schema_dialect_in30])
