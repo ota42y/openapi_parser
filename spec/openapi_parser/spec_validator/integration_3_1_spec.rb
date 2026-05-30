@@ -240,4 +240,18 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('dynamic_anchor_31.yaml')
     end
   end
+
+  describe 'contentSchema (JSON Schema 2020-12 annotation new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('content_schema_30.yaml', [:content_schema_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('content_schema_30.yaml', [:content_schema_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('content_schema_31.yaml')
+    end
+  end
 end
