@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: Profile API
+  version: '1.0'
+paths:
+  /profiles/{id}:
+    get:
+      summary: Fetch a profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        # 3.0 form leaking into a 3.1 document: `nullable` was removed in 3.1
+        # in favor of `type: [..., "null"]`, so its presence is a violation.
+        nickname:
+          type: string
+          nullable: true

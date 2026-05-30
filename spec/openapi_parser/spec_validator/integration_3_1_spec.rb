@@ -73,4 +73,18 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('exclusive_maximum_31.yaml')
     end
   end
+
+  describe 'nullable (3.0 keyword removed in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('nullable_31.yaml', [:nullable_deprecation])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('nullable_31.yaml', [:nullable_deprecation])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('nullable_30.yaml')
+    end
+  end
 end

@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Profile API
+  version: '1.0'
+paths:
+  /profiles/{id}:
+    get:
+      summary: Fetch a profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+components:
+  schemas:
+    Profile:
+      type: object
+      properties:
+        # 3.0 form: `nullable: true` is the legitimate way to allow null in
+        # 3.0, so no violation is expected on a 3.0 document.
+        nickname:
+          type: string
+          nullable: true
