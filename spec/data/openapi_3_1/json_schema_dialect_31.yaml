@@ -1,0 +1,14 @@
+openapi: 3.1.0
+# `jsonSchemaDialect` is a legitimate root-level field in 3.1, so no
+# violation is expected here.
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info:
+  title: Inventory API
+  version: '1.0'
+paths:
+  /items:
+    get:
+      summary: List items
+      responses:
+        '200':
+          description: OK

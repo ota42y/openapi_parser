@@ -74,6 +74,20 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
     end
   end
 
+  describe 'jsonSchemaDialect (3.1 root-level addition)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('json_schema_dialect_30.yaml', [:json_schema_dialect_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('json_schema_dialect_30.yaml', [:json_schema_dialect_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('json_schema_dialect_31.yaml')
+    end
+  end
+
   describe 'type as an Array of names (3.1 form rejected by 3.0)' do
     it 'warns on the version-mismatched document under :warn' do
       expect_mismatch_warns('type_array_30.yaml', [:type_array_in30])
