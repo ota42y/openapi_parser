@@ -24,5 +24,9 @@ module OpenAPIParser::Schemas
     # @!attribute [r] headers
     #   @return [Hash{String => Header}, nil] header objects
     openapi_attr_hash_object :headers, Header, reference: true
+
+    # @!attribute [r] path_items
+    #   @return [Hash{String => PathItem}, nil] path item objects (OpenAPI 3.1+)
+    openapi_attr_hash_object :path_items, PathItem, reference: true, schema_key: :pathItems
   end
 end

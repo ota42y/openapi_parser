@@ -43,5 +43,16 @@ RSpec.describe OpenAPIParser::Expandable do
         expect(subject.find_object(invalid_reference)).to be_nil
       end
     end
+
+    context 'a path that $refs into components.pathItems (OpenAPI 3.1)' do
+      it 'resolves the path item instead of raising MissingReferenceError' do
+        root = OpenAPIParser.parse(
+          load_yaml_file('./spec/data/openapi_3_1/components_path_items.yaml'),
+          strict_reference_validation: true,
+        )
+        expect(root.paths.path['/books'].class).to eq OpenAPIParser::Schemas::PathItem
+        expect(root.request_operation(:get, '/books').class).to eq OpenAPIParser::RequestOperation
+      end
+    end
   end
 end

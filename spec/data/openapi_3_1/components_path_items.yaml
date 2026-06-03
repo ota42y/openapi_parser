@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: Components.pathItems fixture
+  version: '1.0'
+paths:
+  /books:
+    $ref: '#/components/pathItems/LiteralPathItem'
+components:
+  pathItems:
+    LiteralPathItem:
+      get:
+        summary: Get something
+        responses:
+          '200':
+            description: OK
+    ReferencedPathItem:
+      $ref: '#/components/pathItems/LiteralPathItem'
