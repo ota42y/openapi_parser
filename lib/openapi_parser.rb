@@ -100,6 +100,8 @@ module OpenAPIParser
           path_item.set_path_item_to_operation
         end
 
+        OpenAPIParser::SpecValidator.run!(root, policy: config.strict_specification_version)
+
         root
       end
   end
