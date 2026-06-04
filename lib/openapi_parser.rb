@@ -15,6 +15,7 @@ require 'openapi_parser/request_operation'
 require 'openapi_parser/schema_validator'
 require 'openapi_parser/parameter_validator'
 require 'openapi_parser/reference_expander'
+require 'openapi_parser/spec_validator'
 
 module OpenAPIParser
   class << self
