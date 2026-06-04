@@ -41,6 +41,11 @@ class OpenAPIParser::Config
     @config.fetch(:strict_reference_validation, false)
   end
 
+  # @return [Symbol] :silent / :warn / :raise
+  def strict_specification_version
+    @config.fetch(:strict_specification_version, :silent)
+  end
+
   def validate_header
     @config.fetch(:validate_header, true)
   end

@@ -21,6 +21,19 @@ module OpenAPIParser::Schemas
     #   @return [String, nil]
     openapi_attr_values :openapi
 
+    # @return [Symbol] :v3_0 / :v3_1 / :unknown
+    def openapi_version
+      return :unknown unless openapi.is_a?(String)
+
+      if openapi.start_with?('3.0')
+        :v3_0
+      elsif openapi.start_with?('3.1')
+        :v3_1
+      else
+        :unknown
+      end
+    end
+
     # @!attribute [r] paths
     #   @return [Paths, nil]
     openapi_attr_object :paths, Paths, reference: false
