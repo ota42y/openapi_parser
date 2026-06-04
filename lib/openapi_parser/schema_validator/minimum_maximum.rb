@@ -6,7 +6,8 @@ class OpenAPIParser::SchemaValidator
     def check_minimum_maximum(value, schema)
       has_min_or_max = schema.minimum || schema.maximum
       has_numeric_exclusive_min = schema.exclusiveMinimum.is_a?(Numeric)
-      return [value, nil] unless has_min_or_max || has_numeric_exclusive_min
+      has_numeric_exclusive_max = schema.exclusiveMaximum.is_a?(Numeric)
+      return [value, nil] unless has_min_or_max || has_numeric_exclusive_min || has_numeric_exclusive_max
 
       validate(value, schema)
       [value, nil]
@@ -33,8 +34,13 @@ class OpenAPIParser::SchemaValidator
           end
         end
 
+        # 3.1: standalone numeric upper bound, mirror of exclusiveMinimum.
+        if schema.exclusiveMaximum.is_a?(Numeric) && value >= schema.exclusiveMaximum
+          raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference)
+        end
+
         if schema.maximum
-          if schema.exclusiveMaximum && value >= schema.maximum
+          if schema.exclusiveMaximum == true && value >= schema.maximum
             raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference)
           elsif value > schema.maximum
             raise OpenAPIParser::MoreThanMaximum.new(value, reference)

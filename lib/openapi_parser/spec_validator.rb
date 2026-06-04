@@ -1,6 +1,7 @@
 require_relative 'spec_validator/spec_violation'
 require_relative 'spec_validator/rule'
 require_relative 'spec_validator/rules/exclusive_minimum'
+require_relative 'spec_validator/rules/exclusive_maximum'
 
 module OpenAPIParser
   class SpecViolationError < OpenAPIError
@@ -49,6 +50,7 @@ module OpenAPIParser
       def rules
         [
           Rules::ExclusiveMinimum,
+          Rules::ExclusiveMaximum,
         ]
       end
   end
