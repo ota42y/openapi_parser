@@ -28,5 +28,16 @@ RSpec.describe OpenAPIParser::Config do
         expect(config.strict_specification_version).to eq :raise
       end
     end
+
+    context 'when set to an unrecognized value' do
+      it 'warns and falls back to :silent' do
+        config = OpenAPIParser::Config.new(
+          strict_reference_validation: false,
+          strict_specification_version: :bogus,
+        )
+        expect { expect(config.strict_specification_version).to eq :silent }
+          .to output(/unknown strict_specification_version.*:bogus.*falling back to :silent/).to_stderr
+      end
+    end
   end
 end

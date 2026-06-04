@@ -41,9 +41,16 @@ class OpenAPIParser::Config
     @config.fetch(:strict_reference_validation, false)
   end
 
+  KNOWN_STRICT_SPECIFICATION_VERSION_VALUES = %i[silent warn raise].freeze
+
   # @return [Symbol] :silent / :warn / :raise
   def strict_specification_version
-    @config.fetch(:strict_specification_version, :silent)
+    value = @config.fetch(:strict_specification_version, :silent)
+    unless KNOWN_STRICT_SPECIFICATION_VERSION_VALUES.include?(value)
+      warn("[OpenAPIParser] unknown strict_specification_version: #{value.inspect}, falling back to :silent")
+      return :silent
+    end
+    value
   end
 
   def validate_header
