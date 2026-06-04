@@ -109,6 +109,32 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
     end
   end
 
+  describe 'validate integer 3.1-style numeric exclusiveMinimum value' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:params) { {} }
+    let(:replace_schema) do
+      {
+        my_integer: {
+          type: 'integer',
+          exclusiveMinimum: 10,
+        },
+      }
+    end
+
+    context 'with a value strictly greater than exclusiveMinimum' do
+      it 'passes validation'
+    end
+
+    context 'with a value equal to exclusiveMinimum' do
+      it 'raises LessThanExclusiveMinimum'
+    end
+
+    context 'with a value less than exclusiveMinimum' do
+      it 'raises LessThanExclusiveMinimum'
+    end
+  end
+
   describe 'validate integer exclusiveMinimum value' do
     subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
 

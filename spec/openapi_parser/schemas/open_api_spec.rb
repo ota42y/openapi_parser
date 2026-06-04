@@ -21,4 +21,38 @@ RSpec.describe OpenAPIParser::Schemas::OpenAPI do
   describe '#components' do
     it { expect(subject.components).not_to eq nil }
   end
+
+  describe '#openapi_version' do
+    context 'with a typical 3.0.x version like "3.0.0"' do
+      it 'returns :v3_0'
+    end
+
+    context 'with a typical 3.1.x version like "3.1.0"' do
+      it 'returns :v3_1'
+    end
+
+    context 'with a minor-only version "3.0"' do
+      it 'returns :v3_0'
+    end
+
+    context 'with a minor-only version "3.1"' do
+      it 'returns :v3_1'
+    end
+
+    context 'with a prerelease tag like "3.0.0-rc1"' do
+      it 'returns :v3_0 by prefix match'
+    end
+
+    context 'with an unknown major version like "4.0.0"' do
+      it 'returns :unknown'
+    end
+
+    context 'when the openapi field is missing' do
+      it 'returns :unknown'
+    end
+
+    context 'with a non-string openapi field' do
+      it 'returns :unknown'
+    end
+  end
 end
