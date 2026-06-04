@@ -1,0 +1,47 @@
+module OpenAPIParser
+  class SpecViolationError < OpenAPIError
+    @violations: Array[OpenAPIParser::SpecValidator::SpecViolation]
+    attr_reader violations: Array[OpenAPIParser::SpecValidator::SpecViolation]
+
+    def initialize: (Array[OpenAPIParser::SpecValidator::SpecViolation] violations) -> void
+    def message: () -> String
+  end
+
+  class SpecValidator
+    @root: OpenAPIParser::Schemas::OpenAPI
+    @version: (:v3_0 | :v3_1 | :unknown)
+
+    def self.run: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecViolation]
+    def self.run!: (OpenAPIParser::Schemas::OpenAPI root, policy: (:silent | :warn | :raise)) -> void
+    def initialize: (OpenAPIParser::Schemas::OpenAPI root) -> void
+    def run: () -> Array[SpecViolation]
+    private def rules: () -> Array[singleton(Rule)]
+
+    class SpecViolation < ::Struct[untyped]
+      attr_accessor message: String
+      attr_accessor path: String
+      attr_accessor rule_name: Symbol
+      def to_s: () -> String
+    end
+
+    class Rule
+      @version: (:v3_0 | :v3_1 | :unknown)
+      attr_reader version: (:v3_0 | :v3_1 | :unknown)
+
+      def self.rule_name: () -> Symbol
+      def initialize: ((:v3_0 | :v3_1 | :unknown) version) -> void
+      def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecViolation]
+      private def violation: (path: String, message: String) -> SpecViolation
+      private def each_schema: (untyped root) ?{ (untyped) -> void } -> untyped
+      private def walk: (untyped node, Hash[Integer, bool] visited) { (untyped) -> void } -> void
+    end
+
+    module Rules
+      class ExclusiveMinimum < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+    end
+  end
+
+  SpecViolation: singleton(SpecValidator::SpecViolation)
+end

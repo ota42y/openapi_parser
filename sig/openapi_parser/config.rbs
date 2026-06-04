@@ -15,6 +15,7 @@ module OpenAPIParser
     def expand_reference: -> bool
     def strict_response_validation: -> bool
     def strict_reference_validation: -> bool
+    def strict_specification_version: -> (:silent | :warn | :raise)
     def validate_header: -> bool
     def request_validator_options: -> OpenAPIParser::SchemaValidator::Options
     def response_validate_options: -> OpenAPIParser::SchemaValidator::ResponseValidateOptions
