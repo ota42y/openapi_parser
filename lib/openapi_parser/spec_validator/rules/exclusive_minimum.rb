@@ -12,7 +12,7 @@ module OpenAPIParser
 
             case version
             when :v3_0
-              if value.is_a?(Numeric) && !value.is_a?(TrueClass) && !value.is_a?(FalseClass)
+              if value.is_a?(Numeric)
                 violations << violation(
                   path: schema.object_reference,
                   message: 'numeric exclusiveMinimum is a 3.1-only form; in 3.0 use a Boolean modifier paired with `minimum`',
