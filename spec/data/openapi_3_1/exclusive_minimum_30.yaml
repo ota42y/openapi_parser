@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: Membership API
+  version: '1.0'
+paths:
+  /members:
+    post:
+      summary: Register a member
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Member:
+      type: object
+      properties:
+        age:
+          type: integer
+          exclusiveMinimum: 0

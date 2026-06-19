@@ -4,8 +4,10 @@ class OpenAPIParser::SchemaValidator
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def check_minimum_maximum(value, schema)
-      include_min_max = schema.minimum || schema.maximum
-      return [value, nil] unless include_min_max
+      has_min_or_max = schema.minimum || schema.maximum
+      has_numeric_exclusive_min = schema.exclusiveMinimum.is_a?(Numeric)
+      has_numeric_exclusive_max = schema.exclusiveMaximum.is_a?(Numeric)
+      return [value, nil] unless has_min_or_max || has_numeric_exclusive_min || has_numeric_exclusive_max
 
       validate(value, schema)
       [value, nil]
@@ -18,16 +20,27 @@ class OpenAPIParser::SchemaValidator
       def validate(value, schema)
         reference = schema.object_reference
 
+        # 3.1: exclusiveMinimum is a standalone numeric bound.
+        if schema.exclusiveMinimum.is_a?(Numeric) && value <= schema.exclusiveMinimum
+          raise OpenAPIParser::LessThanExclusiveMinimum.new(value, reference)
+        end
+
         if schema.minimum
-          if schema.exclusiveMinimum && value <= schema.minimum
+          # 3.0: exclusiveMinimum is a Boolean modifier on `minimum`.
+          if schema.exclusiveMinimum == true && value <= schema.minimum
             raise OpenAPIParser::LessThanExclusiveMinimum.new(value, reference)
           elsif value < schema.minimum
             raise OpenAPIParser::LessThanMinimum.new(value, reference)
           end
         end
 
+        # 3.1: standalone numeric upper bound, mirror of exclusiveMinimum.
+        if schema.exclusiveMaximum.is_a?(Numeric) && value >= schema.exclusiveMaximum
+          raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference)
+        end
+
         if schema.maximum
-          if schema.exclusiveMaximum && value >= schema.maximum
+          if schema.exclusiveMaximum == true && value >= schema.maximum
             raise OpenAPIParser::MoreThanExclusiveMaximum.new(value, reference)
           elsif value > schema.maximum
             raise OpenAPIParser::MoreThanMaximum.new(value, reference)

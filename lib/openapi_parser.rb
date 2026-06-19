@@ -15,6 +15,7 @@ require 'openapi_parser/request_operation'
 require 'openapi_parser/schema_validator'
 require 'openapi_parser/parameter_validator'
 require 'openapi_parser/reference_expander'
+require 'openapi_parser/spec_validator'
 
 module OpenAPIParser
   class << self
@@ -98,6 +99,8 @@ module OpenAPIParser
         root.paths&.path&.values&.each do | path_item |
           path_item.set_path_item_to_operation
         end
+
+        OpenAPIParser::SpecValidator.run!(root, policy: config.strict_specification_version)
 
         root
       end

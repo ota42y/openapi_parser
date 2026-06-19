@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: Pricing API
+  version: '1.0'
+paths:
+  /quotes:
+    post:
+      summary: Request a price quote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quote'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Quote:
+      type: object
+      properties:
+        discountPercent:
+          type: number
+          exclusiveMaximum: 100

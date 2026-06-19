@@ -109,6 +109,88 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
     end
   end
 
+  describe 'validate integer 3.1-style numeric exclusiveMaximum value' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:params) { {} }
+    let(:replace_schema) do
+      {
+        my_integer: {
+          type: 'integer',
+          exclusiveMaximum: 10,
+        },
+      }
+    end
+
+    context 'with a value strictly less than exclusiveMaximum' do
+      let(:params) { { 'my_integer' => 9 } }
+      it 'passes validation' do
+        expect(subject).to eq({ 'my_integer' => 9 })
+      end
+    end
+
+    context 'with a value equal to exclusiveMaximum' do
+      let(:params) { { 'my_integer' => 10 } }
+      it 'raises MoreThanExclusiveMaximum' do
+        expect { subject }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::MoreThanExclusiveMaximum)
+          expect(e.message).to end_with('10 cannot be more than or equal to exclusive maximum value')
+        end
+      end
+    end
+
+    context 'with a value greater than exclusiveMaximum' do
+      let(:params) { { 'my_integer' => 11 } }
+      it 'raises MoreThanExclusiveMaximum' do
+        expect { subject }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::MoreThanExclusiveMaximum)
+          expect(e.message).to end_with('11 cannot be more than or equal to exclusive maximum value')
+        end
+      end
+    end
+  end
+
+  describe 'validate integer 3.1-style numeric exclusiveMinimum value' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:params) { {} }
+    let(:replace_schema) do
+      {
+        my_integer: {
+          type: 'integer',
+          exclusiveMinimum: 10,
+        },
+      }
+    end
+
+    context 'with a value strictly greater than exclusiveMinimum' do
+      let(:params) { { 'my_integer' => 11 } }
+      it 'passes validation' do
+        expect(subject).to eq({ 'my_integer' => 11 })
+      end
+    end
+
+    context 'with a value equal to exclusiveMinimum' do
+      let(:params) { { 'my_integer' => 10 } }
+      it 'raises LessThanExclusiveMinimum' do
+        expect { subject }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::LessThanExclusiveMinimum)
+          expect(e.message).to end_with('10 cannot be less than or equal to exclusive minimum value')
+        end
+      end
+    end
+
+    context 'with a value less than exclusiveMinimum' do
+      let(:params) { { 'my_integer' => 9 } }
+      it 'raises LessThanExclusiveMinimum' do
+        expect { subject }.to raise_error do |e|
+          expect(e).to be_kind_of(OpenAPIParser::LessThanExclusiveMinimum)
+          expect(e.message).to end_with('9 cannot be less than or equal to exclusive minimum value')
+        end
+      end
+    end
+  end
+
   describe 'validate integer exclusiveMinimum value' do
     subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
 

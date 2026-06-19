@@ -14,6 +14,8 @@ module OpenAPIParser
   module Schemas
     class OpenAPI
       def initialize: (Hash[bot, bot] hash, untyped config, uri: OpenAPIParser::readable_uri?, schema_registry: Hash[bot, bot]) -> OpenAPIParser::Schemas::OpenAPI
+      def openapi: () -> String?
+      def openapi_version: () -> (:v3_0 | :v3_1 | :unknown)
     end
   end
 end
