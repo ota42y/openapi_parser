@@ -48,6 +48,10 @@ module OpenAPIParser
       class NullableDeprecation < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
+
+      class ExampleSingularDeprecation < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
     end
   end
 
