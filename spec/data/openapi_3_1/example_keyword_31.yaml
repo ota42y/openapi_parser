@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: Catalog API
+  version: '1.0'
+paths:
+  /products:
+    get:
+      summary: List products
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        # 3.0 form leaking into a 3.1 document: the singular `example` is
+        # deprecated in 3.1 in favor of the `examples` array, so it is
+        # reported as a violation.
+        sku:
+          type: string
+          example: ABC-123
