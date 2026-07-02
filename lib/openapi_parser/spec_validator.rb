@@ -3,6 +3,7 @@ require_relative 'spec_validator/rule'
 require_relative 'spec_validator/rules/exclusive_minimum'
 require_relative 'spec_validator/rules/exclusive_maximum'
 require_relative 'spec_validator/rules/nullable_deprecation'
+require_relative 'spec_validator/rules/example_singular_deprecation'
 
 module OpenAPIParser
   class SpecViolationError < OpenAPIError
@@ -53,6 +54,7 @@ module OpenAPIParser
           Rules::ExclusiveMinimum,
           Rules::ExclusiveMaximum,
           Rules::NullableDeprecation,
+          Rules::ExampleSingularDeprecation,
         ]
       end
   end

@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: Catalog API
+  version: '1.0'
+paths:
+  /products:
+    get:
+      summary: List products
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        # 3.0 form: the singular `example` keyword on a Schema is the standard
+        # way to attach a sample value in 3.0, so no violation is expected.
+        sku:
+          type: string
+          example: ABC-123
