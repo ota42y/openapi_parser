@@ -3,7 +3,9 @@
 * support array-form `type` (3.1) in value validation
 * support root-level `jsonSchemaDialect` (OpenAPI 3.1) in the parse layer
 * support `prefixItems` (OpenAPI 3.1) with positional tuple validation
+* support `contentMediaType` (OpenAPI 3.1) in the parse layer
 * add `SpecValidator` with `strict_specification_version` config (`:silent` / `:warn` / `:raise`) to detect version mismatches between declared OpenAPI version and actual field usage
+  * `ContentMediaTypeIn30`: detect `contentMediaType` usage in 3.0 documents (3.1 addition)
   * `PrefixItemsIn30`: detect `prefixItems` usage in 3.0 documents (3.1 addition)
   * `JsonSchemaDialectIn30`: detect root-level `jsonSchemaDialect` usage in 3.0 documents (3.1 addition)
   * `TypeArrayIn30`: detect array-form `type` usage in 3.0 documents (3.1 form)
