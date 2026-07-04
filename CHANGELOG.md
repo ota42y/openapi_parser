@@ -18,10 +18,12 @@
   * `ConstIn30`: detect `const` usage in 3.0 documents (3.1 addition)
   * `DynamicRefIn30`: detect `$dynamicRef` usage in 3.0 documents (3.1 addition)
   * `DynamicAnchorIn30`: detect `$dynamicAnchor` usage in 3.0 documents (3.1 addition)
+  * `ContentSchemaIn30`: detect `contentSchema` usage in 3.0 documents (3.1 addition)
 * support 3.1-style numeric `exclusiveMinimum` / `exclusiveMaximum` in value validation (standalone bound, not a Boolean modifier on `minimum` / `maximum`)
 * support `type: "null"` (3.1 primitive) in value validation
 * support root-level `webhooks` (OpenAPI 3.1) in the parse layer
 * support `const` (OpenAPI 3.1) with exact-equality value validation
+* support `contentSchema` (OpenAPI 3.1) in the parse layer
 
 ## 2.3.1 (2025-11-14)
 * add optional date coercion with behavior matching existing datetime coercion
