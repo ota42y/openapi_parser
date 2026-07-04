@@ -6,8 +6,10 @@
   * `PathItemsIn30`: detect `components.pathItems` usage in 3.0 documents (3.1 addition)
   * `ExclusiveMinimum` / `ExclusiveMaximum`: detect 3.0 Boolean vs 3.1 numeric form mismatch
   * `TypeNullIn30`: detect `type: "null"` usage in 3.0 documents (3.1 primitive)
+  * `WebhooksIn30`: detect root-level `webhooks` usage in 3.0 documents (3.1 addition)
 * support 3.1-style numeric `exclusiveMinimum` / `exclusiveMaximum` in value validation (standalone bound, not a Boolean modifier on `minimum` / `maximum`)
 * support `type: "null"` (3.1 primitive) in value validation
+* support root-level `webhooks` (OpenAPI 3.1) in the parse layer
 
 ## 2.3.1 (2025-11-14)
 * add optional date coercion with behavior matching existing datetime coercion
