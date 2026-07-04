@@ -2,7 +2,9 @@
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
 * add `SpecValidator` with `strict_specification_version` config (`:silent` / `:warn` / `:raise`) to detect version mismatches between declared OpenAPI version and actual field usage
   * `ExclusiveMinimum` / `ExclusiveMaximum`: detect 3.0 Boolean vs 3.1 numeric form mismatch
+  * `TypeNullIn30`: detect `type: "null"` usage in 3.0 documents (3.1 primitive)
 * support 3.1-style numeric `exclusiveMinimum` / `exclusiveMaximum` in value validation (standalone bound, not a Boolean modifier on `minimum` / `maximum`)
+* support `type: "null"` (3.1 primitive) in value validation
 
 ## 2.3.1 (2025-11-14)
 * add optional date coercion with behavior matching existing datetime coercion
