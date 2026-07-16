@@ -2,6 +2,7 @@ require_relative 'spec_validator/spec_violation'
 require_relative 'spec_validator/rule'
 require_relative 'spec_validator/rules/exclusive_minimum'
 require_relative 'spec_validator/rules/exclusive_maximum'
+require_relative 'spec_validator/rules/path_items_in_30'
 require_relative 'spec_validator/rules/nullable_deprecation'
 require_relative 'spec_validator/rules/example_singular_deprecation'
 
@@ -53,6 +54,7 @@ module OpenAPIParser
         [
           Rules::ExclusiveMinimum,
           Rules::ExclusiveMaximum,
+          Rules::PathItemsIn30,
           Rules::NullableDeprecation,
           Rules::ExampleSingularDeprecation,
         ]

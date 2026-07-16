@@ -1,6 +1,9 @@
 ## Unreleased
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
 * add `SpecValidator` with `strict_specification_version` config (`:silent` / `:warn` / `:raise`) to detect version mismatches between declared OpenAPI version and actual field usage
+  * `NullableDeprecation`: detect `nullable` usage in 3.1 documents (removed in 3.1)
+  * `ExampleSingularDeprecation`: detect singular `example` on schemas in 3.1 documents (deprecated in 3.1)
+  * `PathItemsIn30`: detect `components.pathItems` usage in 3.0 documents (3.1 addition)
   * `ExclusiveMinimum` / `ExclusiveMaximum`: detect 3.0 Boolean vs 3.1 numeric form mismatch
 * support 3.1-style numeric `exclusiveMinimum` / `exclusiveMaximum` in value validation (standalone bound, not a Boolean modifier on `minimum` / `maximum`)
 
