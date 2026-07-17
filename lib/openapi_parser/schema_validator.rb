@@ -13,7 +13,7 @@ require_relative 'schema_validator/any_of_validator'
 require_relative 'schema_validator/all_of_validator'
 require_relative 'schema_validator/one_of_validator'
 require_relative 'schema_validator/nil_validator'
-require_relative 'schema_validator/null_type_validator'
+require_relative 'schema_validator/type_mismatch_validator'
 require_relative 'schema_validator/unspecified_type_validator'
 
 class OpenAPIParser::SchemaValidator
@@ -112,7 +112,7 @@ class OpenAPIParser::SchemaValidator
       effective_type = schema.type
       if effective_type.is_a?(Array)
         matched = pick_array_type(value, effective_type)
-        return type_array_mismatch_validator if matched.nil?
+        return type_mismatch_validator if matched.nil?
 
         effective_type = matched
       end
@@ -134,18 +134,14 @@ class OpenAPIParser::SchemaValidator
         # 3.1: only nil values are valid here. nil is handled earlier in
         # this method, so a non-nil value reaching this branch is a type
         # mismatch that should fail validation.
-        null_type_validator
+        type_mismatch_validator
       else
         unspecified_type_validator
       end
     end
 
-    def null_type_validator
-      @null_type_validator ||= OpenAPIParser::SchemaValidator::NullTypeValidator.new(self, @coerce_value)
-    end
-
-    def type_array_mismatch_validator
-      @type_array_mismatch_validator ||= OpenAPIParser::SchemaValidator::NullTypeValidator.new(self, @coerce_value)
+    def type_mismatch_validator
+      @type_mismatch_validator ||= OpenAPIParser::SchemaValidator::TypeMismatchValidator.new(self, @coerce_value)
     end
 
     def pick_array_type(value, types)
