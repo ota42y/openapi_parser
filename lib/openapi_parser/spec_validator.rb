@@ -5,6 +5,7 @@ require_relative 'spec_validator/rules/exclusive_maximum'
 require_relative 'spec_validator/rules/path_items_in_30'
 require_relative 'spec_validator/rules/nullable_deprecation'
 require_relative 'spec_validator/rules/example_singular_deprecation'
+require_relative 'spec_validator/rules/type_null_in_30'
 
 module OpenAPIParser
   class SpecViolationError < OpenAPIError
@@ -57,6 +58,7 @@ module OpenAPIParser
           Rules::PathItemsIn30,
           Rules::NullableDeprecation,
           Rules::ExampleSingularDeprecation,
+          Rules::TypeNullIn30,
         ]
       end
   end

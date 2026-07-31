@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: Telemetry API
+  version: '1.0'
+paths:
+  /readings:
+    get:
+      summary: List sensor readings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reading'
+components:
+  schemas:
+    Reading:
+      type: object
+      properties:
+        # 3.1 primitive `type: "null"`. 3.0 only knows the original six
+        # primitive names, so this is a spec violation on a 3.0 document.
+        calibration:
+          type: "null"

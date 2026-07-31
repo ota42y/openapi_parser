@@ -13,6 +13,7 @@ require_relative 'schema_validator/any_of_validator'
 require_relative 'schema_validator/all_of_validator'
 require_relative 'schema_validator/one_of_validator'
 require_relative 'schema_validator/nil_validator'
+require_relative 'schema_validator/null_type_validator'
 require_relative 'schema_validator/unspecified_type_validator'
 
 class OpenAPIParser::SchemaValidator
@@ -116,9 +117,18 @@ class OpenAPIParser::SchemaValidator
         object_validator
       when 'array'
         array_validator
+      when 'null'
+        # 3.1: only nil values are valid here. nil is handled earlier in
+        # this method, so a non-nil value reaching this branch is a type
+        # mismatch that should fail validation.
+        null_type_validator
       else
         unspecified_type_validator
       end
+    end
+
+    def null_type_validator
+      @null_type_validator ||= OpenAPIParser::SchemaValidator::NullTypeValidator.new(self, @coerce_value)
     end
 
     def string_validator

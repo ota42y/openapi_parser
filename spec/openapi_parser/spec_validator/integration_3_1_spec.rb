@@ -115,4 +115,19 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('example_keyword_30.yaml')
     end
   end
+
+  describe 'type: "null" (3.1 primitive absent from 3.0)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('type_null_30.yaml', [:type_null_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('type_null_30.yaml', [:type_null_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('type_null_31.yaml')
+    end
+  end
+
 end
