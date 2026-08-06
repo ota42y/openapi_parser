@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  title: Billing API
+  version: '1.0'
+paths:
+  /invoices:
+    get:
+      summary: List invoices
+      responses:
+        '200':
+          description: OK
+# `webhooks` is a 3.1 root-level addition; 3.0 has no such field, so its
+# presence on a 3.0 document is a spec violation.
+webhooks:
+  invoicePaid:
+    post:
+      summary: Notify that an invoice was paid
+      responses:
+        '200':
+          description: Acknowledged
