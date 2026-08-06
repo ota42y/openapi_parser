@@ -13,7 +13,7 @@ require_relative 'schema_validator/any_of_validator'
 require_relative 'schema_validator/all_of_validator'
 require_relative 'schema_validator/one_of_validator'
 require_relative 'schema_validator/nil_validator'
-require_relative 'schema_validator/null_type_validator'
+require_relative 'schema_validator/type_mismatch_validator'
 require_relative 'schema_validator/unspecified_type_validator'
 
 class OpenAPIParser::SchemaValidator
@@ -104,7 +104,20 @@ class OpenAPIParser::SchemaValidator
       return one_of_validator if schema.one_of
       return nil_validator if value.nil?
 
-      case schema.type
+      # 3.1: pick the type from an Array whose primitive class matches the
+      # value, then dispatch as if it were a single-type schema. If nothing
+      # matches we still pick a candidate so the relevant validator emits
+      # a sensible error rather than silently accepting via the unspecified
+      # fallback.
+      effective_type = schema.type
+      if effective_type.is_a?(Array)
+        matched = pick_array_type(value, effective_type)
+        return type_mismatch_validator if matched.nil?
+
+        effective_type = matched
+      end
+
+      case effective_type
       when 'string'
         string_validator
       when 'integer'
@@ -121,14 +134,28 @@ class OpenAPIParser::SchemaValidator
         # 3.1: only nil values are valid here. nil is handled earlier in
         # this method, so a non-nil value reaching this branch is a type
         # mismatch that should fail validation.
-        null_type_validator
+        type_mismatch_validator
       else
         unspecified_type_validator
       end
     end
 
-    def null_type_validator
-      @null_type_validator ||= OpenAPIParser::SchemaValidator::NullTypeValidator.new(self, @coerce_value)
+    def type_mismatch_validator
+      @type_mismatch_validator ||= OpenAPIParser::SchemaValidator::TypeMismatchValidator.new(self, @coerce_value)
+    end
+
+    def pick_array_type(value, types)
+      types.find do |t|
+        case t
+        when 'string'  then value.is_a?(String)
+        when 'integer' then value.is_a?(Integer)
+        when 'number'  then value.is_a?(Numeric)
+        when 'boolean' then value == true || value == false
+        when 'array'   then value.is_a?(Array)
+        when 'object'  then value.is_a?(Hash)
+        when 'null'    then value.nil?
+        end
+      end
     end
 
     def string_validator

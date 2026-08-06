@@ -1,6 +1,8 @@
 ## Unreleased
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
+* support array-form `type` (3.1) in value validation
 * add `SpecValidator` with `strict_specification_version` config (`:silent` / `:warn` / `:raise`) to detect version mismatches between declared OpenAPI version and actual field usage
+  * `TypeArrayIn30`: detect array-form `type` usage in 3.0 documents (3.1 form)
   * `NullableDeprecation`: detect `nullable` usage in 3.1 documents (removed in 3.1)
   * `ExampleSingularDeprecation`: detect singular `example` on schemas in 3.1 documents (deprecated in 3.1)
   * `PathItemsIn30`: detect `components.pathItems` usage in 3.0 documents (3.1 addition)
