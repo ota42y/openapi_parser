@@ -1,0 +1,14 @@
+openapi: 3.0.3
+# `jsonSchemaDialect` is a 3.1 root-level addition; 3.0 documents have no
+# such field, so its presence is a spec violation.
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info:
+  title: Inventory API
+  version: '1.0'
+paths:
+  /items:
+    get:
+      summary: List items
+      responses:
+        '200':
+          description: OK
