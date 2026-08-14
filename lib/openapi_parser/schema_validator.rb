@@ -75,6 +75,13 @@ class OpenAPIParser::SchemaValidator
   def validate_schema(value, schema, **keyword_args)
     return [value, nil] unless schema
 
+    # 3.1: `const` pins the value to exactly that constant. Checked before
+    # type dispatch so it applies uniformly across primitives. Detection
+    # uses raw_schema so an intentional `const: null` is honored.
+    if schema.respond_to?(:raw_schema) && schema.raw_schema.is_a?(Hash) && schema.raw_schema.key?('const')
+      return [nil, OpenAPIParser::ValidateError.new(value, "const #{schema.const.inspect}", schema.object_reference)] if value != schema.const
+    end
+
     if (v = validator(value, schema))
       if keyword_args.empty?
         return v.coerce_and_validate(value, schema)

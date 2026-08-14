@@ -1020,4 +1020,31 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       it { expect { subject }.to raise_error(StandardError).with_message('implement') }
     end
   end
+
+  describe 'const semantic (3.1)' do
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+    let(:schema) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => { 'Fixed' => { 'type' => 'string', 'const' => 'fixed' } } },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Fixed']
+    end
+
+    context 'when value equals const' do
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate('fixed', schema, options)).to eq 'fixed'
+      end
+    end
+
+    context 'when value does not equal const' do
+      it 'raises a validation error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate('different', schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError)
+      end
+    end
+  end
 end

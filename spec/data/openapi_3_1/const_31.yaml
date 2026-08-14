@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: Webhook Envelope API
+  version: '1.0'
+paths:
+  /events:
+    post:
+      summary: Receive an event
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Envelope'
+      responses:
+        '202':
+          description: Accepted
+components:
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        # `const` is legitimate under 3.1 (JSON Schema 2020-12), so no
+        # violation is expected here.
+        version:
+          type: string
+          const: '2020-12'
