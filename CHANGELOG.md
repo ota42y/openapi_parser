@@ -2,7 +2,9 @@
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
 * support array-form `type` (3.1) in value validation
 * support root-level `jsonSchemaDialect` (OpenAPI 3.1) in the parse layer
+* support `prefixItems` (OpenAPI 3.1) with positional tuple validation
 * add `SpecValidator` with `strict_specification_version` config (`:silent` / `:warn` / `:raise`) to detect version mismatches between declared OpenAPI version and actual field usage
+  * `PrefixItemsIn30`: detect `prefixItems` usage in 3.0 documents (3.1 addition)
   * `JsonSchemaDialectIn30`: detect root-level `jsonSchemaDialect` usage in 3.0 documents (3.1 addition)
   * `TypeArrayIn30`: detect array-form `type` usage in 3.0 documents (3.1 form)
   * `NullableDeprecation`: detect `nullable` usage in 3.1 documents (removed in 3.1)

@@ -68,4 +68,55 @@ RSpec.describe OpenAPIParser::SchemaValidator::ArrayValidator do
       end
     end
   end
+
+  describe 'prefixItems tuple validation (3.1)' do
+    let(:tuple_schema) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => {
+          'schemas' => {
+            'Tuple' => {
+              'type' => 'array',
+              'prefixItems' => [
+                { 'type' => 'string' },
+                { 'type' => 'integer' },
+              ],
+              'items' => { 'type' => 'boolean' },
+            },
+          },
+        },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Tuple']
+    end
+
+    context 'when the array obeys prefixItems exactly' do
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate(['a', 1], tuple_schema, options)).to eq(['a', 1])
+      end
+    end
+
+    context 'when an element fails its prefixItems schema' do
+      it 'raises a validation error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(['a', 'not_an_integer'], tuple_schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError)
+      end
+    end
+
+    context 'when extra elements are validated against items' do
+      it 'passes when extras conform to items' do
+        expect(OpenAPIParser::SchemaValidator.validate(['a', 1, true, false], tuple_schema, options)).to eq(['a', 1, true, false])
+      end
+    end
+
+    context 'when extra elements violate items' do
+      it 'raises a validation error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(['a', 1, 'not_boolean'], tuple_schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError)
+      end
+    end
+  end
 end

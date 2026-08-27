@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: Geo API
+  version: '1.0'
+paths:
+  /points:
+    post:
+      summary: Submit a coordinate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coordinate'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Coordinate:
+      # `prefixItems` is legitimate under 3.1 (JSON Schema 2020-12), so no
+      # violation is expected here.
+      type: array
+      prefixItems:
+        - type: number
+        - type: number
