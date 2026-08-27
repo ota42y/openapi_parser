@@ -80,6 +80,10 @@ module OpenAPIParser
       class ConstIn30 < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
+
+      class DynamicRefIn30 < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
     end
   end
 

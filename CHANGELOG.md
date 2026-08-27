@@ -14,6 +14,7 @@
   * `TypeNullIn30`: detect `type: "null"` usage in 3.0 documents (3.1 primitive)
   * `WebhooksIn30`: detect root-level `webhooks` usage in 3.0 documents (3.1 addition)
   * `ConstIn30`: detect `const` usage in 3.0 documents (3.1 addition)
+  * `DynamicRefIn30`: detect `$dynamicRef` usage in 3.0 documents (3.1 addition)
 * support 3.1-style numeric `exclusiveMinimum` / `exclusiveMaximum` in value validation (standalone bound, not a Boolean modifier on `minimum` / `maximum`)
 * support `type: "null"` (3.1 primitive) in value validation
 * support root-level `webhooks` (OpenAPI 3.1) in the parse layer
