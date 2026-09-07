@@ -226,4 +226,18 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('dynamic_ref_31.yaml')
     end
   end
+
+  describe '$dynamicAnchor (JSON Schema 2020-12 referencing new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('dynamic_anchor_30.yaml', [:dynamic_anchor_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('dynamic_anchor_30.yaml', [:dynamic_anchor_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('dynamic_anchor_31.yaml')
+    end
+  end
 end

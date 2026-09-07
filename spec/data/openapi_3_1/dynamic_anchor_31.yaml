@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: Tree API
+  version: '1.0'
+paths:
+  /trees:
+    get:
+      summary: Fetch a tree
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+components:
+  schemas:
+    Node:
+      type: object
+      # `$dynamicAnchor` is legitimate under 3.1 (JSON Schema 2020-12), so no
+      # violation is expected here.
+      $dynamicAnchor: node
+      properties:
+        label:
+          type: string
