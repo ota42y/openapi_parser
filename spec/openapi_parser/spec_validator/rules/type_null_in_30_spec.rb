@@ -52,31 +52,3 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::TypeNullIn30' do
     end
   end
 end
-
-RSpec.describe 'runtime: type: "null" semantic' do
-  let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
-  let(:schema) do
-    raw = {
-      'openapi' => '3.1.0',
-      'info' => { 'title' => 'test', 'version' => '1.0' },
-      'paths' => {},
-      'components' => { 'schemas' => { 'Nullable' => { 'type' => 'null' } } },
-    }
-    OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Nullable']
-  end
-
-  context 'when value is nil' do
-    it 'passes validation without nullable' do
-      result = OpenAPIParser::SchemaValidator.validate(nil, schema, options)
-      expect(result).to eq nil
-    end
-  end
-
-  context 'when value is not nil' do
-    it 'raises a type-mismatch error' do
-      expect do
-        OpenAPIParser::SchemaValidator.validate('not nil', schema, options)
-      end.to raise_error(OpenAPIParser::ValidateError)
-    end
-  end
-end

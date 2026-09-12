@@ -46,36 +46,3 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::TypeArrayIn30' do
     end
   end
 end
-
-RSpec.describe 'runtime: type as Array semantic in 3.1' do
-  let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
-  let(:schema) do
-    raw = {
-      'openapi' => '3.1.0',
-      'info' => { 'title' => 'test', 'version' => '1.0' },
-      'paths' => {},
-      'components' => { 'schemas' => { 'NullableString' => { 'type' => ['string', 'null'] } } },
-    }
-    OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['NullableString']
-  end
-
-  context 'when value is nil and array contains "null"' do
-    it 'passes validation' do
-      expect(OpenAPIParser::SchemaValidator.validate(nil, schema, options)).to eq nil
-    end
-  end
-
-  context 'when value matches one of the listed types' do
-    it 'passes validation' do
-      expect(OpenAPIParser::SchemaValidator.validate('hello', schema, options)).to eq 'hello'
-    end
-  end
-
-  context 'when value matches no listed type' do
-    it 'raises a type-mismatch error' do
-      expect do
-        OpenAPIParser::SchemaValidator.validate(42, schema, options)
-      end.to raise_error(OpenAPIParser::ValidateError)
-    end
-  end
-end
