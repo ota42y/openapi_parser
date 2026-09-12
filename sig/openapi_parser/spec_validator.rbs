@@ -92,6 +92,10 @@ module OpenAPIParser
       class DynamicAnchorIn30 < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
+
+      class ContentSchemaIn30 < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
     end
   end
 
