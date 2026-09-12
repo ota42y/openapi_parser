@@ -1,13 +1,22 @@
 require_relative '../../../spec_helper'
 
 RSpec.describe 'OpenAPIParser::SpecValidator::Rules::TypeNullIn30' do
-  def schema_with_type_null(openapi_version_string)
-    raw = {
+  def base_doc(openapi_version_string, sample_schema)
+    {
       'openapi' => openapi_version_string,
       'info' => { 'title' => 'test', 'version' => '1.0' },
       'paths' => {},
-      'components' => { 'schemas' => { 'Sample' => { 'type' => 'null' } } },
+      'components' => { 'schemas' => { 'Sample' => sample_schema } },
     }
+  end
+
+  def doc_with_type_null(openapi_version_string)
+    raw = base_doc(openapi_version_string, { 'type' => 'null' })
+    OpenAPIParser.parse(raw, strict_reference_validation: false)
+  end
+
+  def doc_without_type_null(openapi_version_string)
+    raw = base_doc(openapi_version_string, { 'type' => 'string' })
     OpenAPIParser.parse(raw, strict_reference_validation: false)
   end
 
@@ -17,14 +26,21 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::TypeNullIn30' do
 
   context 'with a 3.1 document using type: "null"' do
     it 'reports no violation' do
-      root = schema_with_type_null('3.1.0')
+      root = doc_with_type_null('3.1.0')
+      expect(run_rule_for(root)).to eq []
+    end
+  end
+
+  context 'with a 3.1 document without type: "null"' do
+    it 'reports no violation' do
+      root = doc_without_type_null('3.1.0')
       expect(run_rule_for(root)).to eq []
     end
   end
 
   context 'with a 3.0 document using type: "null"' do
     it 'reports one violation pointing at the offending schema' do
-      root = schema_with_type_null('3.0.0')
+      root = doc_with_type_null('3.0.0')
       violations = run_rule_for(root)
       expect(violations.size).to eq 1
       expect(violations.first.path).to eq '#/components/schemas/Sample'
@@ -32,22 +48,16 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::TypeNullIn30' do
     end
   end
 
-  context 'with a 3.0 document using a normal type' do
+  context 'with a 3.0 document without type: "null"' do
     it 'reports no violation' do
-      raw = {
-        'openapi' => '3.0.0',
-        'info' => { 'title' => 'test', 'version' => '1.0' },
-        'paths' => {},
-        'components' => { 'schemas' => { 'Sample' => { 'type' => 'string' } } },
-      }
-      root = OpenAPIParser.parse(raw, strict_reference_validation: false)
+      root = doc_without_type_null('3.0.0')
       expect(run_rule_for(root)).to eq []
     end
   end
 
-  context 'with an :unknown version document using type: "null"' do
+  context 'with an :unknown version document' do
     it 'reports no violation (rule skipped)' do
-      root = schema_with_type_null('4.0.0')
+      root = doc_with_type_null('4.0.0')
       expect(run_rule_for(root)).to eq []
     end
   end
