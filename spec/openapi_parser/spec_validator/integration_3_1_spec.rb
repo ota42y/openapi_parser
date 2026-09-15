@@ -74,6 +74,20 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
     end
   end
 
+  describe 'contentEncoding (JSON Schema 2020-12 annotation new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('content_encoding_30.yaml', [:content_encoding_in30])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('content_encoding_30.yaml', [:content_encoding_in30])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('content_encoding_31.yaml')
+    end
+  end
+
   describe 'contentMediaType (JSON Schema 2020-12 annotation new in 3.1)' do
     it 'warns on the version-mismatched document under :warn' do
       expect_mismatch_warns('content_media_type_30.yaml', [:content_media_type_in30])

@@ -2,6 +2,7 @@ require_relative 'spec_validator/spec_violation'
 require_relative 'spec_validator/rule'
 require_relative 'spec_validator/rules/exclusive_minimum'
 require_relative 'spec_validator/rules/exclusive_maximum'
+require_relative 'spec_validator/rules/content_encoding_in_30'
 require_relative 'spec_validator/rules/content_media_type_in_30'
 require_relative 'spec_validator/rules/prefix_items_in_30'
 require_relative 'spec_validator/rules/json_schema_dialect_in_30'
@@ -63,6 +64,7 @@ module OpenAPIParser
         [
           Rules::ExclusiveMinimum,
           Rules::ExclusiveMaximum,
+          Rules::ContentEncodingIn30,
           Rules::ContentMediaTypeIn30,
           Rules::PrefixItemsIn30,
           Rules::JsonSchemaDialectIn30,
