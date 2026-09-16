@@ -1,13 +1,27 @@
 require_relative '../../../spec_helper'
 
 RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ExampleSingularDeprecation' do
-  def schema_with_example(openapi_version_string, schema_payload)
-    raw = {
+  def base_doc(openapi_version_string, sample_schema)
+    {
       'openapi' => openapi_version_string,
       'info' => { 'title' => 'test', 'version' => '1.0' },
       'paths' => {},
-      'components' => { 'schemas' => { 'Sample' => schema_payload } },
+      'components' => { 'schemas' => { 'Sample' => sample_schema } },
     }
+  end
+
+  def doc_with_example(openapi_version_string)
+    raw = base_doc(openapi_version_string, { 'type' => 'string', 'example' => 'sample' })
+    OpenAPIParser.parse(raw, strict_reference_validation: false)
+  end
+
+  def doc_without_example(openapi_version_string)
+    raw = base_doc(openapi_version_string, { 'type' => 'string' })
+    OpenAPIParser.parse(raw, strict_reference_validation: false)
+  end
+
+  def doc_with_examples_array(openapi_version_string)
+    raw = base_doc(openapi_version_string, { 'type' => 'string', 'examples' => ['sample'] })
     OpenAPIParser.parse(raw, strict_reference_validation: false)
   end
 
@@ -17,14 +31,21 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ExampleSingularDeprecation'
 
   context 'with a 3.0 document using singular example on a Schema' do
     it 'reports no violation' do
-      root = schema_with_example('3.0.0', { 'type' => 'string', 'example' => 'sample' })
+      root = doc_with_example('3.0.0')
+      expect(run_rule_for(root)).to eq []
+    end
+  end
+
+  context 'with a 3.0 document without singular example' do
+    it 'reports no violation' do
+      root = doc_without_example('3.0.0')
       expect(run_rule_for(root)).to eq []
     end
   end
 
   context 'with a 3.1 document using singular example on a Schema' do
     it 'reports one violation pointing at the offending schema' do
-      root = schema_with_example('3.1.0', { 'type' => 'string', 'example' => 'sample' })
+      root = doc_with_example('3.1.0')
       violations = run_rule_for(root)
       expect(violations.size).to eq 1
       expect(violations.first.path).to eq '#/components/schemas/Sample'
@@ -33,23 +54,23 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ExampleSingularDeprecation'
     end
   end
 
-  context 'with a 3.1 document that does not use singular example' do
+  context 'with a 3.1 document without singular example' do
     it 'reports no violation' do
-      root = schema_with_example('3.1.0', { 'type' => 'string' })
+      root = doc_without_example('3.1.0')
       expect(run_rule_for(root)).to eq []
     end
   end
 
   context 'with a 3.1 document using the examples array (correct 3.1 form)' do
     it 'reports no violation' do
-      root = schema_with_example('3.1.0', { 'type' => 'string', 'examples' => ['sample'] })
+      root = doc_with_examples_array('3.1.0')
       expect(run_rule_for(root)).to eq []
     end
   end
 
   context 'with an :unknown version document' do
     it 'reports no violation (rule skipped)' do
-      root = schema_with_example('4.0.0', { 'type' => 'string', 'example' => 'sample' })
+      root = doc_with_example('4.0.0')
       expect(run_rule_for(root)).to eq []
     end
   end
