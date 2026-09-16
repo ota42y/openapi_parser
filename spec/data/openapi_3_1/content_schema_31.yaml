@@ -1,0 +1,27 @@
+openapi: 3.1.0
+info:
+  title: Document Upload API
+  version: '1.0'
+paths:
+  /documents:
+    post:
+      summary: Upload a document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attachment'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Attachment:
+      type: string
+      # `contentSchema` is legitimate under 3.1 (JSON Schema 2020-12), so no
+      # violation is expected here.
+      contentSchema:
+        type: object
+        properties:
+          name:
+            type: string
