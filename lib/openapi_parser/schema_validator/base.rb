@@ -14,19 +14,29 @@ class OpenAPIParser::SchemaValidator
 
     def validate_discriminator_schema(discriminator, value, candidate_schemas: nil, parent_discriminator_schemas: [])
       property_name = discriminator.property_name
-      if property_name.nil? || !value.key?(property_name)
-        return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
+      if property_name && value.key?(property_name)
+        mapping_key = value[property_name]
+        explicit_target = discriminator.mapping&.[](mapping_key)
+        if explicit_target
+          mapping_target = explicit_target
+          resolved_schema = discriminator.root.find_object(mapping_target)
+        else
+          mapping_target = "#/components/schemas/#{mapping_key}"
+          # Implicit values are component names, not reference paths.
+          resolved_schema = discriminator.root.components&.schemas&.[](mapping_key.to_s)
+          resolved_schema = nil if candidate_schemas && resolved_schema && !candidate_schemas.include?(resolved_schema)
+        end
       end
-      mapping_key = value[property_name]
 
-      mapping_target = discriminator.mapping&.[](mapping_key)
-      if mapping_target
-        resolved_schema = discriminator.root.find_object(mapping_target)
-      else
-        mapping_target = "#/components/schemas/#{mapping_key}"
-        # Implicit values are component names, not reference paths.
-        resolved_schema = discriminator.root.components&.schemas&.[](mapping_key.to_s)
-        resolved_schema = nil if candidate_schemas && resolved_schema && !candidate_schemas.include?(resolved_schema)
+      # defaultMapping (3.2) applies when the property is absent or its value
+      # has neither an explicit mapping nor an implicit schema match
+      if resolved_schema.nil? && explicit_target.nil? && (default_target = default_mapping_target(discriminator))
+        mapping_target = default_target
+        resolved_schema = discriminator.root.find_object(default_target)
+      end
+
+      unless mapping_target
+        return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
       end
 
       unless resolved_schema
@@ -38,5 +48,18 @@ class OpenAPIParser::SchemaValidator
         **{discriminator_property_name: discriminator.property_name, parent_discriminator_schemas: parent_discriminator_schemas}
       )
     end
+
+    private
+
+      # defaultMapping holds a schema name or a URI reference; only
+      # same-document references resolve. Ignored where 3.2 behavior doesn't apply
+      def default_mapping_target(discriminator)
+        return nil unless discriminator.root.use_3_2_features?
+
+        target = discriminator.default_mapping
+        return nil unless target.is_a?(String)
+
+        target.start_with?('#') || target.include?('/') ? target : "#/components/schemas/#{target}"
+      end
   end
 end
