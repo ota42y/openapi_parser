@@ -4,7 +4,7 @@
 [![Yard Docs](https://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/gems/openapi_parser)
 [![Inch CI](https://inch-ci.org/github/ota42y/openapi_parser.svg?branch=master)](https://inch-ci.org/github/ota42y/openapi_parser)
 
-This is OpenAPI3 parser and validator.
+This is OpenAPI3 parser and validator (OpenAPI 3.0, 3.1 and 3.2).
 
 ## Usage
 
@@ -88,6 +88,49 @@ options = {
 # Will raise with OpenAPIParser::MissingReferenceError
 OpenAPIParser.parse(yaml_file, options)
 ```
+
+### Supported OpenAPI versions
+
+The parser accepts OpenAPI 3.0, 3.1, and 3.2 documents. Parsing and runtime request/response validation are version-permissive: supported keywords are honored regardless of the document's declared `openapi:` version (for example, both `nullable` and `type: [..., "null"]` work everywhere).
+
+The exception is 3.2 behavior that would change how an existing 3.0 or 3.1 document validates. It applies only to documents that declare 3.2 or later:
+
+- `$ref`s in request body and response `content` (e.g. into `components.mediaTypes`)
+- the `query` operation, `additionalOperations`, and case-insensitive method matching in `request_operation`
+- Discriminator `defaultMapping`
+
+A file loaded through a `$ref` that declares no `openapi:` version follows the document that loaded it. To opt earlier documents in, pass `allow_3_2_features: true`:
+
+```ruby
+OpenAPIParser.parse(schema, allow_3_2_features: true)
+```
+
+Some 3.1 and 3.2 features are parsed or detected but do not affect runtime validation:
+
+- `contentEncoding`, `contentMediaType`, and `contentSchema` (3.1) are parsed but not validated
+- `$dynamicRef` and `$dynamicAnchor` (3.1) are not resolved
+- `$self` (3.2) is parsed (`OpenAPI#self_uri`) but not used as the base URI for `$ref` resolution
+- `itemSchema` (3.2) is parsed but not used to validate sequential media type bodies (SSE, JSON Lines, JSON Sequences)
+- parameters with `in: querystring` (3.2) are not validated
+- Tag, Server, Example, XML, and Security Scheme objects are not modeled; they are only checked by the `SpecValidator`
+
+Version-specific correctness is checked separately by the `SpecValidator`, driven by the `strict_specification_version` option:
+
+- `:silent` (default) — no version checks
+- `:warn` — print a warning for each mismatch (e.g. a 3.1-only keyword in a 3.0 document)
+- `:raise` — raise `OpenAPIParser::SpecViolationError` listing all mismatches
+
+```ruby
+OpenAPIParser.parse(schema, strict_specification_version: :raise)
+# => raises OpenAPIParser::SpecViolationError if e.g. a 3.0 document uses `prefixItems`
+```
+
+Detected mismatches:
+
+- 3.1 additions in 3.0 documents: `const`, `prefixItems`, array-form `type`, `type: "null"`, `webhooks`, `jsonSchemaDialect`, `components.pathItems`, `$dynamicRef`, `$dynamicAnchor`, `contentEncoding`, `contentMediaType`, `contentSchema`, `$defs`, boolean schemas
+- the 3.0 Boolean vs 3.1 numeric forms of `exclusiveMinimum` / `exclusiveMaximum`
+- 3.2 additions in earlier documents: `$self`, the `query` operation, `additionalOperations`, `components.mediaTypes`, Tag `summary` / `parent` / `kind`, Server `name`, Example `dataValue` / `serializedValue`, XML `nodeType`, Security Scheme `deprecated` / `oauth2MetadataUrl` and the `deviceAuthorization` flow, Media Type and Encoding `itemSchema` / `itemEncoding` / `prefixEncoding`, Discriminator `defaultMapping`, Parameter `in: querystring` and `style: cookie`, Response `summary`
+- keywords removed or deprecated by the declared version: `nullable` and singular schema `example` in 3.1+, XML `attribute: true` / `wrapped: true` and Parameter `allowEmptyValue` in 3.2
 
 ## ToDo
 - correct schema checker
