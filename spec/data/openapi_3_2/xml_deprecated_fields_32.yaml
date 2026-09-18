@@ -1,0 +1,30 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          xml:
+            # `attribute` on an XML Object is deprecated in 3.2 in favor of
+            # `nodeType: attribute`, so its use here is a spec violation.
+            attribute: true
+        tags:
+          type: array
+          items:
+            type: string
+          xml:
+            # `wrapped` is likewise deprecated in 3.2 in favor of
+            # `nodeType: element`.
+            wrapped: true
