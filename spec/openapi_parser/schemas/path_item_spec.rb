@@ -66,4 +66,31 @@ RSpec.describe OpenAPIParser::Schemas::PathItem do
       expect(subject).to eq nil # head is null
     end
   end
+
+  describe 'query and additionalOperations (OpenAPI 3.2)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/query_method_32.yaml'), {}) }
+    let(:path_item) { root.paths.path['/pets'] }
+
+    it 'parses the query operation and finds it via #operation' do
+      expect(path_item.query.class).to eq OpenAPIParser::Schemas::Operation
+      expect(path_item.operation(:query)).to eq path_item.query
+      expect(path_item.operation('QUERY')).to eq path_item.query
+    end
+
+    describe 'additionalOperations' do
+      let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/additional_operations_32.yaml'), {}) }
+
+      it 'parses entries as Operations and finds them via #operation' do
+        copy = path_item.operation('COPY')
+        expect(copy.class).to eq OpenAPIParser::Schemas::Operation
+        expect(path_item.operation(:copy)).to eq copy
+        expect(path_item.operation('Copy')).to eq copy
+        expect(path_item.operation('LINK')).to eq nil
+      end
+    end
+
+    it 'returns nil for non-operation path item fields' do
+      expect(path_item.operation(:summary)).to eq nil
+    end
+  end
 end

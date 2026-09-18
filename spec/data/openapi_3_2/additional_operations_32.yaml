@@ -1,0 +1,14 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    # `additionalOperations` is legitimate under 3.2, so no violation is
+    # expected here.
+    additionalOperations:
+      COPY:
+        summary: Copy pets
+        responses:
+          '200':
+            description: OK
