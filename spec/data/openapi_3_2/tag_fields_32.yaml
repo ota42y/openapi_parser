@@ -1,0 +1,21 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+# `summary`, `parent`, and `kind` are legitimate Tag Object fields under
+# 3.2, so no violation is expected here.
+tags:
+  - name: pets
+    summary: Pets
+    kind: nav
+  - name: pets/dogs
+    parent: pets
+paths:
+  /pets:
+    get:
+      summary: List pets
+      tags:
+        - pets
+      responses:
+        '200':
+          description: OK
