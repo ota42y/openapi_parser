@@ -19,4 +19,14 @@ RSpec.describe OpenAPIParser::Schemas::MediaType do
       expect(subject.schema.class).to eq OpenAPIParser::Schemas::Reference
     end
   end
+
+  describe 'itemSchema (OpenAPI 3.2)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/streaming_fields_32.yaml'), {}) }
+
+    it 'is parsed as a Schema' do
+      media_type = root.find_object('#/paths/~1events/get/responses/200/content/text~1event-stream')
+      expect(media_type.item_schema.class).to eq OpenAPIParser::Schemas::Schema
+      expect(media_type.item_schema.type).to eq 'object'
+    end
+  end
 end
