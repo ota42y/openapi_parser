@@ -56,6 +56,18 @@ module OpenAPIParser
           end
         end
 
+        # security schemes are not modeled by the parse layer, so rules
+        # about them read the raw `components.securitySchemes` map
+        def each_security_scheme(root)
+          components = root.raw_schema.is_a?(Hash) ? root.raw_schema['components'] : nil
+          schemes = components.is_a?(Hash) ? components['securitySchemes'] : nil
+          return unless schemes.is_a?(Hash)
+
+          schemes.each do |name, scheme|
+            yield(name, scheme) if scheme.is_a?(Hash)
+          end
+        end
+
         # escapes a map key for use in a violation path, matching object_reference
         def escape_reference(key)
           key.to_s.gsub('/', '~1')

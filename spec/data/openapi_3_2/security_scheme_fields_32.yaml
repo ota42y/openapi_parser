@@ -1,0 +1,25 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      # `deprecated`, `oauth2MetadataUrl`, and the `deviceAuthorization`
+      # flow are legitimate Security Scheme fields under 3.2, so no
+      # violation is expected here.
+      deprecated: true
+      oauth2MetadataUrl: https://auth.example.com/.well-known/oauth-authorization-server
+      flows:
+        deviceAuthorization:
+          deviceAuthorizationUrl: https://auth.example.com/device
+          tokenUrl: https://auth.example.com/token
+          scopes: {}
