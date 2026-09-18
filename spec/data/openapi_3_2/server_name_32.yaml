@@ -1,0 +1,16 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+# `name` is a legitimate Server Object field under 3.2, so no violation is
+# expected here.
+servers:
+  - url: https://api.example.com
+    name: production
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
