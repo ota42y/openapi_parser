@@ -28,5 +28,9 @@ module OpenAPIParser::Schemas
     # @!attribute [r] path_items
     #   @return [Hash{String => PathItem}, nil] path item objects (OpenAPI 3.1+)
     openapi_attr_hash_object :path_items, PathItem, reference: true, schema_key: :pathItems
+
+    # @!attribute [r] media_types
+    #   @return [Hash{String => MediaType}, nil] media type objects (OpenAPI 3.2+)
+    openapi_attr_hash_object :media_types, MediaType, reference: true, schema_key: :mediaTypes
   end
 end

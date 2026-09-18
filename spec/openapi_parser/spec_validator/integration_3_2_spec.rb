@@ -67,6 +67,20 @@ RSpec.describe 'OpenAPIParser 3.2 spec validator (integration)' do
     end
   end
 
+  describe 'components.mediaTypes (3.2 addition)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('media_types_31.yaml', [:media_types_before32])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('media_types_31.yaml', [:media_types_before32])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('media_types_32.yaml')
+    end
+  end
+
   describe 'Server Object name (3.2 addition)' do
     it 'warns on the version-mismatched document under :warn' do
       expect_mismatch_warns('server_name_31.yaml', [:server_name_before32])

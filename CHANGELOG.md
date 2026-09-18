@@ -1,11 +1,14 @@
 ## Unreleased
 * add OpenAPI 3.2 `SpecValidator` rules
+  * `MediaTypesBefore32`: detect `components.mediaTypes` usage in pre-3.2 documents (3.2 addition)
   * `XmlNodeTypeBefore32`: detect XML Object `nodeType` usage in pre-3.2 documents (3.2 addition)
   * `XmlAttributeDeprecation` / `XmlWrappedDeprecation`: detect XML Object `attribute: true` / `wrapped: true` in 3.2 documents (deprecated in 3.2 in favor of `nodeType`)
   * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
   * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
   * `ExampleValueFieldsBefore32`: detect Example Object `dataValue` / `serializedValue` usage in pre-3.2 documents (3.2 additions)
 * validate a value against a schema without `type`: keywords such as `properties`, `required`, `items`, `maxLength`, `enum` and `minimum` now apply when the value has the type the keyword is for, as in JSON Schema. They were all skipped before, so a value that breaks them may now fail validation
+* add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
+* support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
 
 ## 2.5.0 (2026-10-21)
 * add OpenAPI 3.2 `SpecValidator` rules

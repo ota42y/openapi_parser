@@ -5,11 +5,14 @@
 
 module OpenAPIParser::Schemas
   class OpenAPI < Base
-    def initialize(raw_schema, config, uri: nil, schema_registry: {})
+    # @param [OpenAPIParser::Schemas::OpenAPI, nil] referrer the document whose $ref loads this one
+    def initialize(raw_schema, config, uri: nil, schema_registry: {}, referrer: nil)
+      # set before super: child objects consult use_3_2_features? while they're built
+      @config = config
+      @referrer = referrer
       super('#', nil, self, raw_schema)
       @find_object_cache = {}
       @path_item_finder = OpenAPIParser::PathItemFinder.new(paths) if paths # invalid definition
-      @config = config
       @uri = uri
       @schema_registry = schema_registry
 
@@ -31,6 +34,20 @@ module OpenAPIParser::Schemas
       return nil unless openapi.match?(/\A\d+\.\d+/) && Gem::Version.correct?(openapi)
 
       Gem::Version.new(openapi).release
+    end
+
+    # Whether OpenAPI 3.2 runtime behavior applies: the document declares 3.2
+    # or later, or the allow_3_2_features config is set. A referenced file
+    # that declares no version follows the document that loaded it.
+    # @return [Boolean]
+    def use_3_2_features?
+      return true if @config.allow_3_2_features
+
+      version = openapi_version
+      return version >= Gem::Version.new('3.2') if version
+      return @referrer.use_3_2_features? if openapi.nil? && @referrer
+
+      false
     end
 
     # @!attribute [r] paths
@@ -71,7 +88,7 @@ module OpenAPIParser::Schemas
       loaded = @schema_registry[resolved_uri]
       return loaded if loaded
 
-      OpenAPIParser.load_uri(resolved_uri, config: @config, schema_registry: @schema_registry)
+      OpenAPIParser.load_uri(resolved_uri, config: @config, schema_registry: @schema_registry, referrer: self)
     end
 
     private

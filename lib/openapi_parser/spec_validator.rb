@@ -20,6 +20,7 @@ require_relative 'spec_validator/rules/content_schema_in_30'
 require_relative 'spec_validator/rules/xml_node_type_before_32'
 require_relative 'spec_validator/rules/xml_attribute_deprecation'
 require_relative 'spec_validator/rules/xml_wrapped_deprecation'
+require_relative 'spec_validator/rules/media_types_before_32'
 require_relative 'spec_validator/rules/server_name_before_32'
 require_relative 'spec_validator/rules/self_before_32'
 require_relative 'spec_validator/rules/tag_fields_before_32'
@@ -91,6 +92,7 @@ module OpenAPIParser
           Rules::XmlNodeTypeBefore32,
           Rules::XmlAttributeDeprecation,
           Rules::XmlWrappedDeprecation,
+          Rules::MediaTypesBefore32,
           Rules::ServerNameBefore32,
           Rules::SelfBefore32,
           Rules::TagFieldsBefore32,

@@ -40,8 +40,9 @@ module OpenAPIParser
     end
 
     # Load schema located by the passed uri. Uri must be absolute.
+    # @param [OpenAPIParser::Schemas::OpenAPI, nil] referrer the document whose $ref loads this one
     # @return [OpenAPIParser::Schemas::OpenAPI]
-    def load_uri(uri, config:, schema_registry:)
+    def load_uri(uri, config:, schema_registry:, referrer: nil)
       # Open-uri doesn't open file scheme uri, so we try to open file path directly
       # File scheme uri which points to a remote file is not supported.
       uri_path = uri.path
@@ -54,7 +55,7 @@ module OpenAPIParser
       end
 
       extension = Pathname.new(uri_path).extname
-      load_hash(parse_file(content, extension), config: config, uri: uri, schema_registry: schema_registry)
+      load_hash(parse_file(content, extension), config: config, uri: uri, schema_registry: schema_registry, referrer: referrer)
     end
 
     private
@@ -90,8 +91,8 @@ module OpenAPIParser
         JSON.parse(content)
       end
 
-      def load_hash(hash, config:, uri:, schema_registry:)
-        root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry)
+      def load_hash(hash, config:, uri:, schema_registry:, referrer: nil)
+        root = Schemas::OpenAPI.new(hash, config, uri: uri, schema_registry: schema_registry, referrer: referrer)
 
         OpenAPIParser::ReferenceExpander.expand(root, config.strict_reference_validation) if config.expand_reference
 
