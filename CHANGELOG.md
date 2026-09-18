@@ -1,4 +1,7 @@
 ## Unreleased
+* add OpenAPI 3.2 `SpecValidator` rules
+  * `SelfBefore32`: detect `$self` usage in pre-3.2 documents (3.2 addition)
+* support root-level `$self` (OpenAPI 3.2) in the parse layer (`self_uri`); it is not yet used as the base URI for `$ref` resolution
 
 ## 2.4.0 (2026-10-14)
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items

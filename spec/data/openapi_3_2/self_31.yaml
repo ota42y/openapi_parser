@@ -1,0 +1,14 @@
+openapi: 3.1.0
+# `$self` is a 3.2 root-level addition declaring the document's own URI;
+# a 3.1 document has no such field, so its use here is a spec violation.
+$self: https://example.com/api/openapi.yaml
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
