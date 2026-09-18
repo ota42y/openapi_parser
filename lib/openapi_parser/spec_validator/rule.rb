@@ -56,6 +56,11 @@ module OpenAPIParser
           end
         end
 
+        # escapes a map key for use in a violation path, matching object_reference
+        def escape_reference(key)
+          key.to_s.gsub('/', '~1')
+        end
+
         def walk(node, visited, &block)
           return unless node.respond_to?(:_openapi_all_child_objects)
           return if visited[node.object_id]

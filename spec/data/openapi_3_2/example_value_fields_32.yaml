@@ -1,0 +1,24 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    post:
+      summary: Create a pet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            examples:
+              dog:
+                summary: A dog
+                # `dataValue` and `serializedValue` are legitimate Example
+                # Object fields under 3.2, so no violation is expected here.
+                dataValue:
+                  name: Rex
+                serializedValue: '{"name":"Rex"}'
+      responses:
+        '201':
+          description: Created

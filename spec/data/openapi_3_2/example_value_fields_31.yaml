@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    post:
+      summary: Create a pet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            examples:
+              dog:
+                summary: A dog
+                # `dataValue` and `serializedValue` on an Example Object are
+                # 3.2 additions; a 3.1 document has no such fields, so their
+                # use here is a spec violation.
+                dataValue:
+                  name: Rex
+                serializedValue: '{"name":"Rex"}'
+      responses:
+        '201':
+          description: Created
