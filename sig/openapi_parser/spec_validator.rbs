@@ -25,12 +25,14 @@ module OpenAPIParser
     end
 
     class Rule
-      @version: (:v3_0 | :v3_1 | :unknown)
-      attr_reader version: (:v3_0 | :v3_1 | :unknown)
+      @version: Gem::Version?
+      attr_reader version: Gem::Version?
 
       def self.rule_name: () -> Symbol
-      def initialize: ((:v3_0 | :v3_1 | :unknown) version) -> void
+      def initialize: (Gem::Version? version) -> void
       def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecViolation]
+      def version_before?: (String boundary) -> bool
+      def version_at_least?: (String boundary) -> bool
       private def violation: (path: String, message: String) -> SpecViolation
       private def each_schema: (untyped root) ?{ (untyped) -> void } -> untyped
       private def walk: (untyped node, Hash[Integer, bool] visited) { (untyped) -> void } -> void
