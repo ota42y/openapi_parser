@@ -6,7 +6,7 @@ module OpenAPIParser
       # array form on a 3.0 document is a spec violation.
       class TypeArrayIn30 < Rule
         def check(root)
-          return [] unless version == :v3_0
+          return [] unless version_before?('3.1')
 
           violations = []
           each_schema(root) do |schema|

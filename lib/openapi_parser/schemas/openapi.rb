@@ -21,17 +21,16 @@ module OpenAPIParser::Schemas
     #   @return [String, nil]
     openapi_attr_values :openapi
 
-    # @return [Symbol] :v3_0 / :v3_1 / :unknown
+    # Declared OpenAPI version as a comparable value.
+    # A prerelease tag is dropped ("3.1.0-rc1" => 3.1.0) because it does not
+    # change which version's rules the document is written against.
+    # @return [Gem::Version, nil] nil when the field is missing or not a
+    #   major.minor[.patch] version string
     def openapi_version
-      return :unknown unless openapi.is_a?(String)
+      return nil unless openapi.is_a?(String)
+      return nil unless openapi.match?(/\A\d+\.\d+/) && Gem::Version.correct?(openapi)
 
-      if openapi.start_with?('3.0')
-        :v3_0
-      elsif openapi.start_with?('3.1')
-        :v3_1
-      else
-        :unknown
-      end
+      Gem::Version.new(openapi).release
     end
 
     # @!attribute [r] paths

@@ -6,7 +6,7 @@ module OpenAPIParser
       # allowed but discouraged, so we report it as a violation.
       class ExampleSingularDeprecation < Rule
         def check(root)
-          return [] unless version == :v3_1
+          return [] unless version_at_least?('3.1')
 
           violations = []
           each_schema(root) do |schema|

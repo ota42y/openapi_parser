@@ -9,7 +9,7 @@ module OpenAPIParser
 
   class SpecValidator
     @root: OpenAPIParser::Schemas::OpenAPI
-    @version: (:v3_0 | :v3_1 | :unknown)
+    @version: Gem::Version?
 
     def self.run: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecViolation]
     def self.run!: (OpenAPIParser::Schemas::OpenAPI root, policy: (:silent | :warn | :raise)) -> void

@@ -6,7 +6,7 @@ module OpenAPIParser
       # report version mismatches.
       class ContentMediaTypeIn30 < Rule
         def check(root)
-          return [] unless version == :v3_0
+          return [] unless version_before?('3.1')
 
           violations = []
           each_schema(root) do |schema|

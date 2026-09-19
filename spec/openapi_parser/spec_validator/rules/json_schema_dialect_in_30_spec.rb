@@ -54,9 +54,9 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::JsonSchemaDialectIn30' do
     end
   end
 
-  context 'with an :unknown version document' do
+  context 'with a document whose openapi field is not a version' do
     it 'reports no violation (rule skipped)' do
-      root = doc_with_dialect('4.0.0')
+      root = doc_with_dialect('not-a-version')
       expect(run_rule_for(root)).to eq []
     end
   end

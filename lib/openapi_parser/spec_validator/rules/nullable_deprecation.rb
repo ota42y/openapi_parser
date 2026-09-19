@@ -6,7 +6,7 @@ module OpenAPIParser
       # is a spec violation, regardless of true/false.
       class NullableDeprecation < Rule
         def check(root)
-          return [] unless version == :v3_1
+          return [] unless version_at_least?('3.1')
 
           violations = []
           each_schema(root) do |schema|

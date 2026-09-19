@@ -30,43 +30,63 @@ RSpec.describe OpenAPIParser::Schemas::OpenAPI do
     end
 
     context 'with a typical 3.0.x version like "3.0.0"' do
-      it 'returns Gem::Version 3.0.0'
+      it 'returns Gem::Version 3.0.0' do
+        expect(parse_with_openapi_field('3.0.0').openapi_version).to eq Gem::Version.new('3.0.0')
+      end
     end
 
     context 'with a typical 3.1.x version like "3.1.0"' do
-      it 'returns Gem::Version 3.1.0'
+      it 'returns Gem::Version 3.1.0' do
+        expect(parse_with_openapi_field('3.1.0').openapi_version).to eq Gem::Version.new('3.1.0')
+      end
     end
 
     context 'with a 3.2.x version like "3.2.0"' do
-      it 'returns Gem::Version 3.2.0'
+      it 'returns Gem::Version 3.2.0' do
+        expect(parse_with_openapi_field('3.2.0').openapi_version).to eq Gem::Version.new('3.2.0')
+      end
     end
 
     context 'with a minor-only version "3.1"' do
-      it 'returns a version equal to 3.1.0'
+      it 'returns a version equal to 3.1.0' do
+        expect(parse_with_openapi_field('3.1').openapi_version).to eq Gem::Version.new('3.1.0')
+      end
     end
 
     context 'with a prerelease tag like "3.1.0-rc1"' do
-      it 'returns the release version 3.1.0'
+      it 'returns the release version 3.1.0' do
+        expect(parse_with_openapi_field('3.1.0-rc1').openapi_version).to eq Gem::Version.new('3.1.0')
+      end
     end
 
     context 'with a major version beyond 3 like "4.0.0"' do
-      it 'returns Gem::Version 4.0.0 without special-casing it'
+      it 'returns Gem::Version 4.0.0 without special-casing it' do
+        expect(parse_with_openapi_field('4.0.0').openapi_version).to eq Gem::Version.new('4.0.0')
+      end
     end
 
     context 'when the openapi field is missing' do
-      it 'returns nil'
+      it 'returns nil' do
+        expect(parse_with_openapi_field(nil, present: false).openapi_version).to be_nil
+      end
     end
 
     context 'with a non-string openapi field' do
-      it 'returns nil'
+      it 'returns nil' do
+        expect(parse_with_openapi_field(31).openapi_version).to be_nil
+      end
     end
 
     context 'with a string that is not a version like "three"' do
-      it 'returns nil'
+      it 'returns nil' do
+        expect(parse_with_openapi_field('three').openapi_version).to be_nil
+      end
     end
 
     context 'with a major-only version "3"' do
-      it 'returns nil (OpenAPI versions are at least major.minor)'
+      it 'returns nil (OpenAPI versions are at least major.minor)' do
+        expect(parse_with_openapi_field('3').openapi_version).to be_nil
+      end
     end
   end
 end

@@ -58,12 +58,15 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::NullableDeprecation' do
   end
 
   context 'with a 3.2 document using nullable: true' do
-    it 'reports one violation (nullable stays removed after 3.1)'
+    it 'reports one violation (nullable stays removed after 3.1)' do
+      root = schema_with_nullable('3.2.0', true)
+      expect(run_rule_for(root).size).to eq 1
+    end
   end
 
-  context 'with an :unknown version document' do
+  context 'with a document whose openapi field is not a version' do
     it 'reports no violation (rule skipped)' do
-      root = schema_with_nullable('4.0.0', true)
+      root = schema_with_nullable('not-a-version', true)
       expect(run_rule_for(root)).to eq []
     end
   end

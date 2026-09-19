@@ -55,9 +55,9 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ConstIn30' do
     end
   end
 
-  context 'with an :unknown version document' do
+  context 'with a document whose openapi field is not a version' do
     it 'reports no violation (rule skipped)' do
-      root = doc_with_const('4.0.0')
+      root = doc_with_const('not-a-version')
       expect(run_rule_for(root)).to eq []
     end
   end
