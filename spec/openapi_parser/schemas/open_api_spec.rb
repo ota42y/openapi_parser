@@ -30,51 +30,43 @@ RSpec.describe OpenAPIParser::Schemas::OpenAPI do
     end
 
     context 'with a typical 3.0.x version like "3.0.0"' do
-      it 'returns :v3_0' do
-        expect(parse_with_openapi_field('3.0.0').openapi_version).to eq :v3_0
-      end
+      it 'returns Gem::Version 3.0.0'
     end
 
     context 'with a typical 3.1.x version like "3.1.0"' do
-      it 'returns :v3_1' do
-        expect(parse_with_openapi_field('3.1.0').openapi_version).to eq :v3_1
-      end
+      it 'returns Gem::Version 3.1.0'
     end
 
-    context 'with a minor-only version "3.0"' do
-      it 'returns :v3_0' do
-        expect(parse_with_openapi_field('3.0').openapi_version).to eq :v3_0
-      end
+    context 'with a 3.2.x version like "3.2.0"' do
+      it 'returns Gem::Version 3.2.0'
     end
 
     context 'with a minor-only version "3.1"' do
-      it 'returns :v3_1' do
-        expect(parse_with_openapi_field('3.1').openapi_version).to eq :v3_1
-      end
+      it 'returns a version equal to 3.1.0'
     end
 
-    context 'with a prerelease tag like "3.0.0-rc1"' do
-      it 'returns :v3_0 by prefix match' do
-        expect(parse_with_openapi_field('3.0.0-rc1').openapi_version).to eq :v3_0
-      end
+    context 'with a prerelease tag like "3.1.0-rc1"' do
+      it 'returns the release version 3.1.0'
     end
 
-    context 'with an unknown major version like "4.0.0"' do
-      it 'returns :unknown' do
-        expect(parse_with_openapi_field('4.0.0').openapi_version).to eq :unknown
-      end
+    context 'with a major version beyond 3 like "4.0.0"' do
+      it 'returns Gem::Version 4.0.0 without special-casing it'
     end
 
     context 'when the openapi field is missing' do
-      it 'returns :unknown' do
-        expect(parse_with_openapi_field(nil, present: false).openapi_version).to eq :unknown
-      end
+      it 'returns nil'
     end
 
     context 'with a non-string openapi field' do
-      it 'returns :unknown' do
-        expect(parse_with_openapi_field(31).openapi_version).to eq :unknown
-      end
+      it 'returns nil'
+    end
+
+    context 'with a string that is not a version like "three"' do
+      it 'returns nil'
+    end
+
+    context 'with a major-only version "3"' do
+      it 'returns nil (OpenAPI versions are at least major.minor)'
     end
   end
 end

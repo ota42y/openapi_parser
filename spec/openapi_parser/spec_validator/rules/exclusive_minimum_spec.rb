@@ -52,6 +52,14 @@ RSpec.describe OpenAPIParser::SpecValidator::Rules::ExclusiveMinimum do
     end
   end
 
+  context 'with a 3.2 document using a 3.1-style numeric exclusiveMinimum' do
+    it 'reports no violation'
+  end
+
+  context 'with a 3.2 document using a 3.0-style boolean exclusiveMinimum' do
+    it 'reports one violation (3.2 keeps the 3.1 form)'
+  end
+
   context 'with an :unknown version document containing exclusiveMinimum' do
     it 'reports no violation (rule skipped)' do
       root = schema_with_exclusive_minimum('4.0.0', 5)

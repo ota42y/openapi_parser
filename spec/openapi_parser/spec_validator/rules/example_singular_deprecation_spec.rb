@@ -68,6 +68,10 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ExampleSingularDeprecation'
     end
   end
 
+  context 'with a 3.2 document using singular example on a Schema' do
+    it 'reports one violation (the deprecation carries over from 3.1)'
+  end
+
   context 'with an :unknown version document' do
     it 'reports no violation (rule skipped)' do
       root = doc_with_example('4.0.0')

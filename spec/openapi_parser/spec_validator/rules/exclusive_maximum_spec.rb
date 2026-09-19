@@ -51,6 +51,14 @@ RSpec.describe OpenAPIParser::SpecValidator::Rules::ExclusiveMaximum do
     end
   end
 
+  context 'with a 3.2 document using a 3.1-style numeric exclusiveMaximum' do
+    it 'reports no violation'
+  end
+
+  context 'with a 3.2 document using a 3.0-style boolean exclusiveMaximum' do
+    it 'reports one violation (3.2 keeps the 3.1 form)'
+  end
+
   context 'with an :unknown version document containing exclusiveMaximum' do
     it 'reports no violation (rule skipped)' do
       root = schema_with_exclusive_maximum('4.0.0', 5)
