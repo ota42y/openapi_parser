@@ -56,9 +56,9 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::WebhooksIn30' do
     end
   end
 
-  context 'with an :unknown version document declaring webhooks' do
+  context 'with a document whose openapi field is not a version declaring webhooks' do
     it 'reports no violation (rule skipped)' do
-      root = doc_with_webhooks('4.0.0')
+      root = doc_with_webhooks('not-a-version')
       expect(run_rule_for(root)).to eq []
     end
   end

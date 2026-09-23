@@ -5,7 +5,7 @@ module OpenAPIParser
       # equivalent.
       class JsonSchemaDialectIn30 < Rule
         def check(root)
-          return [] unless version == :v3_0
+          return [] unless version_before?('3.1')
           return [] unless root.raw_schema.is_a?(Hash) && root.raw_schema.key?('jsonSchemaDialect')
 
           [violation(

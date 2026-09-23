@@ -14,10 +14,23 @@ module OpenAPIParser
         @version = version
       end
 
+      # @return [Gem::Version, nil] declared OpenAPI version, nil when unknown
       attr_reader :version
 
       def check(_root)
         raise NotImplementedError
+      end
+
+      # @param [String] boundary like '3.1'
+      # @return [Boolean] false when the version is unknown
+      def version_before?(boundary)
+        !version.nil? && version < Gem::Version.new(boundary)
+      end
+
+      # @param [String] boundary like '3.1'
+      # @return [Boolean] false when the version is unknown
+      def version_at_least?(boundary)
+        !version.nil? && version >= Gem::Version.new(boundary)
       end
 
       private

@@ -6,7 +6,7 @@ module OpenAPIParser
       # equivalent; the rule flags it on 3.0 documents.
       class DynamicAnchorIn30 < Rule
         def check(root)
-          return [] unless version == :v3_0
+          return [] unless version_before?('3.1')
 
           violations = []
           each_schema(root) do |schema|

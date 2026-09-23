@@ -7,7 +7,7 @@ module OpenAPIParser
       # `["string", "null"]` are covered by a separate rule.
       class TypeNullIn30 < Rule
         def check(root)
-          return [] unless version == :v3_0
+          return [] unless version_before?('3.1')
 
           violations = []
           each_schema(root) do |schema|
