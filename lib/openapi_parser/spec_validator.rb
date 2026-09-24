@@ -28,6 +28,7 @@ require_relative 'spec_validator/rules/server_name_before_32'
 require_relative 'spec_validator/rules/self_before_32'
 require_relative 'spec_validator/rules/query_method_before_32'
 require_relative 'spec_validator/rules/additional_operations_before_32'
+require_relative 'spec_validator/rules/response_summary_before_32'
 require_relative 'spec_validator/rules/tag_fields_before_32'
 require_relative 'spec_validator/rules/example_value_fields_before_32'
 require_relative 'spec_validator/rules/security_scheme_fields_before_32'
@@ -107,6 +108,7 @@ module OpenAPIParser
           Rules::SelfBefore32,
           Rules::QueryMethodBefore32,
           Rules::AdditionalOperationsBefore32,
+          Rules::ResponseSummaryBefore32,
           Rules::TagFieldsBefore32,
           Rules::ExampleValueFieldsBefore32,
           Rules::SecuritySchemeFieldsBefore32,
