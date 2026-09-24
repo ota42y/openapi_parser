@@ -23,6 +23,7 @@ require_relative 'spec_validator/rules/xml_attribute_deprecation'
 require_relative 'spec_validator/rules/xml_wrapped_deprecation'
 require_relative 'spec_validator/rules/media_types_before_32'
 require_relative 'spec_validator/rules/default_mapping_before_32'
+require_relative 'spec_validator/rules/cookie_style_before_32'
 require_relative 'spec_validator/rules/server_name_before_32'
 require_relative 'spec_validator/rules/self_before_32'
 require_relative 'spec_validator/rules/query_method_before_32'
@@ -101,6 +102,7 @@ module OpenAPIParser
           Rules::XmlWrappedDeprecation,
           Rules::MediaTypesBefore32,
           Rules::DefaultMappingBefore32,
+          Rules::CookieStyleBefore32,
           Rules::ServerNameBefore32,
           Rules::SelfBefore32,
           Rules::QueryMethodBefore32,

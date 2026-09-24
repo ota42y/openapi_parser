@@ -1,0 +1,19 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      parameters:
+        # `style: cookie` is a 3.2 Parameter style; a 3.1 document has no
+        # such style, so its use here is a spec violation.
+        - name: session
+          in: cookie
+          style: cookie
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK

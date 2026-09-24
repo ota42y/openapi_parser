@@ -1,6 +1,7 @@
 ## Unreleased
 * support the `not` keyword (OpenAPI 3.0 and 3.1): a value that is valid against the `not` schema now fails with `NotSchemaMatched`. It was ignored before, so a value that passed may now fail
 * add OpenAPI 3.2 `SpecValidator` rules
+  * `CookieStyleBefore32`: detect Parameter `style: cookie` usage in pre-3.2 documents (3.2 addition)
   * `DefaultMappingBefore32`: detect Discriminator `defaultMapping` usage in pre-3.2 documents (3.2 addition)
   * `MediaTypesBefore32`: detect `components.mediaTypes` usage in pre-3.2 documents (3.2 addition)
   * `XmlNodeTypeBefore32`: detect XML Object `nodeType` usage in pre-3.2 documents (3.2 addition)
