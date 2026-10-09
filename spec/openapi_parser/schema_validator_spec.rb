@@ -1108,4 +1108,66 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
   end
+
+  describe 'array-form type coercion (3.1)' do
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+    let(:target) { { 'type' => ['integer', 'null'], 'minimum' => 0 } }
+    let(:schema) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => { 'Target' => target } },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Target']
+    end
+
+    context 'when a String coerces into a listed type' do
+      it 'returns the coerced value' do
+        expect(OpenAPIParser::SchemaValidator.validate('5', schema, options)).to eq 5
+      end
+    end
+
+    context 'when an earlier listed type does not coerce' do
+      let(:target) { { 'type' => ['integer', 'boolean'] } }
+
+      it 'tries the next listed type' do
+        expect(OpenAPIParser::SchemaValidator.validate('true', schema, options)).to eq true
+      end
+    end
+
+    context 'when string is listed' do
+      let(:target) { { 'type' => ['integer', 'string'] } }
+
+      it 'keeps the String' do
+        expect(OpenAPIParser::SchemaValidator.validate('5', schema, options)).to eq '5'
+      end
+    end
+
+    context 'when no listed type coerces' do
+      it 'raises the first type error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate('abc', schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError, /integer/)
+      end
+    end
+
+    context 'when the coerced value violates a constraint' do
+      it 'raises a validation error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate('-1', schema, options)
+        end.to raise_error(OpenAPIParser::LessThanMinimum)
+      end
+    end
+
+    context 'when coerce_value is off' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+
+      it 'raises a type-mismatch error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate('5', schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError)
+      end
+    end
+  end
 end

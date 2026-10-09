@@ -82,6 +82,8 @@ class OpenAPIParser::SchemaValidator
       return [nil, OpenAPIParser::ValidateError.new(value, "const #{schema.const.inspect}", schema.object_reference)] if value != schema.const
     end
 
+    return coerce_into_type_array(value, schema, **keyword_args) if coerce_into_type_array?(value, schema)
+
     if (v = validator(value, schema))
       if keyword_args.empty?
         return v.coerce_and_validate(value, schema)
@@ -124,7 +126,12 @@ class OpenAPIParser::SchemaValidator
         effective_type = matched
       end
 
-      case effective_type
+      validator_for_type(effective_type)
+    end
+
+    # @return [OpenAPIParser::SchemaValidator::Base]
+    def validator_for_type(type)
+      case type
       when 'string'
         string_validator
       when 'integer'
@@ -145,6 +152,36 @@ class OpenAPIParser::SchemaValidator
       else
         unspecified_type_validator
       end
+    end
+
+    # 3.1: request params arrive as Strings, so `type: [integer, "null"]`
+    # never matches by class. When coercing, try each listed type instead.
+    # @return [Boolean]
+    def coerce_into_type_array?(value, schema)
+      return false unless @coerce_value && value.is_a?(String)
+      return false if schema.any_of || schema.all_of || schema.one_of
+
+      schema.type.is_a?(Array) && pick_array_type(value, schema.type).nil?
+    end
+
+    # 3.1: returns the first listed type that coerces, or the first type's error.
+    # @return [Array] coerced value and error
+    def coerce_into_type_array(value, schema, **keyword_args)
+      first_error = nil
+      (schema.type - ['null']).each do |type|
+        v = validator_for_type(type)
+        coerced, err = if keyword_args.empty?
+                         v.coerce_and_validate(value, schema)
+                       else
+                         v.coerce_and_validate(value, schema, **keyword_args)
+                       end
+        return [coerced, nil] if err.nil?
+
+        first_error ||= err
+      end
+      return [nil, first_error] if first_error
+
+      type_mismatch_validator.coerce_and_validate(value, schema)
     end
 
     def type_mismatch_validator
