@@ -27,6 +27,9 @@ module OpenAPIParser
 
     private
     def validator: (Object value, OpenAPIParser::Schemas::Schema schema) -> [OpenAPIParser::SchemaValidator::Base, OpenAPIParser::validate_error]
+    def validator_for_type: (String? type) -> OpenAPIParser::SchemaValidator::Base
+    def coerce_into_type_array?: (Object value, OpenAPIParser::Schemas::Schema schema) -> bool
+    def coerce_into_type_array: (Object value, OpenAPIParser::Schemas::Schema schema, **untyped) -> [Object, OpenAPIParser::validate_error]
     def string_validator: -> OpenAPIParser::SchemaValidator::StringValidator
     def integer_validator: -> OpenAPIParser::SchemaValidator::IntegerValidator
     def float_validator: -> OpenAPIParser::SchemaValidator::FloatValidator

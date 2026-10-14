@@ -27,6 +27,7 @@
 * support root-level `webhooks` (OpenAPI 3.1) in the parse layer
 * support `const` (OpenAPI 3.1) with exact-equality value validation
 * support `contentSchema` (OpenAPI 3.1) in the parse layer
+* coerce String values into array-form `type` (3.1) when `coerce_value` is on, so params like `type: [integer, "null"]` accept `"5"`
 
 ## 2.3.1 (2025-11-14)
 * add optional date coercion with behavior matching existing datetime coercion
