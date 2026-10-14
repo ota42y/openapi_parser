@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 2.4.0 (2026-10-14)
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
 * support array-form `type` (3.1) in value validation
 * support root-level `jsonSchemaDialect` (OpenAPI 3.1) in the parse layer
