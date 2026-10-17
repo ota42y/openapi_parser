@@ -1,4 +1,5 @@
 ## Unreleased
+* coerce non-String values into array-form `type` (3.1) the same way as a single `type` when `coerce_value` is on, so `type: [integer, "null"]` handles a Float the same way as `type: integer`
 
 ## 2.4.0 (2026-10-14)
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items
