@@ -1167,7 +1167,13 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
 
     context 'when nil is given and null is not listed' do
-      it 'raises a not-null error the same way as a single type'
+      let(:target) { { 'type' => ['integer', 'string'] } }
+
+      it 'raises a not-null error the same way as a single type' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(nil, schema, options)
+        end.to raise_error(OpenAPIParser::NotNullError)
+      end
     end
 
     context 'when coerce_value is off' do

@@ -158,9 +158,10 @@ class OpenAPIParser::SchemaValidator
     # against each listed type, the same way a single `type` coerces it.
     # Request params arrive as Strings ("5" for `type: [integer, "null"]`),
     # and a single `type: integer` also coerces a Float such as 1.0.
+    # nil is left to the nil validator, as it is for a single `type`.
     # @return [Boolean]
     def coerce_into_type_array?(value, schema)
-      return false unless @coerce_value
+      return false unless @coerce_value && !value.nil?
       return false if schema.any_of || schema.all_of || schema.one_of
 
       schema.type.is_a?(Array) && pick_array_type(value, schema.type).nil?
