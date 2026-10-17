@@ -1128,6 +1128,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
 
+    context 'when a Float is given for a listed integer' do
+      it 'coerces it the same way as a single integer type'
+    end
+
     context 'when an earlier listed type does not coerce' do
       let(:target) { { 'type' => ['integer', 'boolean'] } }
 
@@ -1158,6 +1162,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
           OpenAPIParser::SchemaValidator.validate('-1', schema, options)
         end.to raise_error(OpenAPIParser::LessThanMinimum)
       end
+    end
+
+    context 'when nil is given and null is not listed' do
+      it 'raises a not-null error the same way as a single type'
     end
 
     context 'when coerce_value is off' do
