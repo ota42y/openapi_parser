@@ -125,5 +125,13 @@ module OpenAPIParser::Schemas
     def additional_properties
       @additional_properties.nil? ? true : @additional_properties
     end
+
+    # 3.1: a boolean schema (`true` / `false`) has no keywords to load.
+    def load_data
+      return super if raw_schema.is_a?(::Hash)
+
+      @_openapi_all_child_objects = {}
+      nil
+    end
   end
 end
