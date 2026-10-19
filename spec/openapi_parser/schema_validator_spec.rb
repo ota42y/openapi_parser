@@ -1135,7 +1135,11 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
 
     context 'when a Float with a fractional part is given for a listed integer' do
-      it 'raises a validation error the same way as a single integer type'
+      it 'raises a validation error the same way as a single integer type' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(1.5, schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError, /but received Float: 1.5/)
+      end
     end
 
     context 'when an earlier listed type does not coerce' do
