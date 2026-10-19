@@ -44,7 +44,10 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::BooleanSchemaIn30' do
   end
 
   context 'with a 3.1 document without a boolean schema' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_without_boolean_schema('3.1.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a 3.0 document using a boolean schema' do
@@ -58,14 +61,23 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::BooleanSchemaIn30' do
   end
 
   context 'with a 3.0 document without a boolean schema' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_without_boolean_schema('3.0.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a 3.0 document using additionalProperties: false' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_with_additional_properties_false('3.0.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a document whose openapi field is not a version' do
-    it 'reports no violation (rule skipped)'
+    it 'reports no violation (rule skipped)' do
+      root = doc_with_boolean_schema('not-a-version')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 end
