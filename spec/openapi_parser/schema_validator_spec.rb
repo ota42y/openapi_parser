@@ -1134,6 +1134,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
 
+    context 'when a Float with a fractional part is given for a listed integer' do
+      it 'raises a validation error the same way as a single integer type'
+    end
+
     context 'when an earlier listed type does not coerce' do
       let(:target) { { 'type' => ['integer', 'boolean'] } }
 

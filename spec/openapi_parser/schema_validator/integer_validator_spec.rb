@@ -224,4 +224,18 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
       end
     end
   end
+
+  describe 'coerce a Float' do
+    context 'with no fractional part' do
+      it 'converts it to an Integer'
+    end
+
+    context 'with a fractional part' do
+      it 'raises a validation error instead of truncating it'
+    end
+
+    context 'that is not finite' do
+      it 'raises a validation error'
+    end
+  end
 end
