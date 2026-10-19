@@ -1130,7 +1130,7 @@ RSpec.describe OpenAPIParser::SchemaValidator do
 
     context 'when a Float is given for a listed integer' do
       it 'coerces it the same way as a single integer type' do
-        expect(OpenAPIParser::SchemaValidator.validate(100000.0, schema, options)).to eq 100000
+        expect(OpenAPIParser::SchemaValidator.validate(100000.0, schema, options)).to eql 100000
       end
     end
 

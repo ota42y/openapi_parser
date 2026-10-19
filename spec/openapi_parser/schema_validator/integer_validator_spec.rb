@@ -226,8 +226,17 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
   end
 
   describe 'coerce a Float' do
+    subject { OpenAPIParser::SchemaValidator.validate(params, target_schema, options) }
+
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+    let(:replace_schema) { { my_integer: { type: 'integer' } } }
+
     context 'with no fractional part' do
-      it 'converts it to an Integer'
+      let(:params) { { 'my_integer' => 100000.0 } }
+
+      it 'converts it to an Integer' do
+        expect(subject['my_integer']).to eql 100000
+      end
     end
 
     context 'with a fractional part' do
