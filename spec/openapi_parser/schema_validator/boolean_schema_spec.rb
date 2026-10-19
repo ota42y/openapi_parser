@@ -38,12 +38,24 @@ RSpec.describe 'boolean schema (3.1)' do
   end
 
   context 'when a property schema is false' do
-    it 'rejects the property'
-    it 'accepts an object without the property'
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'properties' => { 'legacy' => false } } } }
+
+    it 'rejects the property' do
+      expect { validate({ 'legacy' => 1 }) }.to raise_error(OpenAPIParser::FalseSchemaError, %r{#/components/schemas/Target/properties/legacy})
+    end
+
+    it 'accepts an object without the property' do
+      expect(validate({ 'name' => 'a' })).to eq({ 'name' => 'a' })
+    end
   end
 
   context 'when a property schema is true' do
-    it 'accepts any value for the property'
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'properties' => { 'extra' => true } } } }
+
+    it 'accepts any value for the property' do
+      expect(validate({ 'extra' => [1, 'a'] })).to eq({ 'extra' => [1, 'a'] })
+    end
+
     it 'accepts null for the property'
   end
 
