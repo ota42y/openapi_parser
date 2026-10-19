@@ -48,7 +48,13 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::BooleanSchemaIn30' do
   end
 
   context 'with a 3.0 document using a boolean schema' do
-    it 'reports one violation pointing at the offending schema'
+    it 'reports one violation pointing at the offending schema' do
+      root = doc_with_boolean_schema('3.0.0')
+      violations = run_rule_for(root)
+      expect(violations.size).to eq 1
+      expect(violations.first.path).to eq '#/components/schemas/Tuple/items'
+      expect(violations.first.rule_name).to eq :boolean_schema_in30
+    end
   end
 
   context 'with a 3.0 document without a boolean schema' do

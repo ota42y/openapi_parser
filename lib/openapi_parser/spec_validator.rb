@@ -69,6 +69,7 @@ module OpenAPIParser
           Rules::ContentEncodingIn30,
           Rules::ContentMediaTypeIn30,
           Rules::PrefixItemsIn30,
+          Rules::BooleanSchemaIn30,
           Rules::JsonSchemaDialectIn30,
           Rules::TypeArrayIn30,
           Rules::PathItemsIn30,
