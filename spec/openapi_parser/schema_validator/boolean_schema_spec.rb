@@ -56,7 +56,9 @@ RSpec.describe 'boolean schema (3.1)' do
       expect(validate({ 'extra' => [1, 'a'] })).to eq({ 'extra' => [1, 'a'] })
     end
 
-    it 'accepts null for the property'
+    it 'accepts null for the property' do
+      expect(validate({ 'extra' => nil })).to eq({ 'extra' => nil })
+    end
   end
 
   context 'when a $ref points to a boolean schema' do
