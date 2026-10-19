@@ -248,7 +248,11 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
     end
 
     context 'that is not finite' do
-      it 'raises a validation error'
+      let(:params) { { 'my_integer' => Float::INFINITY } }
+
+      it 'raises a validation error' do
+        expect { subject }.to raise_error(OpenAPIParser::ValidateError, /expected integer, but received Float: Infinity/)
+      end
     end
   end
 end

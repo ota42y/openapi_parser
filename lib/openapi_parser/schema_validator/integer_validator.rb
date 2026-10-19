@@ -22,7 +22,7 @@ class OpenAPIParser::SchemaValidator
       def coerce(value)
         return value if value.kind_of?(Integer)
         # Integer() truncates a Float, so convert only one with no fractional part.
-        return value == value.floor ? value.to_i : value if value.kind_of?(Float)
+        return value.finite? && value == value.floor ? value.to_i : value if value.kind_of?(Float)
 
         begin
           Integer(value)
