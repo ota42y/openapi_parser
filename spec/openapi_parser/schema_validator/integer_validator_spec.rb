@@ -240,7 +240,11 @@ RSpec.describe OpenAPIParser::SchemaValidator::IntegerValidator do
     end
 
     context 'with a fractional part' do
-      it 'raises a validation error instead of truncating it'
+      let(:params) { { 'my_integer' => 1.5 } }
+
+      it 'raises a validation error instead of truncating it' do
+        expect { subject }.to raise_error(OpenAPIParser::ValidateError, /expected integer, but received Float: 1.5/)
+      end
     end
 
     context 'that is not finite' do
