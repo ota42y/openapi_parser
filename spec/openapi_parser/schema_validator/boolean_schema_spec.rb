@@ -32,7 +32,9 @@ RSpec.describe 'boolean schema (3.1)' do
       expect(validate([1.5, 2])).to eq [1.5, 2]
     end
 
-    it 'rejects an element past the prefix'
+    it 'rejects an element past the prefix' do
+      expect { validate([1.5, 2, 3]) }.to raise_error(OpenAPIParser::FalseSchemaError, %r{#/components/schemas/Target/items does not allow any value})
+    end
   end
 
   context 'when a property schema is false' do
