@@ -62,14 +62,49 @@ RSpec.describe 'boolean schema (3.1)' do
   end
 
   context 'when a $ref points to a boolean schema' do
-    it 'validates with the referenced boolean schema'
+    let(:schemas) do
+      {
+        'Never' => false,
+        'Target' => { 'type' => 'object', 'properties' => { 'legacy' => { '$ref' => '#/components/schemas/Never' } } },
+      }
+    end
+
+    it 'validates with the referenced boolean schema' do
+      expect { validate({ 'legacy' => 1 }) }.to raise_error(OpenAPIParser::FalseSchemaError, %r{#/components/schemas/Never})
+    end
   end
 
   context 'when the request body schema itself is false' do
-    it 'rejects any body'
+    let(:root) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {
+          '/items' => {
+            'post' => {
+              'requestBody' => { 'content' => { 'application/json' => { 'schema' => false } } },
+              'responses' => { '204' => { 'description' => 'ok' } },
+            },
+          },
+        },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: true)
+    end
+
+    it 'rejects any body' do
+      operation = root.request_operation(:post, '/items')
+      expect do
+        operation.validate_request_body('application/json', { 'name' => 'a' })
+      end.to raise_error(OpenAPIParser::FalseSchemaError)
+    end
   end
 
   context 'when reading the parsed schema' do
-    it 'returns a Schema whose raw_schema is the boolean'
+    let(:schemas) { { 'Target' => { 'type' => 'array', 'items' => false } } }
+
+    it 'returns a Schema whose raw_schema is the boolean' do
+      expect(schema.items).to be_a(OpenAPIParser::Schemas::Schema)
+      expect(schema.items.raw_schema).to eq false
+    end
   end
 end
