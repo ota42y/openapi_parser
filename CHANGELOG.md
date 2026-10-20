@@ -2,6 +2,10 @@
 * add OpenAPI 3.2 `SpecValidator` rules
   * `SelfBefore32`: detect `$self` usage in pre-3.2 documents (3.2 addition)
 * support root-level `$self` (OpenAPI 3.2) in the parse layer (`self_uri`); it is not yet used as the base URI for `$ref` resolution
+* support boolean schemas (OpenAPI 3.1): `true` accepts any value and `false` rejects any value with `FalseSchemaError`, instead of crashing the loader with `NoMethodError`
+* add `SpecValidator` rule `BooleanSchemaIn30`: detect boolean schemas in 3.0 documents (3.1 addition; `additionalProperties` is not affected)
+* coerce non-String values into array-form `type` (3.1) the same way as a single `type` when `coerce_value` is on, so `type: [integer, "null"]` handles a Float the same way as `type: integer`
+* stop truncating a Float with a fractional part in integer coercion (`coerce_value`): `1.5` for `type: integer` now fails instead of becoming `1`, while a Float with no fractional part, like `1.0`, is still converted
 
 ## 2.4.0 (2026-10-14)
 * support `components.pathItems` so `$ref`s into it resolve, unblocking OpenAPI 3.1 documents that use reusable path items

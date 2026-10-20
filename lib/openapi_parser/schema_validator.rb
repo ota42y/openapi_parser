@@ -75,6 +75,13 @@ class OpenAPIParser::SchemaValidator
   def validate_schema(value, schema, **keyword_args)
     return [value, nil] unless schema
 
+    # 3.1: a boolean schema accepts (`true`) or rejects (`false`) any value,
+    # including null.
+    if schema.respond_to?(:raw_schema)
+      return [value, nil] if schema.raw_schema == true
+      return [nil, OpenAPIParser::FalseSchemaError.new(schema.object_reference)] if schema.raw_schema == false
+    end
+
     # 3.1: `const` pins the value to exactly that constant. Checked before
     # type dispatch so it applies uniformly across primitives. Detection
     # uses raw_schema so an intentional `const: null` is honored.
@@ -154,11 +161,14 @@ class OpenAPIParser::SchemaValidator
       end
     end
 
-    # 3.1: request params arrive as Strings, so `type: [integer, "null"]`
-    # never matches by class. When coercing, try each listed type instead.
+    # 3.1: when coercing, a value whose class matches no listed type is tried
+    # against each listed type, the same way a single `type` coerces it.
+    # Request params arrive as Strings ("5" for `type: [integer, "null"]`),
+    # and a single `type: integer` also coerces a Float such as 1.0.
+    # nil is left to the nil validator, as it is for a single `type`.
     # @return [Boolean]
     def coerce_into_type_array?(value, schema)
-      return false unless @coerce_value && value.is_a?(String)
+      return false unless @coerce_value && !value.nil?
       return false if schema.any_of || schema.all_of || schema.one_of
 
       schema.type.is_a?(Array) && pick_array_type(value, schema.type).nil?

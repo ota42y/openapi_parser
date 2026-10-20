@@ -38,6 +38,13 @@ module OpenAPIParser
     end
   end
 
+  # 3.1: raised for any value checked against the boolean schema `false`
+  class FalseSchemaError < OpenAPIError
+    def message
+      "#{@reference} does not allow any value"
+    end
+  end
+
   class NotExistRequiredKey < OpenAPIError
     def initialize(keys, reference)
       super(reference)
