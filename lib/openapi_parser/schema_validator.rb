@@ -75,6 +75,13 @@ class OpenAPIParser::SchemaValidator
   def validate_schema(value, schema, **keyword_args)
     return [value, nil] unless schema
 
+    # 3.1: a boolean schema accepts (`true`) or rejects (`false`) any value,
+    # including null.
+    if schema.respond_to?(:raw_schema)
+      return [value, nil] if schema.raw_schema == true
+      return [nil, OpenAPIParser::FalseSchemaError.new(schema.object_reference)] if schema.raw_schema == false
+    end
+
     # 3.1: `const` pins the value to exactly that constant. Checked before
     # type dispatch so it applies uniformly across primitives. Detection
     # uses raw_schema so an intentional `const: null` is honored.

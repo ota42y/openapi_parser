@@ -5,6 +5,7 @@ require_relative 'spec_validator/rules/exclusive_maximum'
 require_relative 'spec_validator/rules/content_encoding_in_30'
 require_relative 'spec_validator/rules/content_media_type_in_30'
 require_relative 'spec_validator/rules/prefix_items_in_30'
+require_relative 'spec_validator/rules/boolean_schema_in_30'
 require_relative 'spec_validator/rules/json_schema_dialect_in_30'
 require_relative 'spec_validator/rules/type_array_in_30'
 require_relative 'spec_validator/rules/path_items_in_30'
@@ -68,6 +69,7 @@ module OpenAPIParser
           Rules::ContentEncodingIn30,
           Rules::ContentMediaTypeIn30,
           Rules::PrefixItemsIn30,
+          Rules::BooleanSchemaIn30,
           Rules::JsonSchemaDialectIn30,
           Rules::TypeArrayIn30,
           Rules::PathItemsIn30,
