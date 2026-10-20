@@ -53,6 +53,10 @@ module OpenAPIParser::Schemas
     #   @return [String, nil] dialect URI for embedded JSON Schemas (OpenAPI 3.1+)
     openapi_attr_value :json_schema_dialect, schema_key: :jsonSchemaDialect
 
+    # @!attribute [r] self_uri
+    #   @return [String, nil] the document's own URI, `$self` (OpenAPI 3.2+)
+    openapi_attr_value :self_uri, schema_key: :'$self'
+
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)

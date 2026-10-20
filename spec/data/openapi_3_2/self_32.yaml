@@ -1,0 +1,14 @@
+openapi: 3.2.0
+# `$self` is legitimate at the root of a 3.2 document, so no violation is
+# expected here.
+$self: https://example.com/api/openapi.yaml
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
