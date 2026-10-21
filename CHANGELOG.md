@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 2.5.0 (2026-10-21)
 * add OpenAPI 3.2 `SpecValidator` rules
   * `SelfBefore32`: detect `$self` usage in pre-3.2 documents (3.2 addition)
 * support root-level `$self` (OpenAPI 3.2) in the parse layer (`self_uri`); it is not yet used as the base URI for `$ref` resolution
