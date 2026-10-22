@@ -46,9 +46,13 @@ module OpenAPIParser
         def each_schema(root, &block)
           return enum_for(:each_schema, root) unless block
 
-          visited = {}
-          walk(root, visited) do |node|
-            yield node if node.is_a?(OpenAPIParser::Schemas::Schema)
+          each_node(root, OpenAPIParser::Schemas::Schema, &block)
+        end
+
+        # yields every parsed object reachable from root that is one of klasses
+        def each_node(root, *klasses)
+          walk(root, {}) do |node|
+            yield node if klasses.any? { |klass| node.is_a?(klass) }
           end
         end
 

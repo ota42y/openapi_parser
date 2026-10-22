@@ -17,6 +17,7 @@ require_relative 'spec_validator/rules/const_in_30'
 require_relative 'spec_validator/rules/dynamic_ref_in_30'
 require_relative 'spec_validator/rules/dynamic_anchor_in_30'
 require_relative 'spec_validator/rules/content_schema_in_30'
+require_relative 'spec_validator/rules/server_name_before_32'
 require_relative 'spec_validator/rules/self_before_32'
 require_relative 'spec_validator/rules/tag_fields_before_32'
 
@@ -83,6 +84,7 @@ module OpenAPIParser
           Rules::DynamicRefIn30,
           Rules::DynamicAnchorIn30,
           Rules::ContentSchemaIn30,
+          Rules::ServerNameBefore32,
           Rules::SelfBefore32,
           Rules::TagFieldsBefore32,
         ]
