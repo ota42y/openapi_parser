@@ -1,0 +1,21 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+# `summary`, `parent`, and `kind` on a Tag Object are 3.2 additions; a 3.1
+# document has no such fields, so their use here is a spec violation.
+tags:
+  - name: pets
+    summary: Pets
+    kind: nav
+  - name: pets/dogs
+    parent: pets
+paths:
+  /pets:
+    get:
+      summary: List pets
+      tags:
+        - pets
+      responses:
+        '200':
+          description: OK

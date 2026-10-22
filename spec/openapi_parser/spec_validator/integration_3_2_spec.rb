@@ -52,4 +52,18 @@ RSpec.describe 'OpenAPIParser 3.2 spec validator (integration)' do
       expect_clean('self_32.yaml')
     end
   end
+
+  describe 'Tag Object summary/parent/kind (3.2 additions)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('tag_fields_31.yaml', [:tag_fields_before32, :tag_fields_before32, :tag_fields_before32])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('tag_fields_31.yaml', [:tag_fields_before32, :tag_fields_before32, :tag_fields_before32])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('tag_fields_32.yaml')
+    end
+  end
 end
