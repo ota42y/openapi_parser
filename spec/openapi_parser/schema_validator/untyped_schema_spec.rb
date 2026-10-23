@@ -75,11 +75,23 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the keywords are for another type' do
-    it 'accepts a string for properties and required'
-    it 'accepts an object for maxLength'
+    let(:target) { { 'required' => ['count'], 'properties' => { 'count' => { 'type' => 'integer' } }, 'maxLength' => 1 } }
+
+    it 'accepts a string for properties and required' do
+      expect(validate('a')).to eq 'a'
+    end
+
+    it 'accepts an object for maxLength' do
+      expect(validate({ 'count' => 1 })).to eq({ 'count' => 1 })
+    end
   end
 
   context 'when the document is OpenAPI 3.0' do
-    it 'rejects a property that does not match its schema'
+    let(:openapi_version) { '3.0.3' }
+    let(:target) { { 'properties' => { 'count' => { 'type' => 'integer' } } } }
+
+    it 'rejects a property that does not match its schema' do
+      expect { validate({ 'count' => 'x' }) }.to raise_error(OpenAPIParser::ValidateError, %r{#/components/schemas/Target/properties/count})
+    end
   end
 end
