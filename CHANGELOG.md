@@ -1,10 +1,11 @@
 ## Unreleased
+* add OpenAPI 3.2 `SpecValidator` rules
+  * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
+  * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
 
 ## 2.5.0 (2026-10-21)
 * add OpenAPI 3.2 `SpecValidator` rules
-  * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
   * `SelfBefore32`: detect `$self` usage in pre-3.2 documents (3.2 addition)
-  * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
 * support root-level `$self` (OpenAPI 3.2) in the parse layer (`self_uri`); it is not yet used as the base URI for `$ref` resolution
 * support boolean schemas (OpenAPI 3.1): `true` accepts any value and `false` rejects any value with `FalseSchemaError`, instead of crashing the loader with `NoMethodError`
 * add `SpecValidator` rule `BooleanSchemaIn30`: detect boolean schemas in 3.0 documents (3.1 addition; `additionalProperties` is not affected)
