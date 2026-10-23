@@ -136,6 +136,7 @@ class OpenAPIParser::SchemaValidator
       # JSON Schema applies each keyword when the value has the type the
       # keyword is for, whether or not `type` is set.
       effective_type = 'object' if effective_type.nil? && value.is_a?(Hash)
+      effective_type = 'array' if effective_type.nil? && value.is_a?(Array)
 
       validator_for_type(effective_type)
     end

@@ -35,7 +35,11 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the value is an array' do
-    it 'rejects an item that does not match items'
+    let(:target) { { 'items' => { 'type' => 'integer' } } }
+
+    it 'rejects an item that does not match items' do
+      expect { validate(['x']) }.to raise_error(OpenAPIParser::ValidateError, %r{#/components/schemas/Target/items})
+    end
   end
 
   context 'when the value is a string' do
