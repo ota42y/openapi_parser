@@ -140,6 +140,7 @@ class OpenAPIParser::SchemaValidator
       effective_type = 'string' if effective_type.nil? && value.is_a?(String)
       effective_type = 'integer' if effective_type.nil? && value.is_a?(Integer)
       effective_type = 'number' if effective_type.nil? && value.is_a?(Numeric)
+      effective_type = 'boolean' if effective_type.nil? && (value == true || value == false)
 
       validator_for_type(effective_type)
     end

@@ -67,7 +67,11 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the value is a boolean' do
-    it 'rejects a boolean not in enum'
+    let(:target) { { 'enum' => [true] } }
+
+    it 'rejects a boolean not in enum' do
+      expect { validate(false) }.to raise_error(OpenAPIParser::NotEnumInclude)
+    end
   end
 
   context 'when the keywords are for another type' do
