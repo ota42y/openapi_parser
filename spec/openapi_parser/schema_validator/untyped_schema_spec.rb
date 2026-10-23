@@ -61,7 +61,9 @@ RSpec.describe 'schema without type' do
       expect { validate(1) }.to raise_error(OpenAPIParser::LessThanMinimum)
     end
 
-    it 'rejects a float below minimum'
+    it 'rejects a float below minimum' do
+      expect { validate(1.5) }.to raise_error(OpenAPIParser::LessThanMinimum)
+    end
   end
 
   context 'when the value is a boolean' do
