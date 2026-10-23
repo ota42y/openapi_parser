@@ -19,7 +19,12 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the value is an object' do
-    it 'rejects a property that does not match its schema'
+    let(:target) { { 'required' => ['count'], 'properties' => { 'count' => { 'type' => 'integer' } } } }
+
+    it 'rejects a property that does not match its schema' do
+      expect { validate({ 'count' => 'x' }) }.to raise_error(OpenAPIParser::ValidateError, %r{#/components/schemas/Target/properties/count})
+    end
+
     it 'rejects an object without a required property'
     it 'accepts an object that matches properties and required'
   end
