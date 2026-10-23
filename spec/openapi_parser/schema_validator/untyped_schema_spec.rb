@@ -49,11 +49,18 @@ RSpec.describe 'schema without type' do
       expect { validate('abc') }.to raise_error(OpenAPIParser::MoreThanMaxLength)
     end
 
-    it 'rejects a string not in enum'
+    it 'rejects a string not in enum' do
+      expect { validate('z') }.to raise_error(OpenAPIParser::NotEnumInclude)
+    end
   end
 
   context 'when the value is a number' do
-    it 'rejects an integer below minimum'
+    let(:target) { { 'minimum' => 10 } }
+
+    it 'rejects an integer below minimum' do
+      expect { validate(1) }.to raise_error(OpenAPIParser::LessThanMinimum)
+    end
+
     it 'rejects a float below minimum'
   end
 
