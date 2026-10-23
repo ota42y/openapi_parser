@@ -25,8 +25,13 @@ RSpec.describe 'schema without type' do
       expect { validate({ 'count' => 'x' }) }.to raise_error(OpenAPIParser::ValidateError, %r{#/components/schemas/Target/properties/count})
     end
 
-    it 'rejects an object without a required property'
-    it 'accepts an object that matches properties and required'
+    it 'rejects an object without a required property' do
+      expect { validate({}) }.to raise_error(OpenAPIParser::NotExistRequiredKey, /count/)
+    end
+
+    it 'accepts an object that matches properties and required' do
+      expect(validate({ 'count' => 1 })).to eq({ 'count' => 1 })
+    end
   end
 
   context 'when the value is an array' do
