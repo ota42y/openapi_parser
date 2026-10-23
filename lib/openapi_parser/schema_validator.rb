@@ -37,6 +37,10 @@ class OpenAPIParser::SchemaValidator
 
   include Validatable
 
+  # Types to pick from for a schema without `type`. integer comes before
+  # number so that an Integer is checked as an integer.
+  VALUE_TYPES = %w[object array string integer number boolean].freeze
+
   class << self
     # validate schema data
     # @param [Hash] value
@@ -135,12 +139,7 @@ class OpenAPIParser::SchemaValidator
 
       # JSON Schema applies each keyword when the value has the type the
       # keyword is for, whether or not `type` is set.
-      effective_type = 'object' if effective_type.nil? && value.is_a?(Hash)
-      effective_type = 'array' if effective_type.nil? && value.is_a?(Array)
-      effective_type = 'string' if effective_type.nil? && value.is_a?(String)
-      effective_type = 'integer' if effective_type.nil? && value.is_a?(Integer)
-      effective_type = 'number' if effective_type.nil? && value.is_a?(Numeric)
-      effective_type = 'boolean' if effective_type.nil? && (value == true || value == false)
+      effective_type ||= pick_array_type(value, VALUE_TYPES)
 
       validator_for_type(effective_type)
     end
