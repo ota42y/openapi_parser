@@ -43,7 +43,12 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the value is a string' do
-    it 'rejects a string longer than maxLength'
+    let(:target) { { 'maxLength' => 1, 'enum' => ['a', 'abc'] } }
+
+    it 'rejects a string longer than maxLength' do
+      expect { validate('abc') }.to raise_error(OpenAPIParser::MoreThanMaxLength)
+    end
+
     it 'rejects a string not in enum'
   end
 
