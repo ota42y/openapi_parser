@@ -31,7 +31,7 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
     end
 
     def escape_reference(str)
-      str.to_s.gsub('/', '~1')
+      str.to_s.gsub('~', '~0').gsub('/', '~1')
     end
 
     def build_openapi_object_from_option(target_object, ref, schema)
