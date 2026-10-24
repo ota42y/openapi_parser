@@ -2,6 +2,7 @@
 module OpenAPIParser
   class SchemaValidator
     include Validatable
+    VALUE_TYPES: Array[String]
     @value: Hash[bot, bot]
     @schema: OpenAPIParser::Schemas::Schema
     @coerce_value: bool | nil
