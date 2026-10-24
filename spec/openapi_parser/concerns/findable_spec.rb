@@ -1,4 +1,5 @@
 require_relative '../../spec_helper'
+require 'tmpdir'
 
 RSpec.describe OpenAPIParser::Findable do
   let(:root) { OpenAPIParser.parse(petstore_schema, {}) }
@@ -19,6 +20,90 @@ RSpec.describe OpenAPIParser::Findable do
 
     it do
       expect(subject.find_object('#/paths/~1pets/get').object_reference).to eq root.paths.path['/pets'].get.object_reference
+    end
+  end
+
+  describe 'JSON Pointer escapes in path references' do
+    let(:document) do
+      {
+        'openapi' => '3.0.3',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {
+          '/resource/test' => { 'summary' => 'slash' },
+          '/resource~test' => { 'summary' => 'tilde' },
+          '/resource~1test' => { 'summary' => 'literal ~1' },
+          '/resource~0test' => { 'summary' => 'literal ~0' },
+        },
+      }
+    end
+
+    where(:pointer, :path_name) do
+      [
+        ['~1resource~1test', '/resource/test'],
+        ['~1resource~0test', '/resource~test'],
+        ['~1resource~01test', '/resource~1test'],
+        ['~1resource~00test', '/resource~0test'],
+        ['%7E1resource%7E1test', '/resource/test'],
+      ]
+    end
+
+    with_them do
+      it 'resolves a reference in the same document' do
+        document['paths']['/reference'] = { '$ref' => "#/paths/#{pointer}" }
+        parsed = OpenAPIParser.parse(document, strict_reference_validation: true)
+
+        expect(parsed.paths.path['/reference']).to equal(parsed.paths.path[path_name])
+      end
+
+      it 'resolves a reference in another file' do
+        Dir.mktmpdir do |directory|
+          File.write(File.join(directory, 'file.yaml'), Psych.dump(document))
+          source = document.merge('paths' => { '/reference' => { '$ref' => "file.yaml#/paths/#{pointer}" } })
+          source_path = File.join(directory, 'source.yaml')
+          File.write(source_path, Psych.dump(source))
+          parsed = OpenAPIParser.load(source_path, strict_reference_validation: true)
+
+          expect(parsed.paths.path['/reference'].raw_schema).to eq(document['paths'][path_name])
+        end
+      end
+    end
+  end
+
+  describe 'JSON Pointer escapes in property references' do
+    let(:properties) do
+      {
+        'a/b' => { 'type' => 'string' },
+        'a~b' => { 'type' => 'integer' },
+        'a~1b' => { 'type' => 'boolean' },
+        'a~0b' => { 'type' => 'number' },
+        'a' => { 'type' => 'object', 'properties' => { 'b' => { 'type' => 'array' } } },
+      }
+    end
+    let(:root) do
+      OpenAPIParser.parse({
+        'openapi' => '3.0.3',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => { 'Object' => { 'type' => 'object', 'properties' => properties } } },
+      }, strict_reference_validation: true)
+    end
+
+    where(:pointer, :type) do
+      [
+        ['a~1b', 'string'],
+        ['a~0b', 'integer'],
+        ['a~01b', 'boolean'],
+        ['a~00b', 'number'],
+        ['a/properties/b', 'array'],
+      ]
+    end
+
+    with_them do
+      it 'resolves the correct property without confusing escaped keys or nested objects' do
+        properties['reference'] = { '$ref' => "#/components/schemas/Object/properties/#{pointer}" }
+
+        expect(root.components.schemas['Object'].properties['reference'].type).to eq(type)
+      end
     end
   end
 
