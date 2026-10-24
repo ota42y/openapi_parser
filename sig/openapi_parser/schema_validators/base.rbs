@@ -10,9 +10,10 @@ module OpenAPIParser
       def coerce_and_validate: (Object _value, OpenAPIParser::Schemas::Schema _schema, **untyped) -> [untyped, (ValidateError | NotExistDiscriminatorMappedSchema | nil)]
       def validate_discriminator_schema: (
         OpenAPIParser::Schemas::Discriminator discriminator, 
-        Hash[String, bot] value,
+        Hash[String, untyped] value,
+        ?candidate_schemas: Array[OpenAPIParser::Schemas::Schema] | nil,
         ?parent_discriminator_schemas: Array[OpenAPIParser::Schemas::Schema]
-      ) -> [Object | nil, OpenAPIParser::OpenAPIError]
+      ) -> [Object | nil, OpenAPIParser::OpenAPIError | nil]
     end
   end
 end

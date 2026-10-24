@@ -12,19 +12,22 @@ class OpenAPIParser::SchemaValidator
       raise 'need implement'
     end
 
-    def validate_discriminator_schema(discriminator, value, parent_discriminator_schemas: [])
+    def validate_discriminator_schema(discriminator, value, candidate_schemas: nil, parent_discriminator_schemas: [])
       property_name = discriminator.property_name
       if property_name.nil? || !value.key?(property_name)
         return [nil, OpenAPIParser::NotExistDiscriminatorPropertyName.new(discriminator.property_name, value, discriminator.object_reference)]
       end
       mapping_key = value[property_name]
 
-      # it's allowed to have discriminator without mapping, then we need to lookup discriminator.property_name
-      # but the format is not the full path, just model name in the components
-      mapping_target = discriminator.mapping&.[](mapping_key) || "#/components/schemas/#{mapping_key}"
-
-      # Find object does O(n) search at worst, then caches the result, so this is ok for repeated search
-      resolved_schema = discriminator.root.find_object(mapping_target)
+      mapping_target = discriminator.mapping&.[](mapping_key)
+      if mapping_target
+        resolved_schema = discriminator.root.find_object(mapping_target)
+      else
+        mapping_target = "#/components/schemas/#{mapping_key}"
+        # Implicit values are component names, not reference paths.
+        resolved_schema = discriminator.root.components&.schemas&.[](mapping_key.to_s)
+        resolved_schema = nil if candidate_schemas && resolved_schema && !candidate_schemas.include?(resolved_schema)
+      end
 
       unless resolved_schema
         return [nil, OpenAPIParser::NotExistDiscriminatorMappedSchema.new(mapping_target, discriminator.object_reference)]
