@@ -38,6 +38,16 @@ RSpec.describe OpenAPIParser::RequestOperation do
       ro = OpenAPIParser::RequestOperation.create(:head, '/pets/1', path_item_finder, config.request_validator_options)
       expect(ro).to eq nil
     end
+
+    # 3.1: a document may have only `webhooks` and no `paths`
+    context 'with a document that has webhooks but no paths' do
+      it 'returns nil instead of raising'
+      it 'still exposes webhooks'
+    end
+
+    context 'with a document that has empty paths' do
+      it 'returns nil'
+    end
   end
 
   describe 'validate_response_body' do
