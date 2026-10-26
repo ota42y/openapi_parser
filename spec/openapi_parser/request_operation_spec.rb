@@ -55,11 +55,23 @@ RSpec.describe OpenAPIParser::RequestOperation do
         expect(root.request_operation(:get, '/pets')).to be_nil
       end
 
-      it 'still exposes webhooks'
+      it 'still exposes webhooks' do
+        expect(root.webhooks['newPet']).to be_a(OpenAPIParser::Schemas::PathItem)
+      end
     end
 
     context 'with a document that has empty paths' do
-      it 'returns nil'
+      let(:root) do
+        OpenAPIParser.parse({
+          'openapi' => '3.1.0',
+          'info' => { 'title' => 'test', 'version' => '1.0' },
+          'paths' => {},
+        }, {})
+      end
+
+      it 'returns nil' do
+        expect(root.request_operation(:get, '/pets')).to be_nil
+      end
     end
   end
 
