@@ -41,7 +41,20 @@ RSpec.describe OpenAPIParser::RequestOperation do
 
     # 3.1: a document may have only `webhooks` and no `paths`
     context 'with a document that has webhooks but no paths' do
-      it 'returns nil instead of raising'
+      let(:root) do
+        OpenAPIParser.parse({
+          'openapi' => '3.1.0',
+          'info' => { 'title' => 'test', 'version' => '1.0' },
+          'webhooks' => {
+            'newPet' => { 'post' => { 'responses' => { '200' => { 'description' => 'ok' } } } },
+          },
+        }, {})
+      end
+
+      it 'returns nil instead of raising' do
+        expect(root.request_operation(:get, '/pets')).to be_nil
+      end
+
       it 'still exposes webhooks'
     end
 
