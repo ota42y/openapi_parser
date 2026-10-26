@@ -124,6 +124,11 @@ class OpenAPIParser::SchemaValidator
       return one_of_validator if schema.one_of
       return nil_validator if value.nil?
 
+      # 3.1: `format: binary` with `string` in an array-form `type` accepts a
+      # non-String object such as an uploaded file, the same way as a single
+      # `type: string`. The string validator skips the check for `binary`.
+      return string_validator if binary_string_in_type_array?(value, schema)
+
       # 3.1: pick the type from an Array whose primitive class matches the
       # value, then dispatch as if it were a single-type schema. If nothing
       # matches we still pick a candidate so the relevant validator emits
@@ -167,6 +172,14 @@ class OpenAPIParser::SchemaValidator
       else
         unspecified_type_validator
       end
+    end
+
+    # 3.1: a non-String value for an array-form `type` that lists `string`
+    # with `format: binary`, such as an uploaded file object.
+    def binary_string_in_type_array?(value, schema)
+      return false if value.is_a?(String)
+
+      schema.format == 'binary' && schema.type.is_a?(Array) && schema.type.include?('string')
     end
 
     # 3.1: when coercing, a value whose class matches no listed type is tried

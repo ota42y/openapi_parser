@@ -1209,7 +1209,10 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
 
     context 'when an arbitrary object except String is given' do
-      it 'passes validation the same way as a single string type'
+      it 'passes validation the same way as a single string type' do
+        value = ['b', 'i', 'n', 'a', 'r', 'y']
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
     end
 
     context 'when a String is given' do
