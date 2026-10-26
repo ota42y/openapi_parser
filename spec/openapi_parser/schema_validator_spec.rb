@@ -1216,19 +1216,34 @@ RSpec.describe OpenAPIParser::SchemaValidator do
     end
 
     context 'when a String is given' do
-      it 'passes validation'
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate('binary', schema, options)).to eq 'binary'
+      end
     end
 
     context 'when nil is given' do
-      it 'passes validation'
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate(nil, schema, options)).to eq nil
+      end
     end
 
     context 'when string is not listed' do
-      it 'raises a type-mismatch error'
+      let(:target) { { 'type' => ['integer', 'null'], 'format' => 'binary' } }
+
+      it 'raises a type-mismatch error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(['b', 'i', 'n', 'a', 'r', 'y'], schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError, /expected \["integer", "null"\]/)
+      end
     end
 
     context 'when coerce_value is on' do
-      it 'passes validation'
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+
+      it 'passes validation' do
+        value = ['b', 'i', 'n', 'a', 'r', 'y']
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
     end
   end
 end
