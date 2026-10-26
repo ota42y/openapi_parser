@@ -1194,4 +1194,38 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
   end
+
+  describe 'array-form type with format: binary (3.1)' do
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+    let(:target) { { 'type' => ['string', 'null'], 'format' => 'binary' } }
+    let(:schema) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => { 'Target' => target } },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Target']
+    end
+
+    context 'when an arbitrary object except String is given' do
+      it 'passes validation the same way as a single string type'
+    end
+
+    context 'when a String is given' do
+      it 'passes validation'
+    end
+
+    context 'when nil is given' do
+      it 'passes validation'
+    end
+
+    context 'when string is not listed' do
+      it 'raises a type-mismatch error'
+    end
+
+    context 'when coerce_value is on' do
+      it 'passes validation'
+    end
+  end
 end
