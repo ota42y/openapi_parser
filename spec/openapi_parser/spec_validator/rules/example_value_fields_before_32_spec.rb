@@ -89,15 +89,16 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::ExampleValueFieldsBefore32'
       post = raw['paths']['/pets']['post']
       post['parameters'] = [{ 'name' => 'q', 'in' => 'query', 'schema' => { 'type' => 'string' }, 'examples' => { 'rex' => example } }]
       post['responses']['201']['headers'] = { 'X-Id' => { 'schema' => { 'type' => 'string' }, 'examples' => { 'rex' => example } } }
-      raw['components'] = { 'examples' => { 'shared/rex' => example } }
+      raw['components'] = { 'examples' => { 'shared/rex' => example, 'shared~rex' => example } }
       OpenAPIParser.parse(raw, strict_reference_validation: false)
     end
 
-    it 'reports each location, escaping slashes in example names' do
+    it 'reports each location, escaping slashes and tildes in example names' do
       expect(run_rule_for(root).map(&:path)).to match_array [
         '#/paths/~1pets/post/parameters/0/examples/rex/dataValue',
         '#/paths/~1pets/post/responses/201/headers/X-Id/examples/rex/dataValue',
         '#/components/examples/shared~1rex/dataValue',
+        '#/components/examples/shared~0rex/dataValue',
       ]
     end
   end
