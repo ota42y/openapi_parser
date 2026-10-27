@@ -1,0 +1,28 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          xml:
+            # `attribute` and `wrapped` are legitimate XML Object fields
+            # before 3.2, so no violation is expected here.
+            attribute: true
+        tags:
+          type: array
+          items:
+            type: string
+          xml:
+            wrapped: true
