@@ -21,7 +21,7 @@ class OpenAPIParser::SchemaLoader::HashBodyLoader < OpenAPIParser::SchemaLoader:
     # for responses and paths object
     def create_hash_body_objects(target_object, raw_schema)
       object_list = raw_schema.reject { |k, _| reject_keys.include?(k) }.map do |child_name, child_schema|
-        ref = build_object_reference_from_base(target_object.object_reference, escape_reference(child_name))
+        ref = build_object_reference_from_base(target_object.object_reference, child_name)
         [
           child_name.to_s, # support string key only in OpenAPI3
           build_openapi_object_from_option(target_object, ref, child_schema),

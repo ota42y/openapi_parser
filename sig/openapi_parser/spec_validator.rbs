@@ -36,6 +36,7 @@ module OpenAPIParser
       private def violation: (path: String, message: String) -> SpecViolation
       private def each_schema: (untyped root) ?{ (untyped) -> void } -> untyped
       private def each_node: (untyped root, *Class klasses) { (untyped) -> void } -> void
+      private def escape_reference: (untyped key) -> String
       private def walk: (untyped node, Hash[Integer, bool] visited) { (untyped) -> void } -> void
     end
 
@@ -108,6 +109,18 @@ module OpenAPIParser
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
 
+      class XmlNodeTypeBefore32 < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
+      class XmlAttributeDeprecation < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
+      class XmlWrappedDeprecation < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
       class ServerNameBefore32 < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
@@ -117,6 +130,11 @@ module OpenAPIParser
       end
 
       class TagFieldsBefore32 < Rule
+        NEW_FIELDS: Array[String]
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
+      class ExampleValueFieldsBefore32 < Rule
         NEW_FIELDS: Array[String]
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end

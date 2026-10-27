@@ -48,6 +48,11 @@ end
 
 class OpenAPIParser::Schemas::OpenAPI < OpenAPIParser::Schemas::Base 
   attr_reader paths: untyped
+  attr_reader components: OpenAPIParser::Schemas::Components | nil
+end
+
+class OpenAPIParser::Schemas::Components < OpenAPIParser::Schemas::Base
+  attr_reader schemas: Hash[String, OpenAPIParser::Schemas::Schema] | nil
 end
 
 module OpenAPIParser::Expandable

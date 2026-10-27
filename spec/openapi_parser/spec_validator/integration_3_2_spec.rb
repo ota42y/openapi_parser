@@ -39,6 +39,34 @@ RSpec.describe 'OpenAPIParser 3.2 spec validator (integration)' do
     expect { load_doc(file, :raise) }.not_to raise_error
   end
 
+  describe 'XML Object nodeType (3.2 addition)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('xml_node_type_31.yaml', [:xml_node_type_before32])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('xml_node_type_31.yaml', [:xml_node_type_before32])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('xml_node_type_32.yaml')
+    end
+  end
+
+  describe 'XML Object attribute/wrapped (deprecated in 3.2)' do
+    it 'warns on the 3.2 document still using the deprecated fields under :warn' do
+      expect_mismatch_warns('xml_deprecated_fields_32.yaml', [:xml_attribute_deprecation, :xml_wrapped_deprecation])
+    end
+
+    it 'raises SpecViolationError on the 3.2 document under :raise' do
+      expect_mismatch_raises('xml_deprecated_fields_32.yaml', [:xml_attribute_deprecation, :xml_wrapped_deprecation])
+    end
+
+    it 'stays clean on the 3.1 document (fields legitimate before 3.2)' do
+      expect_clean('xml_deprecated_fields_31.yaml')
+    end
+  end
+
   describe 'Server Object name (3.2 addition)' do
     it 'warns on the version-mismatched document under :warn' do
       expect_mismatch_warns('server_name_31.yaml', [:server_name_before32])
@@ -78,6 +106,20 @@ RSpec.describe 'OpenAPIParser 3.2 spec validator (integration)' do
 
     it 'stays clean on the correctly-versioned document' do
       expect_clean('tag_fields_32.yaml')
+    end
+  end
+
+  describe 'Example Object dataValue/serializedValue (3.2 additions)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('example_value_fields_31.yaml', [:example_value_fields_before32, :example_value_fields_before32])
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('example_value_fields_31.yaml', [:example_value_fields_before32, :example_value_fields_before32])
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('example_value_fields_32.yaml')
     end
   end
 end

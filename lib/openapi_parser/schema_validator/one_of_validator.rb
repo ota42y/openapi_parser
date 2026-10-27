@@ -7,7 +7,7 @@ class OpenAPIParser::SchemaValidator
         return [value, nil]
       end
       if schema.discriminator
-        return validate_discriminator_schema(schema.discriminator, value)
+        return validate_discriminator_schema(schema.discriminator, value, candidate_schemas: schema.one_of)
       end
 
       # if multiple schemas are satisfied, it's not valid
