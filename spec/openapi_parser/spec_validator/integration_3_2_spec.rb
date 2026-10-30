@@ -136,4 +136,18 @@ RSpec.describe 'OpenAPIParser 3.2 spec validator (integration)' do
       expect_clean('example_value_fields_32.yaml')
     end
   end
+
+  describe 'Security Scheme deviceAuthorization/oauth2MetadataUrl/deprecated (3.2 additions)' do
+    it 'warns on the version-mismatched document under :warn' do
+      expect_mismatch_warns('security_scheme_fields_31.yaml', [:security_scheme_fields_before32] * 3)
+    end
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise' do
+      expect_mismatch_raises('security_scheme_fields_31.yaml', [:security_scheme_fields_before32] * 3)
+    end
+
+    it 'stays clean on the correctly-versioned document' do
+      expect_clean('security_scheme_fields_32.yaml')
+    end
+  end
 end

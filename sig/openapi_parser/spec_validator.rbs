@@ -36,6 +36,7 @@ module OpenAPIParser
       private def violation: (path: String, message: String) -> SpecViolation
       private def each_schema: (untyped root) ?{ (untyped) -> void } -> untyped
       private def each_node: (untyped root, *Class klasses) { (untyped) -> void } -> void
+      private def each_security_scheme: (untyped root) { (String, Hash[untyped, untyped]) -> void } -> void
       private def escape_reference: (untyped key) -> String
       private def walk: (untyped node, Hash[Integer, bool] visited) { (untyped) -> void } -> void
     end
@@ -139,6 +140,11 @@ module OpenAPIParser
       end
 
       class ExampleValueFieldsBefore32 < Rule
+        NEW_FIELDS: Array[String]
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
+      class SecuritySchemeFieldsBefore32 < Rule
         NEW_FIELDS: Array[String]
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
