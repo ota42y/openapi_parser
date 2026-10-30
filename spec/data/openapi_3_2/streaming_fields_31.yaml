@@ -1,0 +1,27 @@
+openapi: 3.1.0
+info:
+  title: Event API
+  version: '1.0'
+paths:
+  /events:
+    get:
+      summary: Stream events
+      responses:
+        '200':
+          description: OK
+          content:
+            text/event-stream:
+              # `itemSchema`, `itemEncoding`, and `prefixEncoding` on a
+              # Media Type Object are 3.2 additions for sequential media
+              # types; a 3.1 document has no such fields, so their use here
+              # is a spec violation.
+              itemSchema:
+                type: object
+                properties:
+                  event:
+                    type: string
+              itemEncoding:
+                event:
+                  contentType: text/plain
+              prefixEncoding:
+                - contentType: application/json
