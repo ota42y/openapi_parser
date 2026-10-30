@@ -1,0 +1,8 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  # the referenced file declares no version, so it follows this document
+  /pets:
+    $ref: 'media_type_refs_fragment.yaml#/paths/~1pets'

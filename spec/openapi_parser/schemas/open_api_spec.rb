@@ -89,4 +89,30 @@ RSpec.describe OpenAPIParser::Schemas::OpenAPI do
       end
     end
   end
+
+  describe '#use_3_2_features?' do
+    def parse_with_openapi_field(value, config = {}, present: true)
+      schema = { 'info' => { 'title' => 'test', 'version' => '1.0' }, 'paths' => {} }
+      schema['openapi'] = value if present
+      OpenAPIParser.parse(schema, { strict_reference_validation: false }.merge(config))
+    end
+
+    it 'is true for a 3.2 document' do
+      expect(parse_with_openapi_field('3.2.0').use_3_2_features?).to eq true
+    end
+
+    it 'is false for 3.0 and 3.1 documents' do
+      expect(parse_with_openapi_field('3.0.3').use_3_2_features?).to eq false
+      expect(parse_with_openapi_field('3.1.0').use_3_2_features?).to eq false
+    end
+
+    it 'is false when the version is missing or malformed' do
+      expect(parse_with_openapi_field(nil, present: false).use_3_2_features?).to eq false
+      expect(parse_with_openapi_field('not-a-version').use_3_2_features?).to eq false
+    end
+
+    it 'is true for any document with allow_3_2_features' do
+      expect(parse_with_openapi_field('3.0.3', { allow_3_2_features: true }).use_3_2_features?).to eq true
+    end
+  end
 end

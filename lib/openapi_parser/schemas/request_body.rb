@@ -12,7 +12,7 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] content
     #   @return [Hash{String => MediaType}, nil] content type to MediaType object
-    openapi_attr_hash_object :content, MediaType, reference: false
+    openapi_attr_hash_object :content, MediaType, reference: OpenAPIParser::MediaTypeSelectable::CONTENT_REFERENCE
 
     # @param [String] content_type
     # @param [Hash] params

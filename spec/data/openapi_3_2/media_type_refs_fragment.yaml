@@ -1,0 +1,19 @@
+# no `openapi` field: a fragment loaded through a $ref
+paths:
+  /pets:
+    post:
+      requestBody:
+        content:
+          application/json:
+            $ref: '#/components/mediaTypes/PetJson'
+      responses:
+        '201':
+          description: Created
+components:
+  mediaTypes:
+    PetJson:
+      schema:
+        type: object
+        properties:
+          id:
+            type: integer

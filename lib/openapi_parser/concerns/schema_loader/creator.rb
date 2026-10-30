@@ -26,6 +26,11 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
       check_object_schema?(check_schema) && !check_schema['$ref'].nil?
     end
 
+    # `reference:` is a Boolean, or a Proc taking the owning object
+    def allow_reference?(target_object)
+      @allow_reference.respond_to?(:call) ? @allow_reference.call(target_object) : @allow_reference
+    end
+
     def check_object_schema?(check_schema)
       check_schema.kind_of?(::Hash)
     end
@@ -39,7 +44,7 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
 
       if @allow_data_type && !check_object_schema?(schema)
         schema
-      elsif @allow_reference && check_reference_schema?(schema)
+      elsif allow_reference?(target_object) && check_reference_schema?(schema)
         OpenAPIParser::Schemas::Reference.new(ref, target_object, target_object.root, schema)
       else
         @klass.new(ref, target_object, target_object.root, schema)

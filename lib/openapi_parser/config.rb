@@ -15,6 +15,11 @@ class OpenAPIParser::Config
     @config.fetch(:allow_empty_date_and_datetime, false)
   end
 
+  # apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version
+  def allow_3_2_features
+    @config.fetch(:allow_3_2_features, false)
+  end
+
   def datetime_coerce_class
     @config[:datetime_coerce_class]
   end

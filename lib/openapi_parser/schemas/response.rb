@@ -8,7 +8,7 @@ module OpenAPIParser::Schemas
 
     # @!attribute [r] content
     #   @return [Hash{String => MediaType}, nil] content_type to MediaType hash
-    openapi_attr_hash_object :content, MediaType, reference: false
+    openapi_attr_hash_object :content, MediaType, reference: OpenAPIParser::MediaTypeSelectable::CONTENT_REFERENCE
 
     # @!attribute [r] headers
     #   @return [Hash{String => Header}, nil] header string to Header
