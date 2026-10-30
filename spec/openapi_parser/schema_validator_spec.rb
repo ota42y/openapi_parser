@@ -1194,4 +1194,56 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
   end
+
+  describe 'array-form type with format: binary (3.1)' do
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+    let(:target) { { 'type' => ['string', 'null'], 'format' => 'binary' } }
+    let(:schema) do
+      raw = {
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => { 'Target' => target } },
+      }
+      OpenAPIParser.parse(raw, strict_reference_validation: false).components.schemas['Target']
+    end
+
+    context 'when an arbitrary object except String is given' do
+      it 'passes validation the same way as a single string type' do
+        value = ['b', 'i', 'n', 'a', 'r', 'y']
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+
+    context 'when a String is given' do
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate('binary', schema, options)).to eq 'binary'
+      end
+    end
+
+    context 'when nil is given' do
+      it 'passes validation' do
+        expect(OpenAPIParser::SchemaValidator.validate(nil, schema, options)).to eq nil
+      end
+    end
+
+    context 'when string is not listed' do
+      let(:target) { { 'type' => ['integer', 'null'], 'format' => 'binary' } }
+
+      it 'raises a type-mismatch error' do
+        expect do
+          OpenAPIParser::SchemaValidator.validate(['b', 'i', 'n', 'a', 'r', 'y'], schema, options)
+        end.to raise_error(OpenAPIParser::ValidateError, /expected \["integer", "null"\]/)
+      end
+    end
+
+    context 'when coerce_value is on' do
+      let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+
+      it 'passes validation' do
+        value = ['b', 'i', 'n', 'a', 'r', 'y']
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+  end
 end
