@@ -1246,4 +1246,127 @@ RSpec.describe OpenAPIParser::SchemaValidator do
       end
     end
   end
+
+  describe 'discriminator defaultMapping semantic (3.2)' do
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+
+    def pet_schema(discriminator, version = '3.2.0', config = {})
+      raw = {
+        'openapi' => version,
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => {
+          'schemas' => {
+            'Pet' => {
+              'oneOf' => [
+                { '$ref' => '#/components/schemas/Cat' },
+                { '$ref' => '#/components/schemas/Dog' },
+              ],
+              'discriminator' => discriminator,
+            },
+            'Cat' => {
+              'type' => 'object',
+              'required' => ['meow'],
+              'properties' => { 'petType' => { 'type' => 'string' }, 'meow' => { 'type' => 'string' } },
+            },
+            'Dog' => {
+              'type' => 'object',
+              'required' => ['bark'],
+              'properties' => { 'petType' => { 'type' => 'string' }, 'bark' => { 'type' => 'string' } },
+            },
+          },
+        },
+      }
+      OpenAPIParser.parse(raw, { strict_reference_validation: false }.merge(config)).components.schemas['Pet']
+    end
+
+    context 'when the discriminator property matches a mapping' do
+      it 'validates against the mapped schema' do
+        schema = pet_schema('propertyName' => 'petType', 'defaultMapping' => 'Dog')
+        value = { 'petType' => 'Cat', 'meow' => 'meow' }
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+
+    context 'when the discriminator property value matches no schema' do
+      it 'falls back to the defaultMapping schema' do
+        schema = pet_schema('propertyName' => 'petType', 'defaultMapping' => 'Dog')
+        value = { 'petType' => 'Hamster', 'bark' => 'woof' }
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+
+      it 'validates the value against the fallback schema' do
+        schema = pet_schema('propertyName' => 'petType', 'defaultMapping' => 'Dog')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'petType' => 'Hamster' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistRequiredKey)
+      end
+    end
+
+    context 'when the discriminator property is absent' do
+      it 'falls back to the defaultMapping schema' do
+        schema = pet_schema('propertyName' => 'petType', 'defaultMapping' => 'Dog')
+        value = { 'bark' => 'woof' }
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+
+    context 'when an explicit mapping points at a missing schema' do
+      it 'reports the broken mapping instead of falling back' do
+        schema = pet_schema('propertyName' => 'petType', 'mapping' => { 'hamster' => '#/components/schemas/Hamster' }, 'defaultMapping' => 'Dog')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'petType' => 'hamster', 'bark' => 'woof' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorMappedSchema, /Hamster/)
+      end
+    end
+
+    context 'when defaultMapping is a full reference' do
+      it 'resolves the reference' do
+        schema = pet_schema('propertyName' => 'petType', 'defaultMapping' => '#/components/schemas/Dog')
+        value = { 'bark' => 'woof' }
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+
+    context 'in a 3.1 document' do
+      it 'ignores defaultMapping, as before 3.2' do
+        schema = pet_schema({ 'propertyName' => 'petType', 'defaultMapping' => 'Dog' }, '3.1.0')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'bark' => 'woof' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorPropertyName)
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'petType' => 'Hamster', 'bark' => 'woof' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorMappedSchema)
+      end
+
+      it 'falls back to defaultMapping with allow_3_2_features' do
+        schema = pet_schema({ 'propertyName' => 'petType', 'defaultMapping' => 'Dog' }, '3.1.0', { allow_3_2_features: true })
+        value = { 'bark' => 'woof' }
+        expect(OpenAPIParser::SchemaValidator.validate(value, schema, options)).to eq value
+      end
+    end
+
+    context 'without defaultMapping (pre-3.2 behavior)' do
+      it 'still raises when the discriminator property is absent' do
+        schema = pet_schema('propertyName' => 'petType')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'bark' => 'woof' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorPropertyName)
+      end
+
+      it 'raises a mapped-schema error when the discriminator value is null' do
+        schema = pet_schema('propertyName' => 'petType')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'petType' => nil }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorMappedSchema)
+      end
+
+      it 'still raises when the discriminator value matches no schema' do
+        schema = pet_schema('propertyName' => 'petType')
+        expect do
+          OpenAPIParser::SchemaValidator.validate({ 'petType' => 'Hamster' }, schema, options)
+        end.to raise_error(OpenAPIParser::NotExistDiscriminatorMappedSchema)
+      end
+    end
+  end
 end

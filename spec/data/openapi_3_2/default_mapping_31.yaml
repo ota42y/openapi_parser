@@ -1,0 +1,38 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    post:
+      summary: Create a pet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Pet:
+      oneOf:
+        - $ref: '#/components/schemas/Cat'
+        - $ref: '#/components/schemas/Dog'
+      discriminator:
+        propertyName: petType
+        # `defaultMapping` on a Discriminator Object is a 3.2 addition; a
+        # 3.1 document has no such field, so its use here is a spec
+        # violation.
+        defaultMapping: Dog
+    Cat:
+      type: object
+      properties:
+        petType:
+          type: string
+    Dog:
+      type: object
+      properties:
+        petType:
+          type: string
