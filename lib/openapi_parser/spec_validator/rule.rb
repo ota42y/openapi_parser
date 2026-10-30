@@ -70,7 +70,7 @@ module OpenAPIParser
 
         # escapes a map key for use in a violation path, matching object_reference
         def escape_reference(key)
-          key.to_s.gsub('/', '~1')
+          key.to_s.gsub('~', '~0').gsub('/', '~1')
         end
 
         def walk(node, visited, &block)

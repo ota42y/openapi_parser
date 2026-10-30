@@ -38,6 +38,41 @@ RSpec.describe OpenAPIParser::RequestOperation do
       ro = OpenAPIParser::RequestOperation.create(:head, '/pets/1', path_item_finder, config.request_validator_options)
       expect(ro).to eq nil
     end
+
+    # 3.1: a document may have only `webhooks` and no `paths`
+    context 'with a document that has webhooks but no paths' do
+      let(:root) do
+        OpenAPIParser.parse({
+          'openapi' => '3.1.0',
+          'info' => { 'title' => 'test', 'version' => '1.0' },
+          'webhooks' => {
+            'newPet' => { 'post' => { 'responses' => { '200' => { 'description' => 'ok' } } } },
+          },
+        }, {})
+      end
+
+      it 'returns nil instead of raising' do
+        expect(root.request_operation(:get, '/pets')).to be_nil
+      end
+
+      it 'still exposes webhooks' do
+        expect(root.webhooks['newPet']).to be_a(OpenAPIParser::Schemas::PathItem)
+      end
+    end
+
+    context 'with a document that has empty paths' do
+      let(:root) do
+        OpenAPIParser.parse({
+          'openapi' => '3.1.0',
+          'info' => { 'title' => 'test', 'version' => '1.0' },
+          'paths' => {},
+        }, {})
+      end
+
+      it 'returns nil' do
+        expect(root.request_operation(:get, '/pets')).to be_nil
+      end
+    end
   end
 
   describe 'validate_response_body' do

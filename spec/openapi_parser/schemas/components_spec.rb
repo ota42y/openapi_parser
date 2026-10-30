@@ -25,6 +25,17 @@ RSpec.describe OpenAPIParser::Schemas::Components do
     end
   end
 
+  describe 'mediaTypes (OpenAPI 3.2)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/media_types_32.yaml'), {}) }
+    subject { root.find_object('#/components') }
+
+    it 'is parsed as a MediaType with its schema' do
+      media_type = subject.media_types['PetJson']
+      expect(media_type.class).to eq OpenAPIParser::Schemas::MediaType
+      expect(media_type.schema.class).to eq OpenAPIParser::Schemas::Schema
+    end
+  end
+
   describe 'pathItems (OpenAPI 3.1)' do
     let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_1/components_path_items.yaml'), {}) }
     subject { root.find_object('#/components') }
