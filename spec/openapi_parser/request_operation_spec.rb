@@ -271,4 +271,66 @@ RSpec.describe OpenAPIParser::RequestOperation::ValidatableResponseBody do
       end
     end
   end
+
+  describe 'standard method case' do
+    it 'does not find an uppercase method name in a 3.0 document, as before 3.2' do
+      root = OpenAPIParser.parse(petstore_schema, {})
+      expect(root.request_operation('GET', '/pets')).to eq nil
+    end
+
+    it 'finds an uppercase method name in a 3.0 document with allow_3_2_features' do
+      root = OpenAPIParser.parse(petstore_schema, { allow_3_2_features: true })
+      expect(root.request_operation('GET', '/pets').operation_object).to eq root.request_operation(:get, '/pets').operation_object
+    end
+
+    it 'finds an uppercase method name in a 3.2 document' do
+      root = OpenAPIParser.parse(petstore_schema.merge('openapi' => '3.2.0'), {})
+      expect(root.request_operation('GET', '/pets').operation_object).to eq root.request_operation(:get, '/pets').operation_object
+    end
+  end
+
+  describe 'OpenAPI 3.2 operations' do
+    context 'with a query operation' do
+      let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/query_method_32.yaml'), {}) }
+
+      it 'finds the request operation and validates its body' do
+        request_operation = root.request_operation(:query, '/pets')
+        expect(request_operation.operation_object.class).to eq OpenAPIParser::Schemas::Operation
+        expect(request_operation.validate_request_body('application/json', { 'nameStartsWith' => 'R' })).to eq({ 'nameStartsWith' => 'R' })
+      end
+    end
+
+    context 'with an additionalOperations method' do
+      let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/additional_operations_32.yaml'), {}) }
+
+      it 'finds the request operation by its custom method name' do
+        request_operation = root.request_operation('COPY', '/pets')
+        expect(request_operation.operation_object.class).to eq OpenAPIParser::Schemas::Operation
+        expect(request_operation.http_method).to eq 'COPY'
+      end
+
+      it 'returns nil for an undeclared method' do
+        expect(root.request_operation('LINK', '/pets')).to eq nil
+      end
+    end
+  end
+
+  describe 'OpenAPI 3.2 operations in a 3.1 document' do
+    def parse_fixture(name, config = {})
+      OpenAPIParser.parse(load_yaml_file("./spec/data/openapi_3_2/#{name}_31.yaml"), config)
+    end
+
+    it 'does not find a query operation, as before 3.2' do
+      expect(parse_fixture('query_method').request_operation(:query, '/pets')).to eq nil
+    end
+
+    it 'does not find an additionalOperations method, as before 3.2' do
+      expect(parse_fixture('additional_operations').request_operation('COPY', '/pets')).to eq nil
+    end
+
+    it 'finds both with allow_3_2_features' do
+      expect(parse_fixture('query_method', { allow_3_2_features: true }).request_operation(:query, '/pets')).not_to eq nil
+      expect(parse_fixture('additional_operations', { allow_3_2_features: true }).request_operation('COPY', '/pets')).not_to eq nil
+    end
+  end
 end
