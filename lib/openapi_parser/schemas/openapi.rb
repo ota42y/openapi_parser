@@ -59,6 +59,9 @@ module OpenAPIParser::Schemas
 
     # @return [OpenAPIParser::RequestOperation, nil]
     def request_operation(http_method, request_path)
+      # 3.1: `paths` is optional (a document may have only `webhooks`), so there is nothing to find
+      return nil unless @path_item_finder
+
       OpenAPIParser::RequestOperation.create(http_method, request_path, @path_item_finder, @config)
     end
 
