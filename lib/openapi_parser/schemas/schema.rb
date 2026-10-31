@@ -1,4 +1,3 @@
-# TODO: support 'not' because I need check reference...
 # TODO: support 'xml', 'externalDocs'
 # TODO: support extended property
 
@@ -95,6 +94,10 @@ module OpenAPIParser::Schemas
     # @!attribute [r] any_of
     #   @return [Array<Schema, Reference>, nil]
     openapi_attr_list_object :any_of, Schema, reference: true, schema_key: :anyOf
+
+    # @!attribute [r] not
+    #   @return [Schema, nil]
+    openapi_attr_object :not, Schema, reference: true
 
     # @!attribute [r] items
     #   @return [Schema, nil]

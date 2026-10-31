@@ -112,6 +112,18 @@ module OpenAPIParser
     end
   end
 
+  # raised for a value that is valid against the `not` schema
+  class NotSchemaMatched < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@value.inspect} must not be valid against #{@reference}"
+    end
+  end
+
   class NotEnumInclude < OpenAPIError
     def initialize(value, reference)
       super(reference)

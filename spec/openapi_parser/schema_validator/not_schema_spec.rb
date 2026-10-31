@@ -1,8 +1,29 @@
 require_relative '../../spec_helper'
 
 RSpec.describe 'not keyword' do
+  let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
+  let(:openapi_version) { '3.1.0' }
+  let(:root) do
+    raw = {
+      'openapi' => openapi_version,
+      'info' => { 'title' => 'test', 'version' => '1.0' },
+      'paths' => {},
+      'components' => { 'schemas' => schemas },
+    }
+    OpenAPIParser.parse(raw, strict_reference_validation: true)
+  end
+  let(:schema) { root.components.schemas['Target'] }
+
+  def validate(value)
+    OpenAPIParser::SchemaValidator.validate(value, schema, options)
+  end
+
   context 'when not forbids a property' do
-    it 'rejects an object with the property'
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'not' => { 'required' => ['legacy'] } } } }
+
+    it 'rejects an object with the property' do
+      expect { validate({ 'legacy' => 1 }) }.to raise_error(OpenAPIParser::NotSchemaMatched, %r{#/components/schemas/Target/not})
+    end
 
     it 'accepts an object without the property'
   end
