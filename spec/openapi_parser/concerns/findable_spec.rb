@@ -108,8 +108,24 @@ RSpec.describe OpenAPIParser::Findable do
   end
 
   describe '$ref into $defs (3.1)' do
+    def parse_with_schemas(schemas)
+      OpenAPIParser.parse({
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => schemas },
+      }, strict_reference_validation: true)
+    end
+
     context 'when a $ref points at a $defs entry of a component schema' do
-      it 'resolves to the $defs schema'
+      it 'resolves to the $defs schema' do
+        root = parse_with_schemas(
+          'Pet' => { 'type' => 'object', '$defs' => { 'Id' => { 'type' => 'integer' } } },
+          'PetId' => { '$ref' => '#/components/schemas/Pet/$defs/Id' },
+        )
+
+        expect(root.components.schemas['PetId']).to equal(root.components.schemas['Pet'].defs['Id'])
+      end
     end
 
     context 'when a $defs entry refers to another $defs entry' do
