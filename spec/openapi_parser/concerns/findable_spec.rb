@@ -129,15 +129,45 @@ RSpec.describe OpenAPIParser::Findable do
     end
 
     context 'when a $defs entry refers to another $defs entry' do
-      it 'resolves the reference inside $defs'
+      it 'resolves the reference inside $defs' do
+        root = parse_with_schemas(
+          'Pet' => {
+            'type' => 'object',
+            '$defs' => {
+              'Id' => { 'type' => 'integer' },
+              'OwnerId' => { '$ref' => '#/components/schemas/Pet/$defs/Id' },
+            },
+          },
+        )
+        defs = root.components.schemas['Pet'].defs
+
+        expect(defs['OwnerId']).to equal(defs['Id'])
+      end
     end
 
     context 'when $defs is nested inside a $defs entry' do
-      it 'resolves the nested entry'
+      it 'resolves the nested entry' do
+        root = parse_with_schemas(
+          'Pet' => {
+            'type' => 'object',
+            '$defs' => { 'Tag' => { 'type' => 'object', '$defs' => { 'Name' => { 'type' => 'string' } } } },
+          },
+          'TagName' => { '$ref' => '#/components/schemas/Pet/$defs/Tag/$defs/Name' },
+        )
+
+        expect(root.components.schemas['TagName'].type).to eq 'string'
+      end
     end
 
     context 'when the $defs entry does not exist' do
-      it 'raises MissingReferenceError'
+      it 'raises MissingReferenceError' do
+        expect {
+          parse_with_schemas(
+            'Pet' => { 'type' => 'object', '$defs' => { 'Id' => { 'type' => 'integer' } } },
+            'PetName' => { '$ref' => '#/components/schemas/Pet/$defs/Name' },
+          )
+        }.to raise_error(OpenAPIParser::MissingReferenceError)
+      end
     end
   end
 
