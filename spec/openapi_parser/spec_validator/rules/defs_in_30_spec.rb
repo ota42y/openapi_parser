@@ -25,11 +25,17 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::DefsIn30' do
   end
 
   context 'with a 3.1 document using $defs' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_with_defs('3.1.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a 3.1 document without $defs' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_without_defs('3.1.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a 3.0 document using $defs' do
@@ -43,10 +49,16 @@ RSpec.describe 'OpenAPIParser::SpecValidator::Rules::DefsIn30' do
   end
 
   context 'with a 3.0 document without $defs' do
-    it 'reports no violation'
+    it 'reports no violation' do
+      root = doc_without_defs('3.0.0')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 
   context 'with a document whose openapi field is not a version' do
-    it 'reports no violation (rule skipped)'
+    it 'reports no violation (rule skipped)' do
+      root = doc_with_defs('not-a-version')
+      expect(run_rule_for(root)).to eq []
+    end
   end
 end
