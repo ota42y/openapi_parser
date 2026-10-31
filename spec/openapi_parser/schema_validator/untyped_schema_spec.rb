@@ -74,6 +74,16 @@ RSpec.describe 'schema without type' do
     end
   end
 
+  context 'when the value is null' do
+    it 'accepts null for properties and required'
+
+    it 'accepts null for an empty schema'
+
+    it 'rejects null not in enum'
+
+    it 'accepts null in enum'
+  end
+
   context 'when the keywords are for another type' do
     let(:target) { { 'required' => ['count'], 'properties' => { 'count' => { 'type' => 'integer' } }, 'maxLength' => 1 } }
 
@@ -93,5 +103,9 @@ RSpec.describe 'schema without type' do
     it 'rejects a property that does not match its schema' do
       expect { validate({ 'count' => 'x' }) }.to raise_error(OpenAPIParser::ValidateError, %r{#/components/schemas/Target/properties/count})
     end
+
+    it 'accepts null'
+
+    it 'accepts null with nullable: false'
   end
 end
