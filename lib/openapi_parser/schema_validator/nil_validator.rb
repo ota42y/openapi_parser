@@ -8,6 +8,8 @@ class OpenAPIParser::SchemaValidator
       return [value, nil] if schema.type == 'null'
       # 3.1: `type: [..., "null"]` lets nil coexist with another primitive.
       return [value, nil] if schema.type.is_a?(Array) && schema.type.include?('null')
+      # A schema without `type` accepts null, as in JSON Schema.
+      return [value, nil] if schema.type.nil?
 
       [nil, OpenAPIParser::NotNullError.new(schema.object_reference)]
     end

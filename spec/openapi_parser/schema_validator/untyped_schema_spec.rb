@@ -75,7 +75,11 @@ RSpec.describe 'schema without type' do
   end
 
   context 'when the value is null' do
-    it 'accepts null for properties and required'
+    let(:target) { { 'required' => ['count'], 'properties' => { 'count' => { 'type' => 'integer' } } } }
+
+    it 'accepts null for properties and required' do
+      expect(validate(nil)).to be_nil
+    end
 
     it 'accepts null for an empty schema'
 
