@@ -83,7 +83,13 @@ RSpec.describe 'schema without type' do
 
     it 'accepts null for an empty schema'
 
-    it 'rejects null not in enum'
+    context 'with enum' do
+      let(:target) { { 'enum' => [1, 2] } }
+
+      it 'rejects null not in enum' do
+        expect { validate(nil) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
+    end
 
     it 'accepts null in enum'
   end
