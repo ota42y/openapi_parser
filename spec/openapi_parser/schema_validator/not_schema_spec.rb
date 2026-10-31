@@ -25,34 +25,71 @@ RSpec.describe 'not keyword' do
       expect { validate({ 'legacy' => 1 }) }.to raise_error(OpenAPIParser::NotSchemaMatched, %r{#/components/schemas/Target/not})
     end
 
-    it 'accepts an object without the property'
+    it 'accepts an object without the property' do
+      expect(validate({ 'current' => 1 })).to eq({ 'current' => 1 })
+    end
   end
 
   context 'when not excludes a type' do
-    it 'rejects a value of the type'
+    let(:schemas) { { 'Target' => { 'not' => { 'type' => 'string' } } } }
 
-    it 'accepts a value of another type'
+    it 'rejects a value of the type' do
+      expect { validate('a') }.to raise_error(OpenAPIParser::NotSchemaMatched)
+    end
+
+    it 'accepts a value of another type' do
+      expect(validate(1)).to eq 1
+    end
   end
 
   context 'when not excludes an enum value' do
-    it 'rejects the value'
+    let(:schemas) { { 'Target' => { 'type' => 'string', 'not' => { 'enum' => ['a'] } } } }
 
-    it 'accepts another value'
+    it 'rejects the value' do
+      expect { validate('a') }.to raise_error(OpenAPIParser::NotSchemaMatched)
+    end
+
+    it 'accepts another value' do
+      expect(validate('b')).to eq 'b'
+    end
   end
 
   context 'when not refers to another schema with $ref' do
-    it 'rejects a value valid against the referenced schema'
+    let(:schemas) do
+      {
+        'Target' => { 'not' => { '$ref' => '#/components/schemas/Text' } },
+        'Text' => { 'type' => 'string' },
+      }
+    end
+
+    it 'rejects a value valid against the referenced schema' do
+      expect { validate('a') }.to raise_error(OpenAPIParser::NotSchemaMatched)
+    end
   end
 
   context 'when not is an empty schema' do
-    it 'rejects any value'
+    let(:schemas) { { 'Target' => { 'not' => {} } } }
+
+    it 'rejects any value' do
+      expect { validate(1) }.to raise_error(OpenAPIParser::NotSchemaMatched)
+    end
   end
 
   context 'when the document is OpenAPI 3.0' do
-    it 'rejects a value valid against the not schema'
+    let(:openapi_version) { '3.0.3' }
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'not' => { 'required' => ['legacy'] } } } }
+
+    it 'rejects a value valid against the not schema' do
+      expect { validate({ 'legacy' => 1 }) }.to raise_error(OpenAPIParser::NotSchemaMatched)
+    end
   end
 
   context 'when reading the parsed schema' do
-    it 'returns the not schema as a Schema'
+    let(:schemas) { { 'Target' => { 'not' => { 'type' => 'string' } } } }
+
+    it 'returns the not schema as a Schema' do
+      expect(schema.not).to be_a(OpenAPIParser::Schemas::Schema)
+      expect(schema.not.type).to eq 'string'
+    end
   end
 end
