@@ -268,4 +268,12 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
       expect_clean('content_schema_31.yaml')
     end
   end
+
+  describe '$defs (JSON Schema 2020-12 keyword new in 3.1)' do
+    it 'warns on the version-mismatched document under :warn'
+
+    it 'raises SpecViolationError on the version-mismatched document under :raise'
+
+    it 'stays clean on the correctly-versioned document'
+  end
 end

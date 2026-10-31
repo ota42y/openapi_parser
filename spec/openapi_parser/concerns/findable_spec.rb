@@ -107,6 +107,24 @@ RSpec.describe OpenAPIParser::Findable do
     end
   end
 
+  describe '$ref into $defs (3.1)' do
+    context 'when a $ref points at a $defs entry of a component schema' do
+      it 'resolves to the $defs schema'
+    end
+
+    context 'when a $defs entry refers to another $defs entry' do
+      it 'resolves the reference inside $defs'
+    end
+
+    context 'when $defs is nested inside a $defs entry' do
+      it 'resolves the nested entry'
+    end
+
+    context 'when the $defs entry does not exist' do
+      it 'raises MissingReferenceError'
+    end
+  end
+
   describe 'remote reference' do
     describe 'local file reference' do
       let(:root) { OpenAPIParser.load('spec/data/remote-file-ref.yaml') }
