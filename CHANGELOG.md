@@ -8,6 +8,8 @@
   * `ExampleValueFieldsBefore32`: detect Example Object `dataValue` / `serializedValue` usage in pre-3.2 documents (3.2 additions)
   * `SecuritySchemeFieldsBefore32`: detect Security Scheme `deprecated` / `oauth2MetadataUrl` and the `deviceAuthorization` OAuth flow in pre-3.2 documents (3.2 additions)
 * return nil from `request_operation` for a document without `paths` (3.1 allows a document with only `webhooks`), instead of raising `NoMethodError`
+* support `$defs` (OpenAPI 3.1) in Schema Objects so `$ref`s into it, such as `#/components/schemas/Pet/$defs/Id`, resolve
+* add `SpecValidator` rule `DefsIn30`: detect `$defs` in 3.0 documents (3.1 addition)
 * validate a value against a schema without `type`: keywords such as `properties`, `required`, `items`, `maxLength`, `enum` and `minimum` now apply when the value has the type the keyword is for, as in JSON Schema. They were all skipped before, so a value that breaks them may now fail validation
 * add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
