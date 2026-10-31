@@ -17,6 +17,7 @@ require_relative 'spec_validator/rules/const_in_30'
 require_relative 'spec_validator/rules/dynamic_ref_in_30'
 require_relative 'spec_validator/rules/dynamic_anchor_in_30'
 require_relative 'spec_validator/rules/content_schema_in_30'
+require_relative 'spec_validator/rules/defs_in_30'
 require_relative 'spec_validator/rules/xml_node_type_before_32'
 require_relative 'spec_validator/rules/xml_attribute_deprecation'
 require_relative 'spec_validator/rules/xml_wrapped_deprecation'
@@ -90,6 +91,7 @@ module OpenAPIParser
           Rules::DynamicRefIn30,
           Rules::DynamicAnchorIn30,
           Rules::ContentSchemaIn30,
+          Rules::DefsIn30,
           Rules::XmlNodeTypeBefore32,
           Rules::XmlAttributeDeprecation,
           Rules::XmlWrappedDeprecation,
