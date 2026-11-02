@@ -25,12 +25,21 @@ RSpec.describe 'multipleOf keyword' do
       expect { validate(3) }.to raise_error(OpenAPIParser::NotMultipleOf, %r{3 isn't a multiple of 2 in #/components/schemas/Target})
     end
 
-    it 'accepts a multiple'
+    it 'accepts a multiple' do
+      expect(validate(4)).to eq 4
+    end
   end
 
   context 'when multipleOf is a decimal on a number' do
-    it 'accepts a multiple that a binary float cannot divide exactly'
-    it 'rejects a value that is not a multiple'
+    let(:schemas) { { 'Target' => { 'type' => 'number', 'multipleOf' => 0.01 } } }
+
+    it 'accepts a multiple that a binary float cannot divide exactly' do
+      expect(validate(19.99)).to eq 19.99
+    end
+
+    it 'rejects a value that is not a multiple' do
+      expect { validate(1.005) }.to raise_error(OpenAPIParser::NotMultipleOf, /1.005 isn't a multiple of 0.01/)
+    end
   end
 
   context 'when multipleOf is a power-of-two fraction on a number' do
