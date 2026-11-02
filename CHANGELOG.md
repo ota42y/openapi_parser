@@ -1,6 +1,7 @@
 ## Unreleased
 * support the `not` keyword (OpenAPI 3.0 and 3.1): a value that is valid against the `not` schema now fails with `NotSchemaMatched`. It was ignored before, so a value that passed may now fail
 * add OpenAPI 3.2 `SpecValidator` rules
+  * `DefaultMappingBefore32`: detect Discriminator `defaultMapping` usage in pre-3.2 documents (3.2 addition)
   * `MediaTypesBefore32`: detect `components.mediaTypes` usage in pre-3.2 documents (3.2 addition)
   * `XmlNodeTypeBefore32`: detect XML Object `nodeType` usage in pre-3.2 documents (3.2 addition)
   * `XmlAttributeDeprecation` / `XmlWrappedDeprecation`: detect XML Object `attribute: true` / `wrapped: true` in 3.2 documents (deprecated in 3.2 in favor of `nodeType`)
@@ -13,6 +14,7 @@
   * `StreamingFieldsBefore32`: detect Media Type `itemSchema` / `itemEncoding` / `prefixEncoding` and nested Encoding Object `encoding` / `itemEncoding` / `prefixEncoding` usage in pre-3.2 documents (3.2 additions)
 * return nil from `request_operation` for a document without `paths` (3.1 allows a document with only `webhooks`), instead of raising `NoMethodError`
 * validate a value against a schema without `type`: keywords such as `properties`, `required`, `items`, `maxLength`, `enum` and `minimum` now apply when the value has the type the keyword is for, as in JSON Schema. They were all skipped before, so a value that breaks them may now fail validation
+* support Discriminator `defaultMapping` (OpenAPI 3.2): fallback schema when the discriminator property is absent or its value has no explicit or implicit mapping; honored in 3.2 documents
 * add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
 * accept `null` for a schema without `type`, as in JSON Schema. `enum` still applies, so `null` must be listed there when `enum` is set. A schema without `type` used to reject `null` with `NotNullError`, so a value that failed before may now pass
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set

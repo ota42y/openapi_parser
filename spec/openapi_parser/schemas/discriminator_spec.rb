@@ -188,4 +188,13 @@ RSpec.describe OpenAPIParser::Schemas::RequestBody do
       end
     end
   end
+
+  describe 'defaultMapping (OpenAPI 3.2)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/default_mapping_32.yaml'), {}) }
+
+    it 'is parsed onto the Discriminator object' do
+      discriminator = root.find_object('#/components/schemas/Pet').discriminator
+      expect(discriminator.default_mapping).to eq 'Dog'
+    end
+  end
 end

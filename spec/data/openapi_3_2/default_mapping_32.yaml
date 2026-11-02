@@ -1,0 +1,37 @@
+openapi: 3.2.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    post:
+      summary: Create a pet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '201':
+          description: Created
+components:
+  schemas:
+    Pet:
+      oneOf:
+        - $ref: '#/components/schemas/Cat'
+        - $ref: '#/components/schemas/Dog'
+      discriminator:
+        propertyName: petType
+        # `defaultMapping` is a legitimate Discriminator Object field under
+        # 3.2, so no violation is expected here.
+        defaultMapping: Dog
+    Cat:
+      type: object
+      properties:
+        petType:
+          type: string
+    Dog:
+      type: object
+      properties:
+        petType:
+          type: string
