@@ -135,6 +135,18 @@ module OpenAPIParser
     end
   end
 
+  class NotMultipleOf < OpenAPIError
+    def initialize(value, multiple_of, reference)
+      super(reference)
+      @value = value
+      @multiple_of = multiple_of
+    end
+
+    def message
+      "#{@value.inspect} isn't a multiple of #{@multiple_of.inspect} in #{@reference}"
+    end
+  end
+
   class LessThanMinimum < OpenAPIError
     def initialize(value, reference)
       super(reference)

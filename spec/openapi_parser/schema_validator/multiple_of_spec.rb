@@ -19,7 +19,12 @@ RSpec.describe 'multipleOf keyword' do
   end
 
   context 'when multipleOf is set on an integer' do
-    it 'rejects a value that is not a multiple'
+    let(:schemas) { { 'Target' => { 'type' => 'integer', 'multipleOf' => 2 } } }
+
+    it 'rejects a value that is not a multiple' do
+      expect { validate(3) }.to raise_error(OpenAPIParser::NotMultipleOf, %r{3 isn't a multiple of 2 in #/components/schemas/Target})
+    end
+
     it 'accepts a multiple'
   end
 
