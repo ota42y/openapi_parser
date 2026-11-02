@@ -107,6 +107,70 @@ RSpec.describe OpenAPIParser::Findable do
     end
   end
 
+  describe '$ref into $defs (3.1)' do
+    def parse_with_schemas(schemas)
+      OpenAPIParser.parse({
+        'openapi' => '3.1.0',
+        'info' => { 'title' => 'test', 'version' => '1.0' },
+        'paths' => {},
+        'components' => { 'schemas' => schemas },
+      }, strict_reference_validation: true)
+    end
+
+    context 'when a $ref points at a $defs entry of a component schema' do
+      it 'resolves to the $defs schema' do
+        root = parse_with_schemas(
+          'Pet' => { 'type' => 'object', '$defs' => { 'Id' => { 'type' => 'integer' } } },
+          'PetId' => { '$ref' => '#/components/schemas/Pet/$defs/Id' },
+        )
+
+        expect(root.components.schemas['PetId']).to equal(root.components.schemas['Pet'].defs['Id'])
+      end
+    end
+
+    context 'when a $defs entry refers to another $defs entry' do
+      it 'resolves the reference inside $defs' do
+        root = parse_with_schemas(
+          'Pet' => {
+            'type' => 'object',
+            '$defs' => {
+              'Id' => { 'type' => 'integer' },
+              'OwnerId' => { '$ref' => '#/components/schemas/Pet/$defs/Id' },
+            },
+          },
+        )
+        defs = root.components.schemas['Pet'].defs
+
+        expect(defs['OwnerId']).to equal(defs['Id'])
+      end
+    end
+
+    context 'when $defs is nested inside a $defs entry' do
+      it 'resolves the nested entry' do
+        root = parse_with_schemas(
+          'Pet' => {
+            'type' => 'object',
+            '$defs' => { 'Tag' => { 'type' => 'object', '$defs' => { 'Name' => { 'type' => 'string' } } } },
+          },
+          'TagName' => { '$ref' => '#/components/schemas/Pet/$defs/Tag/$defs/Name' },
+        )
+
+        expect(root.components.schemas['TagName'].type).to eq 'string'
+      end
+    end
+
+    context 'when the $defs entry does not exist' do
+      it 'raises MissingReferenceError' do
+        expect {
+          parse_with_schemas(
+            'Pet' => { 'type' => 'object', '$defs' => { 'Id' => { 'type' => 'integer' } } },
+            'PetName' => { '$ref' => '#/components/schemas/Pet/$defs/Name' },
+          )
+        }.to raise_error(OpenAPIParser::MissingReferenceError)
+      end
+    end
+  end
+
   describe 'remote reference' do
     describe 'local file reference' do
       let(:root) { OpenAPIParser.load('spec/data/remote-file-ref.yaml') }

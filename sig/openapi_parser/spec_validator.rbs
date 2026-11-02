@@ -110,6 +110,10 @@ module OpenAPIParser
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
 
+      class DefsIn30 < Rule
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
       class XmlNodeTypeBefore32 < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
