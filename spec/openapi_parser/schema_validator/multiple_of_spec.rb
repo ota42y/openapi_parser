@@ -43,31 +43,72 @@ RSpec.describe 'multipleOf keyword' do
   end
 
   context 'when multipleOf is a power-of-two fraction on a number' do
-    it 'accepts a multiple'
-    it 'rejects a value that is not a multiple'
+    let(:schemas) { { 'Target' => { 'type' => 'number', 'multipleOf' => 0.5 } } }
+
+    it 'accepts a multiple' do
+      expect(validate(1.5)).to eq 1.5
+    end
+
+    it 'rejects a value that is not a multiple' do
+      expect { validate(1.25) }.to raise_error(OpenAPIParser::NotMultipleOf)
+    end
   end
 
   context 'when multipleOf is an integer on a number' do
-    it 'rejects an integer that is not a multiple'
-    it 'accepts a float that is a multiple'
+    let(:schemas) { { 'Target' => { 'type' => 'number', 'multipleOf' => 2 } } }
+
+    it 'rejects an integer that is not a multiple' do
+      expect { validate(3) }.to raise_error(OpenAPIParser::NotMultipleOf)
+    end
+
+    it 'accepts a float that is a multiple' do
+      expect(validate(4.0)).to eq 4.0
+    end
   end
 
   context 'when the schema has no type' do
-    it 'rejects a number that is not a multiple'
-    it 'accepts a multiple'
-    it 'ignores a string'
+    let(:schemas) { { 'Target' => { 'multipleOf' => 3 } } }
+
+    it 'rejects a number that is not a multiple' do
+      expect { validate(10) }.to raise_error(OpenAPIParser::NotMultipleOf)
+    end
+
+    it 'accepts a multiple' do
+      expect(validate(9)).to eq 9
+    end
+
+    it 'ignores a string' do
+      expect(validate('10')).to eq '10'
+    end
   end
 
   context 'when the document is OpenAPI 3.0' do
-    it 'rejects a value that is not a multiple'
+    let(:openapi_version) { '3.0.3' }
+    let(:schemas) { { 'Target' => { 'type' => 'integer', 'multipleOf' => 2 } } }
+
+    it 'rejects a value that is not a multiple' do
+      expect { validate(3) }.to raise_error(OpenAPIParser::NotMultipleOf)
+    end
   end
 
   context 'when coerce_value is on' do
-    it 'rejects a string that becomes a value that is not a multiple'
-    it 'accepts a string that becomes a multiple'
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+    let(:schemas) { { 'Target' => { 'type' => 'integer', 'multipleOf' => 2 } } }
+
+    it 'rejects a string that becomes a value that is not a multiple' do
+      expect { validate('3') }.to raise_error(OpenAPIParser::NotMultipleOf)
+    end
+
+    it 'accepts a string that becomes a multiple' do
+      expect(validate('4')).to eq 4
+    end
   end
 
   context 'when the value is too large to divide as a float' do
-    it 'accepts an integer-valued float with a fractional multipleOf'
+    let(:schemas) { { 'Target' => { 'type' => 'number', 'multipleOf' => 0.5 } } }
+
+    it 'accepts an integer-valued float with a fractional multipleOf' do
+      expect(validate(1e308)).to eq 1e308
+    end
   end
 end
