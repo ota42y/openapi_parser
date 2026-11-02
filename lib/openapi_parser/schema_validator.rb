@@ -93,6 +93,12 @@ class OpenAPIParser::SchemaValidator
       return [nil, OpenAPIParser::ValidateError.new(value, "const #{schema.const.inspect}", schema.object_reference)] if value != schema.const
     end
 
+    # `not` rejects a value that is valid against its schema.
+    if schema.respond_to?(:not) && schema.not.is_a?(OpenAPIParser::Schemas::Schema)
+      _, not_error = validate_schema(value, schema.not)
+      return [nil, OpenAPIParser::NotSchemaMatched.new(value, schema.not.object_reference)] unless not_error
+    end
+
     return coerce_into_type_array(value, schema, **keyword_args) if coerce_into_type_array?(value, schema)
 
     if (v = validator(value, schema))
