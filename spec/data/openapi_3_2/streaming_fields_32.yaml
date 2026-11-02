@@ -1,0 +1,26 @@
+openapi: 3.2.0
+info:
+  title: Event API
+  version: '1.0'
+paths:
+  /events:
+    get:
+      summary: Stream events
+      responses:
+        '200':
+          description: OK
+          content:
+            text/event-stream:
+              # `itemSchema`, `itemEncoding`, and `prefixEncoding` are
+              # legitimate Media Type Object fields under 3.2, so no
+              # violation is expected here.
+              itemSchema:
+                type: object
+                properties:
+                  event:
+                    type: string
+              itemEncoding:
+                event:
+                  contentType: text/plain
+              prefixEncoding:
+                - contentType: application/json
