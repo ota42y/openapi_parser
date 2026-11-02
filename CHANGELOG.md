@@ -4,6 +4,8 @@
   * `MediaTypesBefore32`: detect `components.mediaTypes` usage in pre-3.2 documents (3.2 addition)
   * `XmlNodeTypeBefore32`: detect XML Object `nodeType` usage in pre-3.2 documents (3.2 addition)
   * `XmlAttributeDeprecation` / `XmlWrappedDeprecation`: detect XML Object `attribute: true` / `wrapped: true` in 3.2 documents (deprecated in 3.2 in favor of `nodeType`)
+  * `QueryMethodBefore32`: detect Path Item `query` usage in pre-3.2 documents (3.2 addition)
+  * `AdditionalOperationsBefore32`: detect Path Item `additionalOperations` usage in pre-3.2 documents (3.2 addition)
   * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
   * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
   * `ExampleValueFieldsBefore32`: detect Example Object `dataValue` / `serializedValue` usage in pre-3.2 documents (3.2 additions)
@@ -14,6 +16,8 @@
 * add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
 * accept `null` for a schema without `type`, as in JSON Schema. `enum` still applies, so `null` must be listed there when `enum` is set. A schema without `type` used to reject `null` with `NotNullError`, so a value that failed before may now pass
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
+* support the `query` HTTP method and `additionalOperations` (OpenAPI 3.2) on Path Items, including request-operation lookup, in 3.2 documents
+* match HTTP methods case-insensitively in request-operation lookup in 3.2 documents (`request_operation("GET", path)` still returns nil before 3.2)
 * accept a file object for array-form `type` with `format: binary` (3.1) when `coerce_value` is off, the same way as a single `type: string`
 * support `itemSchema` (OpenAPI 3.2) in the parse layer; it is not yet used to validate sequential media type bodies
 

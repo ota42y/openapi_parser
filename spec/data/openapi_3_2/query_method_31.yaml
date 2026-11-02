@@ -1,0 +1,21 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    # the `query` operation is a 3.2 Path Item addition; a 3.1 document has
+    # no such field, so its use here is a spec violation.
+    query:
+      summary: Query pets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nameStartsWith:
+                  type: string
+      responses:
+        '200':
+          description: OK
