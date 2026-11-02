@@ -10,6 +10,7 @@
 * return nil from `request_operation` for a document without `paths` (3.1 allows a document with only `webhooks`), instead of raising `NoMethodError`
 * validate a value against a schema without `type`: keywords such as `properties`, `required`, `items`, `maxLength`, `enum` and `minimum` now apply when the value has the type the keyword is for, as in JSON Schema. They were all skipped before, so a value that breaks them may now fail validation
 * add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
+* accept `null` for a schema without `type`, as in JSON Schema. `enum` still applies, so `null` must be listed there when `enum` is set. A schema without `type` used to reject `null` with `NotNullError`, so a value that failed before may now pass
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
 * accept a file object for array-form `type` with `format: binary` (3.1) when `coerce_value` is off, the same way as a single `type: string`
 
