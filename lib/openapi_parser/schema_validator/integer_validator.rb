@@ -17,16 +17,19 @@ class OpenAPIParser::SchemaValidator
       check_minimum_maximum(value, schema)
     end
 
+    # 3.1 follows JSON Schema, where 1.0 is an integer. 3.0 defines an
+    # integer as a number without a fraction, so 1.0 is not one there.
+    # @param [Object] value
+    # @param [OpenAPIParser::Schemas::Schema] schema
+    # @return [Boolean]
+    def integer?(value, schema)
+      return true if value.kind_of?(Integer)
+      return false unless value.kind_of?(Float) && value.finite? && value == value.floor
+
+      schema.root.use_3_1_features?
+    end
+
     private
-
-      # 3.1 follows JSON Schema, where 1.0 is an integer. 3.0 defines an
-      # integer as a number without a fraction, so 1.0 is not one there.
-      def integer?(value, schema)
-        return true if value.kind_of?(Integer)
-        return false unless value.kind_of?(Float) && value.finite? && value == value.floor
-
-        schema.root.use_3_1_features?
-      end
 
       def coerce(value)
         return value if value.kind_of?(Integer)

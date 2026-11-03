@@ -142,7 +142,7 @@ class OpenAPIParser::SchemaValidator
       # fallback.
       effective_type = schema.type
       if effective_type.is_a?(Array)
-        matched = pick_type(value, effective_type)
+        matched = pick_type(value, effective_type, schema)
         return type_mismatch_validator if matched.nil?
 
         effective_type = matched
@@ -150,7 +150,7 @@ class OpenAPIParser::SchemaValidator
 
       # JSON Schema applies each keyword when the value has the type the
       # keyword is for, whether or not `type` is set.
-      effective_type ||= pick_type(value, VALUE_TYPES)
+      effective_type ||= pick_type(value, VALUE_TYPES, schema)
 
       validator_for_type(effective_type)
     end
@@ -198,7 +198,7 @@ class OpenAPIParser::SchemaValidator
       return false unless @coerce_value && !value.nil?
       return false if schema.any_of || schema.all_of || schema.one_of
 
-      schema.type.is_a?(Array) && pick_type(value, schema.type).nil?
+      schema.type.is_a?(Array) && pick_type(value, schema.type, schema).nil?
     end
 
     # 3.1: returns the first listed type that coerces, or the first type's error.
@@ -225,11 +225,11 @@ class OpenAPIParser::SchemaValidator
       @type_mismatch_validator ||= OpenAPIParser::SchemaValidator::TypeMismatchValidator.new(self, @coerce_value)
     end
 
-    def pick_type(value, types)
+    def pick_type(value, types, schema)
       types.find do |t|
         case t
         when 'string'  then value.is_a?(String)
-        when 'integer' then value.is_a?(Integer)
+        when 'integer' then integer_validator.integer?(value, schema)
         when 'number'  then value.is_a?(Numeric)
         when 'boolean' then value == true || value == false
         when 'array'   then value.is_a?(Array)
