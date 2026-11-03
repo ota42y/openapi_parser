@@ -2,6 +2,7 @@ class OpenAPIParser::SchemaValidator
   class IntegerValidator < Base
     include ::OpenAPIParser::SchemaValidator::Enumable
     include ::OpenAPIParser::SchemaValidator::MinimumMaximum
+    include ::OpenAPIParser::SchemaValidator::MultipleOf
 
     # validate integer value by schema
     # @param [Object] value
@@ -12,6 +13,9 @@ class OpenAPIParser::SchemaValidator
       return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Integer)
 
       value, err = check_enum_include(value, schema)
+      return [nil, err] if err
+
+      value, err = check_multiple_of(value, schema)
       return [nil, err] if err
 
       check_minimum_maximum(value, schema)
