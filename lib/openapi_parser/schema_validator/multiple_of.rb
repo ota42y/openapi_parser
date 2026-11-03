@@ -5,7 +5,8 @@ class OpenAPIParser::SchemaValidator
     # @param [OpenAPIParser::Schemas::Schema] schema
     def check_multiple_of(value, schema)
       multiple_of = schema.multipleOf
-      return [value, nil] unless multiple_of
+      # multipleOf MUST be a number strictly greater than 0; ignore an invalid one.
+      return [value, nil] unless multiple_of.is_a?(Numeric) && multiple_of.positive?
       return [value, nil] if (exact(value) % exact(multiple_of)).zero?
 
       [nil, OpenAPIParser::NotMultipleOf.new(value, multiple_of, schema.object_reference)]

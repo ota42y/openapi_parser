@@ -111,4 +111,28 @@ RSpec.describe 'multipleOf keyword' do
       expect(validate(1e308)).to eq 1e308
     end
   end
+
+  # multipleOf MUST be a number strictly greater than 0. An invalid one was
+  # ignored before this keyword was validated, so it stays ignored.
+  context 'when multipleOf is not a positive number' do
+    let(:schemas) do
+      {
+        'String' => { 'type' => 'number', 'multipleOf' => '0.1' },
+        'Zero' => { 'type' => 'number', 'multipleOf' => 0 },
+        'Negative' => { 'type' => 'number', 'multipleOf' => -2 },
+      }
+    end
+
+    it 'ignores a string' do
+      expect(OpenAPIParser::SchemaValidator.validate(1.5, root.components.schemas['String'], options)).to eq 1.5
+    end
+
+    it 'ignores zero' do
+      expect(OpenAPIParser::SchemaValidator.validate(1.5, root.components.schemas['Zero'], options)).to eq 1.5
+    end
+
+    it 'ignores a negative number' do
+      expect(OpenAPIParser::SchemaValidator.validate(1.5, root.components.schemas['Negative'], options)).to eq 1.5
+    end
+  end
 end
