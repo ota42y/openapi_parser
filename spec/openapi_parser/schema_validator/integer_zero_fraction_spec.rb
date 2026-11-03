@@ -81,6 +81,23 @@ RSpec.describe 'integer with a zero fractional part' do
     end
   end
 
+  context 'when a 3.1 document combines integer and number' do
+    let(:schemas) do
+      {
+        'AnyOf' => { 'anyOf' => [{ 'type' => 'integer' }, { 'type' => 'number' }] },
+        'OneOf' => { 'oneOf' => [{ 'type' => 'integer' }, { 'type' => 'number' }] },
+      }
+    end
+
+    it 'accepts the Float with anyOf' do
+      expect(OpenAPIParser::SchemaValidator.validate(1.0, root.components.schemas['AnyOf'], options)).to eq 1.0
+    end
+
+    it 'rejects the Float with oneOf because it matches both' do
+      expect { OpenAPIParser::SchemaValidator.validate(1.0, root.components.schemas['OneOf'], options) }.to raise_error(OpenAPIParser::NotOneOf)
+    end
+  end
+
   context 'when coerce_value is on' do
     let(:openapi_version) { '3.0.3' }
     let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
