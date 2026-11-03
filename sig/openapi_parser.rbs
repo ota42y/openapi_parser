@@ -16,6 +16,7 @@ module OpenAPIParser
       def initialize: (Hash[bot, bot] hash, untyped config, uri: OpenAPIParser::readable_uri?, schema_registry: Hash[bot, bot], ?referrer: OpenAPIParser::Schemas::OpenAPI?) -> OpenAPIParser::Schemas::OpenAPI
       def openapi: () -> String?
       def openapi_version: () -> Gem::Version?
+      def use_3_1_features?: () -> bool
       def use_3_2_features?: () -> bool
     end
   end

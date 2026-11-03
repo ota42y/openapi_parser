@@ -32,7 +32,12 @@ RSpec.describe 'integer with a zero fractional part' do
   end
 
   context 'when a 3.0 document has type: integer' do
-    it 'rejects a Float with no fractional part'
+    let(:openapi_version) { '3.0.3' }
+    let(:schemas) { { 'Target' => { 'type' => 'integer' } } }
+
+    it 'rejects a Float with no fractional part' do
+      expect { validate(1.0) }.to raise_error(OpenAPIParser::ValidateError, /expected integer, but received Float: 1.0/)
+    end
   end
 
   context 'when a 3.1 document has integer in a type array' do
