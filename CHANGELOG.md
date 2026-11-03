@@ -11,6 +11,7 @@
   * `AdditionalOperationsBefore32`: detect Path Item `additionalOperations` usage in pre-3.2 documents (3.2 addition)
   * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
   * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
+  * `AllowEmptyValueDeprecation`: detect Parameter `allowEmptyValue` usage in 3.2 documents (deprecated in 3.2)
   * `ExampleValueFieldsBefore32`: detect Example Object `dataValue` / `serializedValue` usage in pre-3.2 documents (3.2 additions)
   * `SecuritySchemeFieldsBefore32`: detect Security Scheme `deprecated` / `oauth2MetadataUrl` and the `deviceAuthorization` OAuth flow in pre-3.2 documents (3.2 additions)
   * `StreamingFieldsBefore32`: detect Media Type `itemSchema` / `itemEncoding` / `prefixEncoding` and nested Encoding Object `encoding` / `itemEncoding` / `prefixEncoding` usage in pre-3.2 documents (3.2 additions)
