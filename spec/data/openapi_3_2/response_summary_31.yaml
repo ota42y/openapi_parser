@@ -1,0 +1,14 @@
+openapi: 3.1.0
+info:
+  title: Pet API
+  version: '1.0'
+paths:
+  /pets:
+    get:
+      summary: List pets
+      responses:
+        '200':
+          # `summary` on a Response Object is a 3.2 addition; a 3.1 document
+          # has no such field, so its use here is a spec violation.
+          summary: Pets
+          description: OK

@@ -9,6 +9,7 @@
   * `XmlAttributeDeprecation` / `XmlWrappedDeprecation`: detect XML Object `attribute: true` / `wrapped: true` in 3.2 documents (deprecated in 3.2 in favor of `nodeType`)
   * `QueryMethodBefore32`: detect Path Item `query` usage in pre-3.2 documents (3.2 addition)
   * `AdditionalOperationsBefore32`: detect Path Item `additionalOperations` usage in pre-3.2 documents (3.2 addition)
+  * `ResponseSummaryBefore32`: detect Response Object `summary` usage in pre-3.2 documents (3.2 addition)
   * `TagFieldsBefore32`: detect Tag Object `summary` / `parent` / `kind` usage in pre-3.2 documents (3.2 additions)
   * `ServerNameBefore32`: detect Server Object `name` usage in pre-3.2 documents (3.2 addition)
   * `AllowEmptyValueDeprecation`: detect Parameter `allowEmptyValue` usage in 3.2 documents (deprecated in 3.2)
@@ -26,6 +27,7 @@
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
 * support the `query` HTTP method and `additionalOperations` (OpenAPI 3.2) on Path Items, including request-operation lookup, in 3.2 documents
 * match HTTP methods case-insensitively in request-operation lookup in 3.2 documents (`request_operation("GET", path)` still returns nil before 3.2)
+* support Response Object `summary` (OpenAPI 3.2) in the parse layer
 * accept a file object for array-form `type` with `format: binary` (3.1) when `coerce_value` is off, the same way as a single `type: string`
 * support `itemSchema` (OpenAPI 3.2) in the parse layer; it is not yet used to validate sequential media type bodies
 

@@ -23,4 +23,13 @@ RSpec.describe OpenAPIParser::Schemas::Response do
       expect(subject.content['application/json'].object_reference).to eq '#/paths/~1pets/get/responses/default/content/application~1json'
     end
   end
+
+  describe 'summary (OpenAPI 3.2)' do
+    let(:root) { OpenAPIParser.parse(load_yaml_file('./spec/data/openapi_3_2/response_summary_32.yaml'), {}) }
+
+    it 'is parsed onto the Response object' do
+      response = root.paths.path['/pets'].get.responses.response['200']
+      expect(response.summary).to eq 'Pets'
+    end
+  end
 end

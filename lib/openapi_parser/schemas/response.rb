@@ -6,6 +6,10 @@ module OpenAPIParser::Schemas
 
     openapi_attr_values :description
 
+    # @!attribute [r] summary
+    #   @return [String, nil] short summary of the response (OpenAPI 3.2+)
+    openapi_attr_value :summary
+
     # @!attribute [r] content
     #   @return [Hash{String => MediaType}, nil] content_type to MediaType hash
     openapi_attr_hash_object :content, MediaType, reference: OpenAPIParser::MediaTypeSelectable::CONTENT_REFERENCE
