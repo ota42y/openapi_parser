@@ -49,23 +49,53 @@ RSpec.describe 'integer with a zero fractional part' do
       expect(validate(1.0)).to eq 1.0
     end
 
-    it 'rejects a Float with a fractional part'
+    it 'rejects a Float with a fractional part' do
+      expect { validate(1.5) }.to raise_error(OpenAPIParser::OpenAPIError)
+    end
   end
 
   context 'when a 3.0 document has integer in a type array' do
-    it 'rejects a Float with no fractional part'
+    let(:openapi_version) { '3.0.3' }
+    let(:schemas) { { 'Target' => { 'type' => %w[integer null] } } }
+
+    it 'rejects a Float with no fractional part' do
+      expect { validate(1.0) }.to raise_error(OpenAPIParser::OpenAPIError)
+    end
   end
 
   context 'when a 3.1 document has other keywords on type: integer' do
-    it 'applies enum'
-    it 'applies maximum'
+    let(:schemas) do
+      {
+        'Enum' => { 'type' => 'integer', 'enum' => [2, 3] },
+        'Maximum' => { 'type' => 'integer', 'maximum' => 0 },
+      }
+    end
+
+    it 'applies enum' do
+      expect { OpenAPIParser::SchemaValidator.validate(1.0, root.components.schemas['Enum'], options) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      expect(OpenAPIParser::SchemaValidator.validate(2.0, root.components.schemas['Enum'], options)).to eq 2.0
+    end
+
+    it 'applies maximum' do
+      expect { OpenAPIParser::SchemaValidator.validate(1.0, root.components.schemas['Maximum'], options) }.to raise_error(OpenAPIParser::MoreThanMaximum)
+    end
   end
 
   context 'when coerce_value is on' do
-    it 'converts a Float with no fractional part in a 3.0 document as before'
+    let(:openapi_version) { '3.0.3' }
+    let(:options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+    let(:schemas) { { 'Target' => { 'type' => 'integer' } } }
+
+    it 'converts a Float with no fractional part in a 3.0 document as before' do
+      expect(validate(1.0)).to eql 1
+    end
   end
 
   context 'when the Float is not finite' do
-    it 'rejects Infinity in a 3.1 document'
+    let(:schemas) { { 'Target' => { 'type' => 'integer' } } }
+
+    it 'rejects Infinity in a 3.1 document' do
+      expect { validate(Float::INFINITY) }.to raise_error(OpenAPIParser::ValidateError)
+    end
   end
 end
