@@ -9,7 +9,7 @@ class OpenAPIParser::SchemaValidator
     def coerce_and_validate(value, schema, **_keyword_args)
       value = coerce(value) if @coerce_value
 
-      return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Integer)
+      return OpenAPIParser::ValidateError.build_error_result(value, schema) unless integer?(value)
 
       value, err = check_enum_include(value, schema)
       return [nil, err] if err
@@ -18,6 +18,10 @@ class OpenAPIParser::SchemaValidator
     end
 
     private
+
+      def integer?(value)
+        value.kind_of?(Integer) || (value.kind_of?(Float) && value.finite? && value == value.floor)
+      end
 
       def coerce(value)
         return value if value.kind_of?(Integer)

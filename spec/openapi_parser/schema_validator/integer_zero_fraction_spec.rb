@@ -22,7 +22,12 @@ RSpec.describe 'integer with a zero fractional part' do
   end
 
   context 'when a 3.1 document has type: integer' do
-    it 'accepts a Float with no fractional part'
+    let(:schemas) { { 'Target' => { 'type' => 'integer' } } }
+
+    it 'accepts a Float with no fractional part' do
+      expect(validate(1.0)).to eq 1.0
+    end
+
     it 'rejects a Float with a fractional part'
   end
 
