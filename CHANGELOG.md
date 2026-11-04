@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 2.6.0 (2026-11-04)
 * support the `multipleOf` keyword (OpenAPI 3.0 and 3.1): a number that is not a multiple of it now fails with `NotMultipleOf`. Decimals are compared exactly, so `19.99` is a multiple of `0.01`. A `multipleOf` that is not a positive number is still ignored. It was ignored before, so a value that passed may now fail
 * support the `not` keyword (OpenAPI 3.0 and 3.1): a value that is valid against the `not` schema now fails with `NotSchemaMatched`. It was ignored before, so a value that passed may now fail
 * add OpenAPI 3.2 `SpecValidator` rules
