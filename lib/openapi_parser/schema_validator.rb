@@ -40,6 +40,7 @@ class OpenAPIParser::SchemaValidator
 
   # Types to pick from for a schema without `type`. integer comes before
   # number so that an Integer is checked as an integer.
+  JSON_VALUE_CLASSES = [Hash, Array, String, Numeric, TrueClass, FalseClass, NilClass].freeze
   VALUE_TYPES = %w[object array string integer number boolean].freeze
 
   class << self
@@ -100,18 +101,9 @@ class OpenAPIParser::SchemaValidator
       return [nil, OpenAPIParser::NotSchemaMatched.new(value, schema.not.object_reference)] unless not_error
     end
 
-    return coerce_into_type_array(value, schema, **keyword_args) if coerce_into_type_array?(value, schema)
+    return validate_composition(value, schema, **keyword_args) if composition_validators(schema).any?
 
-    if (v = validator(value, schema))
-      if keyword_args.empty?
-        return v.coerce_and_validate(value, schema)
-      else
-        return v.coerce_and_validate(value, schema, **keyword_args)
-      end
-    end
-
-    # unknown return error
-    OpenAPIParser::ValidateError.build_error_result(value, schema)
+    validate_without_composition(value, schema, **keyword_args)
   end
 
   # validate integer value by schema
@@ -122,13 +114,71 @@ class OpenAPIParser::SchemaValidator
     integer_validator.coerce_and_validate(value, schema)
   end
 
+  # Run the steps in order, each with the value coerced by the steps before it.
+  # Keywords check JSON values. A coerced value of another class, like DateTime,
+  # is only the output form, so the later steps check the original value.
+  # @param [Object] value
+  # @param [Array<Proc>] steps each takes a value and returns coerced value and error
+  # @return [Array] coerced value and error
+  def validate_in_order(value, steps)
+    current = value
+    steps.each do |step|
+      returned, err = step.call(json_value?(current) ? current : value)
+      return [nil, err] if err
+
+      current = returned if json_value?(current)
+    end
+    [current, nil]
+  end
+
   private
+
+    def json_value?(value)
+      JSON_VALUE_CLASSES.any? { |klass| value.is_a?(klass) }
+    end
+
+    # @return [Array<OpenAPIParser::SchemaValidator::Base>]
+    def composition_validators(schema)
+      validators = []
+      validators << any_of_validator if schema.any_of
+      validators << all_of_validator if schema.all_of
+      validators << one_of_validator if schema.one_of
+      validators
+    end
+
+    # All the keywords in a schema apply to the value, so the composition
+    # keywords and the keywords next to them are all checked.
+    # `type` goes first, so that the other steps see the coerced value.
+    # @return [Array] coerced value and error
+    def validate_composition(value, schema, **keyword_args)
+      composition_steps = composition_validators(schema).map do |v|
+        ->(input) { v.coerce_and_validate(input, schema, **keyword_args) }
+      end
+      # the composition keyword already used discriminator
+      parents = (keyword_args[:parent_discriminator_schemas] || []) + [schema]
+      other_step = ->(input) { validate_without_composition(input, schema, **keyword_args, parent_discriminator_schemas: parents) }
+
+      validate_in_order(value, schema.type ? [other_step, *composition_steps] : [*composition_steps, other_step])
+    end
+
+    # @return [Array] coerced value and error
+    def validate_without_composition(value, schema, **keyword_args)
+      return coerce_into_type_array(value, schema, **keyword_args) if coerce_into_type_array?(value, schema)
+
+      if (v = validator(value, schema))
+        if keyword_args.empty?
+          return v.coerce_and_validate(value, schema)
+        else
+          return v.coerce_and_validate(value, schema, **keyword_args)
+        end
+      end
+
+      # unknown return error
+      OpenAPIParser::ValidateError.build_error_result(value, schema)
+    end
 
     # @return [OpenAPIParser::SchemaValidator::Base, nil]
     def validator(value, schema)
-      return any_of_validator if schema.any_of
-      return all_of_validator if schema.all_of
-      return one_of_validator if schema.one_of
       return nil_validator if value.nil?
 
       # 3.1: `format: binary` with `string` in an array-form `type` accepts a
@@ -197,7 +247,6 @@ class OpenAPIParser::SchemaValidator
     # @return [Boolean]
     def coerce_into_type_array?(value, schema)
       return false unless @coerce_value && !value.nil?
-      return false if schema.any_of || schema.all_of || schema.one_of
 
       schema.type.is_a?(Array) && pick_type(value, schema.type, schema).nil?
     end
