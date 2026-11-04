@@ -80,6 +80,7 @@ class OpenAPIParser::SchemaValidator
   # @param [OpenAPIParser::Schemas::Schema] schema
   def validate_schema(value, schema, **keyword_args)
     return [value, nil] unless schema
+    return validate_schema_with_ref(value, schema, **keyword_args) if schema.is_a?(OpenAPIParser::Schemas::SchemaWithRef)
 
     # 3.1: a boolean schema accepts (`true`) or rejects (`false`) any value,
     # including null.
@@ -135,6 +136,19 @@ class OpenAPIParser::SchemaValidator
 
     def json_value?(value)
       JSON_VALUE_CLASSES.any? { |klass| value.is_a?(klass) }
+    end
+
+    # `$ref` and the keywords next to it both apply. The one with `type` goes first,
+    # so that the other sees the coerced value.
+    # @return [Array] coerced value and error
+    def validate_schema_with_ref(value, schema, **keyword_args)
+      target = schema.ref_target
+      return validate_schema(value, schema.ref_siblings, **keyword_args) unless target.is_a?(OpenAPIParser::Schemas::Schema)
+
+      steps = [target, schema.ref_siblings].partition(&:type).flatten.map do |s|
+        ->(input) { validate_schema(input, s, **keyword_args) }
+      end
+      validate_in_order(value, steps)
     end
 
     # @return [Array<OpenAPIParser::SchemaValidator::Base>]

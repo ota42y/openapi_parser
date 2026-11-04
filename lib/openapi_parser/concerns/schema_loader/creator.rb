@@ -1,5 +1,8 @@
 # loader base class for create OpenAPI::Schemas::Base object
 class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
+  # these do not change validation, so a `$ref` with only these stays a Reference
+  REF_ANNOTATIONS = %w[$ref $comment title description summary deprecated default example examples readOnly writeOnly].freeze
+
   # @param [String] variable_name
   # @param [Hash] options
   def initialize(variable_name, options)
@@ -35,6 +38,15 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
       check_schema.kind_of?(::Hash)
     end
 
+    # 3.1: a Schema Object applies the keywords next to `$ref`. A Reference Object,
+    # and any object in 3.0, ignores them.
+    def reference_class(target_object, schema)
+      return OpenAPIParser::Schemas::Reference unless @klass == OpenAPIParser::Schemas::Schema && target_object.root.use_3_1_features?
+      return OpenAPIParser::Schemas::Reference unless schema.keys.any? { |key| !REF_ANNOTATIONS.include?(key) && !key.start_with?('x-') }
+
+      OpenAPIParser::Schemas::SchemaWithRef
+    end
+
     def escape_reference(str)
       str.to_s.gsub('~', '~0').gsub('/', '~1')
     end
@@ -45,7 +57,7 @@ class OpenAPIParser::SchemaLoader::Creator < OpenAPIParser::SchemaLoader::Base
       if @allow_data_type && !check_object_schema?(schema)
         schema
       elsif allow_reference?(target_object) && check_reference_schema?(schema)
-        OpenAPIParser::Schemas::Reference.new(ref, target_object, target_object.root, schema)
+        reference_class(target_object, schema).new(ref, target_object, target_object.root, schema)
       else
         @klass.new(ref, target_object, target_object.root, schema)
       end
