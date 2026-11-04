@@ -20,9 +20,23 @@ RSpec.describe 'oneOf with coerce_value' do
   end
 
   context 'when a String can also be coerced to another member' do
-    it 'accepts the String as it is'
-    it 'does not depend on the order of the members'
-    it 'keeps the String that would change if coerced'
+    let(:target) { { 'oneOf' => [integer, string] } }
+
+    it 'accepts the String as it is' do
+      expect(validate('1')).to eq '1'
+    end
+
+    context 'with the members in the other order' do
+      let(:target) { { 'oneOf' => [string, integer] } }
+
+      it 'does not depend on the order of the members' do
+        expect(validate('1')).to eq '1'
+      end
+    end
+
+    it 'keeps the String that would change if coerced' do
+      expect(validate('010')).to eq '010'
+    end
   end
 
   context 'when only a coerced value matches' do
