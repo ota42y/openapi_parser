@@ -24,6 +24,7 @@
 * support Discriminator `defaultMapping` (OpenAPI 3.2): fallback schema when the discriminator property is absent or its value has no explicit or implicit mapping; honored in 3.2 documents
 * add `allow_3_2_features` config to apply OpenAPI 3.2 runtime behavior to documents that declare an earlier version (default `false`: pre-3.2 documents behave as before)
 * accept `null` for a schema without `type`, as in JSON Schema. `enum` still applies, so `null` must be listed there when `enum` is set. A schema without `type` used to reject `null` with `NotNullError`, so a value that failed before may now pass
+* accept a Float with no fractional part, such as `1.0`, for `type: integer` in OpenAPI 3.1 documents, as in JSON Schema. OpenAPI 3.0 defines an integer as a number without a fraction, so 3.0 documents still reject it. In 3.1 documents a value that failed before may now pass, and `oneOf` with both `integer` and `number` now rejects `1.0` because it matches both
 * support `components.mediaTypes` (OpenAPI 3.2), resolving `$ref`s in request body and response `content` in 3.2 documents; an unresolved one accepts any body unless `strict_reference_validation` is set
 * support the `query` HTTP method and `additionalOperations` (OpenAPI 3.2) on Path Items, including request-operation lookup, in 3.2 documents
 * match HTTP methods case-insensitively in request-operation lookup in 3.2 documents (`request_operation("GET", path)` still returns nil before 3.2)

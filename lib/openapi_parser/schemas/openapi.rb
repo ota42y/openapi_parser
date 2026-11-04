@@ -36,6 +36,19 @@ module OpenAPIParser::Schemas
       Gem::Version.new(openapi).release
     end
 
+    # Whether OpenAPI 3.1 runtime behavior applies where 3.0 and 3.1 define
+    # the same thing differently: the document declares 3.1 or later. A
+    # referenced file that declares no version follows the document that
+    # loaded it.
+    # @return [Boolean]
+    def use_3_1_features?
+      version = openapi_version
+      return version >= Gem::Version.new('3.1') if version
+      return @referrer.use_3_1_features? if openapi.nil? && @referrer
+
+      false
+    end
+
     # Whether OpenAPI 3.2 runtime behavior applies: the document declares 3.2
     # or later, or the allow_3_2_features config is set. A referenced file
     # that declares no version follows the document that loaded it.
