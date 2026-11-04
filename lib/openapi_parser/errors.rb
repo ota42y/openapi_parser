@@ -56,6 +56,18 @@ module OpenAPIParser
     end
   end
 
+  class NotExistDependentRequiredKey < OpenAPIError
+    def initialize(property, keys, reference)
+      super(reference)
+      @property = property
+      @keys = keys
+    end
+
+    def message
+      "#{@reference} missing parameters required by #{@property}: #{@keys.join(", ")}"
+    end
+  end
+
   class NotExistPropertyDefinition < OpenAPIError
     def initialize(keys, reference)
       super(reference)

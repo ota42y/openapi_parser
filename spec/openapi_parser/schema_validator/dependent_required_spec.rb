@@ -19,7 +19,23 @@ RSpec.describe 'dependentRequired keyword' do
   end
 
   context 'when one property depends on another' do
-    it 'rejects a value that has the property but not the one it depends on'
+    let(:schemas) do
+      {
+        'Target' => {
+          'type' => 'object',
+          'properties' => { 'credit_card' => { 'type' => 'string' }, 'billing_address' => { 'type' => 'string' } },
+          'dependentRequired' => { 'credit_card' => ['billing_address'] },
+        },
+      }
+    end
+
+    it 'rejects a value that has the property but not the one it depends on' do
+      expect { validate({ 'credit_card' => 'x' }) }.to raise_error(
+        OpenAPIParser::NotExistDependentRequiredKey,
+        %r{#/components/schemas/Target missing parameters required by credit_card: billing_address},
+      )
+    end
+
     it 'accepts a value that has both properties'
     it 'accepts a value that has neither property'
     it 'accepts a value that has only the property depended on'
