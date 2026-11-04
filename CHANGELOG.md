@@ -1,4 +1,6 @@
 ## Unreleased
+* support the `dependentRequired` keyword (OpenAPI 3.1): an object that has a property but not the properties it depends on now fails with `NotExistDependentRequiredKey`. It was ignored before, so a value that passed may now fail
+* add `SpecValidator` rule `DependentRequiredIn30`: detect `dependentRequired` in 3.0 documents (3.1 addition)
 
 ## 2.6.0 (2026-11-04)
 * support the `multipleOf` keyword (OpenAPI 3.0 and 3.1): a number that is not a multiple of it now fails with `NotMultipleOf`. Decimals are compared exactly, so `19.99` is a multiple of `0.01`. A `multipleOf` that is not a positive number is still ignored. It was ignored before, so a value that passed may now fail
