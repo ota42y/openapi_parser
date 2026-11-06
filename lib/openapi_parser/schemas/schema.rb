@@ -83,6 +83,10 @@ module OpenAPIParser::Schemas
     #   @return [Boolean, nil]
     openapi_attr_value :write_only, schema_key: :writeOnly
 
+    # @!attribute [r] dependent_required
+    #   @return [Hash{String => Array<String>}, nil]
+    openapi_attr_value :dependent_required, schema_key: :dependentRequired
+
     # @!attribute [r] all_of
     #   @return [Array<Schema, Reference>, nil]
     openapi_attr_list_object :all_of, Schema, reference: true, schema_key: :allOf
