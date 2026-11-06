@@ -10,17 +10,24 @@ class OpenAPIParser::SchemaValidator
       end
 
       # if any schema return error, it's not a valid all_of
+      # Members with `type` go first, so that the other members see the coerced value.
+      steps = schema.all_of.partition(&:type).flatten.map do |s|
+        lambda do |input|
+          # We need to store the reference to all of, so we can perform strict check on allowed properties
+          validatable.validate_schema(
+            input,
+            s,
+            :parent_all_of => true,
+            parent_discriminator_schemas: keyword_args[:parent_discriminator_schemas] || []
+          )
+        end
+      end
+      coerced, err = validatable.validate_in_order(value, steps)
+      return [nil, err] if err
+
       remaining_keys               = value.kind_of?(Hash) ? value.keys : []
       nested_additional_properties = false
       schema.all_of.each do |s|
-        # We need to store the reference to all of, so we can perform strict check on allowed properties
-        _coerced, err = validatable.validate_schema(
-          value,
-          s,
-          :parent_all_of => true,
-          parent_discriminator_schemas: keyword_args[:parent_discriminator_schemas] || []
-        )
-
         if s.type == "object"
           remaining_keys               -= (s.properties || {}).keys
           nested_additional_properties = true if s.additional_properties
@@ -28,8 +35,6 @@ class OpenAPIParser::SchemaValidator
           # If this is not allOf having array of objects inside, but e.g. having another anyOf/oneOf nested
           remaining_keys.clear
         end
-
-        return [nil, err] if err
       end
 
       # If there are nested additionalProperties, we allow not defined extra properties and lean on the specific
@@ -38,7 +43,7 @@ class OpenAPIParser::SchemaValidator
         return [nil, OpenAPIParser::NotExistPropertyDefinition.new(remaining_keys, schema.object_reference)]
       end
 
-      [value, nil]
+      [coerced, nil]
     end
   end
 end

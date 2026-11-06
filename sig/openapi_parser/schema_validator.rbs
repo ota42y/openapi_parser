@@ -25,6 +25,7 @@ module OpenAPIParser
     def validate_data: -> Object
     def validate_schema: (Object value, OpenAPIParser::Schemas::Schema schema, **bot) -> [Object, OpenAPIParser::validate_error]
     def validate_integer: (Object value, OpenAPIParser::Schemas::Schema schema) -> [Object, OpenAPIParser::validate_error]
+    def validate_in_order: (Object value, Array[untyped] steps) -> [Object, OpenAPIParser::validate_error]
 
     private
     def validator: (Object value, OpenAPIParser::Schemas::Schema schema) -> [OpenAPIParser::SchemaValidator::Base, OpenAPIParser::validate_error]
