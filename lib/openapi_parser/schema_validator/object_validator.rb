@@ -53,9 +53,30 @@ class OpenAPIParser::SchemaValidator
       end
       return [nil, OpenAPIParser::NotExistRequiredKey.new(required_set.to_a, schema.object_reference)] unless required_set.empty?
 
+      dependent_required_error = check_dependent_required(value, schema)
+      return [nil, dependent_required_error] if dependent_required_error
+
       value.merge!(coerced_values.to_h) if @coerce_value
 
       check_properties_number(value, schema)
+    end
+
+    private
+
+    # @return [OpenAPIParser::NotExistDependentRequiredKey, nil]
+    def check_dependent_required(value, schema)
+      dependent_required = schema.dependent_required
+      return unless dependent_required.is_a?(Hash)
+
+      dependent_required.each do |property, keys|
+        next unless value.key?(property) && keys.is_a?(Array)
+
+        missing_keys = keys.reject { |key| value.key?(key) }
+        next if missing_keys.empty?
+
+        return OpenAPIParser::NotExistDependentRequiredKey.new(property, missing_keys, schema.object_reference)
+      end
+      nil
     end
   end
 end

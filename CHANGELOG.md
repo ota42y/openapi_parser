@@ -1,5 +1,9 @@
 ## Unreleased
 * match `additionalOperations` method names case-sensitively ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)). Standard methods still match their fixed fields in any case
+* check the keywords next to `allOf`, `anyOf` and `oneOf` (OpenAPI 3.0 and 3.1), such as `{ allOf: [...], required: [a] }`, and all of these keywords when a schema has more than one. They were ignored before, so a value that passed may now fail. In particular, `additionalProperties: false` next to `allOf` now rejects the properties defined only in `allOf`, as in JSON Schema
+* return the coerced value from `allOf` and `oneOf` when `coerce_value` is on. They returned the original value before
+* support the `dependentRequired` keyword (OpenAPI 3.1): an object that has a property but not the properties it depends on now fails with `NotExistDependentRequiredKey`. It was ignored before, so a value that passed may now fail
+* add `SpecValidator` rule `DependentRequiredIn30`: detect `dependentRequired` in 3.0 documents (3.1 addition)
 
 ## 2.6.0 (2026-11-04)
 * support the `multipleOf` keyword (OpenAPI 3.0 and 3.1): a number that is not a multiple of it now fails with `NotMultipleOf`. Decimals are compared exactly, so `19.99` is a multiple of `0.01`. A `multipleOf` that is not a positive number is still ignored. It was ignored before, so a value that passed may now fail

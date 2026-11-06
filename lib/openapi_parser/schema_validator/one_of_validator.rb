@@ -11,12 +11,9 @@ class OpenAPIParser::SchemaValidator
       end
 
       # if multiple schemas are satisfied, it's not valid
-      result = schema.one_of.one? do |s|
-        _coerced, err = validatable.validate_schema(value, s)
-        err.nil?
-      end
-      if result
-        [value, nil]
+      matched = schema.one_of.map { |s| validatable.validate_schema(value, s) }.select { |_coerced, err| err.nil? }
+      if matched.one?
+        [matched.first.first, nil]
       else
         [nil, OpenAPIParser::NotOneOf.new(value, schema.object_reference)]
       end
