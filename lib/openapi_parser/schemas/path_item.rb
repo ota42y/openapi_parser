@@ -36,13 +36,10 @@ module OpenAPIParser::Schemas
 
     private
 
-      # additionalOperations keys are method names as sent on the wire
-      # (conventionally uppercase); prefer an exact match, else ignore case
+      # additionalOperations keys use the method's case as sent on the wire,
+      # and method names are case-sensitive (RFC 9110 §9.1)
       def additional_operation(name)
-        operations = additional_operations
-        return nil unless operations
-
-        operations.fetch(name) { operations.find { |key, _| key.casecmp?(name) }&.last }
+        additional_operations&.[](name)
       end
   end
 end

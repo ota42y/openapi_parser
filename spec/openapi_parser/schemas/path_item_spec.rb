@@ -83,9 +83,29 @@ RSpec.describe OpenAPIParser::Schemas::PathItem do
       it 'parses entries as Operations and finds them via #operation' do
         copy = path_item.operation('COPY')
         expect(copy.class).to eq OpenAPIParser::Schemas::Operation
-        expect(path_item.operation(:copy)).to eq copy
-        expect(path_item.operation('Copy')).to eq copy
         expect(path_item.operation('LINK')).to eq nil
+      end
+
+      it 'matches method names case-sensitively' do
+        expect(path_item.operation(:copy)).to eq nil
+        expect(path_item.operation('Copy')).to eq nil
+      end
+
+      context 'with entries that differ only in case' do
+        let(:root) do
+          operation = ->(summary) { { 'summary' => summary, 'responses' => { '200' => { 'description' => 'OK' } } } }
+          OpenAPIParser.parse({
+            'openapi' => '3.2.0',
+            'info' => { 'title' => 'Pet API', 'version' => '1.0' },
+            'paths' => { '/pets' => { 'additionalOperations' => { 'PURGE' => operation.('upper'), 'purge' => operation.('lower') } } },
+          }, {})
+        end
+
+        it 'finds each by its exact name' do
+          expect(path_item.operation('PURGE').summary).to eq 'upper'
+          expect(path_item.operation('purge').summary).to eq 'lower'
+          expect(path_item.operation('Purge')).to eq nil
+        end
       end
     end
 
