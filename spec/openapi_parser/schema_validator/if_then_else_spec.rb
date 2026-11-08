@@ -19,10 +19,40 @@ RSpec.describe 'if, then and else keywords' do
   end
 
   context 'when if, then and else are given' do
-    it 'checks then for a value that passes if'
-    it 'accepts a value that passes if and then'
-    it 'checks else for a value that fails if'
-    it 'accepts a value that fails if and passes else'
+    let(:schemas) do
+      {
+        'Target' => {
+          'type' => 'object',
+          'if' => { 'properties' => { 'kind' => { 'const' => 'card' } }, 'required' => ['kind'] },
+          'then' => { 'required' => ['card_number'] },
+          'else' => { 'required' => ['account_number'] },
+        },
+      }
+    end
+
+    it 'checks then for a value that passes if' do
+      expect { validate({ 'kind' => 'card', 'account_number' => '1' }) }.to raise_error(
+        OpenAPIParser::NotExistRequiredKey,
+        /missing required parameters: card_number/,
+      )
+    end
+
+    it 'accepts a value that passes if and then' do
+      value = { 'kind' => 'card', 'card_number' => '1' }
+      expect(validate(value)).to eq value
+    end
+
+    it 'checks else for a value that fails if' do
+      expect { validate({ 'kind' => 'bank', 'card_number' => '1' }) }.to raise_error(
+        OpenAPIParser::NotExistRequiredKey,
+        /missing required parameters: account_number/,
+      )
+    end
+
+    it 'accepts a value that fails if and passes else' do
+      value = { 'kind' => 'bank', 'account_number' => '1' }
+      expect(validate(value)).to eq value
+    end
   end
 
   context 'when if and then are given' do
