@@ -11,6 +11,7 @@ class OpenAPIParser::SchemaValidator
       return OpenAPIParser::ValidateError.build_error_result(value, schema) unless value.kind_of?(Hash)
 
       properties = schema.properties || {}
+      pattern_properties = schema.pattern_properties || {}
       additional_properties = schema.additional_properties
 
       required_set = schema.required ? schema.required.to_set : Set.new
@@ -30,10 +31,10 @@ class OpenAPIParser::SchemaValidator
       return [nil, property_names_error] if property_names_error
 
       coerced_values = value.map do |name, v|
-        s = properties[name]
-        coerced, err = if s
+        property_schemas = [properties[name], *matching_pattern_schemas(name, pattern_properties)].compact
+        coerced, err = if !property_schemas.empty?
                          remaining_keys.delete(name)
-                         validatable.validate_schema(v, s)
+                         validate_property(v, property_schemas)
                        # TODO: better handling for parent_all_of with additional_properties
                        elsif !parent_all_of && additional_properties.is_a?(OpenAPIParser::Schemas::Schema)
                          remaining_keys.delete(name)
@@ -83,6 +84,21 @@ class OpenAPIParser::SchemaValidator
         return err if err
       end
       nil
+    end
+
+    # @param [String] name
+    # @param [Hash{String => OpenAPIParser::Schemas::Schema}] pattern_properties
+    # @return [Array<OpenAPIParser::Schemas::Schema>] the schemas whose pattern matches the name
+    def matching_pattern_schemas(name, pattern_properties)
+      # Same regular expression handling as the pattern keyword (StringValidator#pattern_validate)
+      pattern_properties.select { |pattern, _| name =~ /#{pattern}/ }.values
+    end
+
+    # Check the value against each schema in turn, passing on the coerced value.
+    # @return [Array] coerced value and error
+    def validate_property(value, schemas)
+      steps = schemas.map { |s| ->(current) { validatable.validate_schema(current, s) } }
+      validatable.validate_in_order(value, steps)
     end
 
     # @return [OpenAPIParser::NotExistDependentRequiredKey, nil]

@@ -19,7 +19,15 @@ RSpec.describe 'patternProperties keyword' do
   end
 
   context 'when a pattern matches some property names' do
-    it 'rejects a property whose name matches and whose value does not fit the schema'
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'patternProperties' => { '^x-' => { 'type' => 'integer' } } } } }
+
+    it 'rejects a property whose name matches and whose value does not fit the schema' do
+      expect { validate({ 'x-a' => 1, 'x-b' => 'two' }) }.to raise_error(
+        OpenAPIParser::ValidateError,
+        %r{#/components/schemas/Target/patternProperties/\^x- expected integer, but received String: "two"},
+      )
+    end
+
     it 'accepts properties whose names match and whose values fit the schema'
     it 'ignores a property whose name does not match'
   end
