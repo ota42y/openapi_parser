@@ -228,6 +228,31 @@ RSpec.describe 'patternProperties keyword' do
     end
   end
 
+  context 'when every allOf member sets additionalProperties to false' do
+    let(:schemas) do
+      {
+        'Target' => {
+          'allOf' => [
+            { 'type' => 'object', 'properties' => { 'name' => { 'type' => 'string' } }, 'additionalProperties' => false },
+            { 'type' => 'object', 'patternProperties' => { '^x-' => { 'type' => 'integer' } }, 'additionalProperties' => false },
+          ],
+        },
+      }
+    end
+
+    it 'treats a name that matches a pattern as defined, like a name in properties' do
+      value = { 'name' => 'n', 'x-a' => 1 }
+      expect(validate(value)).to eq value
+    end
+
+    it 'rejects a name that is in no properties and matches no pattern' do
+      expect { validate({ 'name' => 'n', 'other' => 1 }) }.to raise_error(
+        OpenAPIParser::NotExistPropertyDefinition,
+        %r{#/components/schemas/Target does not define properties: other},
+      )
+    end
+  end
+
   context 'when the keyword is in a nested schema' do
     let(:schemas) do
       {
