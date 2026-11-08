@@ -103,6 +103,10 @@ module OpenAPIParser::Schemas
     #   @return [Schema, nil]
     openapi_attr_object :not, Schema, reference: true
 
+    # @!attribute [r] property_names
+    #   @return [Schema, nil]
+    openapi_attr_object :property_names, Schema, reference: true, schema_key: :propertyNames
+
     # @!attribute [r] items
     #   @return [Schema, nil]
     openapi_attr_object :items, Schema, reference: true

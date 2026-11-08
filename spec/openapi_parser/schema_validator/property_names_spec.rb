@@ -19,8 +19,17 @@ RSpec.describe 'propertyNames keyword' do
   end
 
   context 'when property names must match a pattern' do
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'propertyNames' => { 'pattern' => '^[a-z_]+$' } } } }
+
     it 'accepts a value whose names all match'
-    it 'rejects a value that has a name that does not match'
+
+    it 'rejects a value that has a name that does not match' do
+      expect { validate({ 'user_id' => 1, 'userName' => 'x' }) }.to raise_error(
+        OpenAPIParser::InvalidPattern,
+        %r{#/components/schemas/Target/propertyNames pattern \^\[a-z_\]\+\$ does not match value: "userName"},
+      )
+    end
+
     it 'accepts an empty object'
   end
 
