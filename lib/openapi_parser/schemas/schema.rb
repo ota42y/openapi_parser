@@ -140,6 +140,10 @@ module OpenAPIParser::Schemas
     #   @return [Hash{String => Schema}, nil] reusable schemas for `$ref` (OpenAPI 3.1+)
     openapi_attr_hash_object :defs, Schema, reference: true, schema_key: :$defs
 
+    # @!attribute [r] dependent_schemas
+    #   @return [Hash{String => Schema}, nil] schemas that apply when the object has the property (OpenAPI 3.1+)
+    openapi_attr_hash_object :dependent_schemas, Schema, reference: true, schema_key: :dependentSchemas
+
     # @!attribute [r] discriminator
     #   @return [Discriminator, nil]
     openapi_attr_object :discriminator, Discriminator

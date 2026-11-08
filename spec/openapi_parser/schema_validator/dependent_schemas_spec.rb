@@ -19,7 +19,23 @@ RSpec.describe 'dependentSchemas keyword' do
   end
 
   context 'when the subschema requires other properties' do
-    it 'rejects a value that has the property but not the required ones'
+    let(:schemas) do
+      {
+        'Target' => {
+          'type' => 'object',
+          'properties' => { 'credit_card' => { 'type' => 'string' }, 'billing_address' => { 'type' => 'string' } },
+          'dependentSchemas' => { 'credit_card' => { 'required' => ['billing_address'] } },
+        },
+      }
+    end
+
+    it 'rejects a value that has the property but not the required ones' do
+      expect { validate({ 'credit_card' => 'x' }) }.to raise_error(
+        OpenAPIParser::NotExistRequiredKey,
+        %r{#/components/schemas/Target/dependentSchemas/credit_card missing required parameters: billing_address},
+      )
+    end
+
     it 'accepts a value that has the property and the required ones'
     it 'accepts a value that does not have the property'
   end
