@@ -338,6 +338,28 @@ module OpenAPIParser
     end
   end
 
+  class MoreThanMaxContains < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} #{@value.inspect} contains more than maxContains matching items"
+    end
+  end
+
+  class LessThanMinContains < OpenAPIError
+    def initialize(value, reference)
+      super(reference)
+      @value = value
+    end
+
+    def message
+      "#{@reference} #{@value.inspect} contains fewer than minContains matching items"
+    end
+  end
+
   class NotUniqueItems < OpenAPIError
     def initialize(value, reference)
       super(reference)

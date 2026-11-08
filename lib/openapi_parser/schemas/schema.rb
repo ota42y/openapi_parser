@@ -29,6 +29,10 @@ module OpenAPIParser::Schemas
     #   @return [Integer, nil]
     # @!attribute [r] minItems
     #   @return [Integer, nil]
+    # @!attribute [r] maxContains
+    #   @return [Integer, nil]
+    # @!attribute [r] minContains
+    #   @return [Integer, nil]
     # @!attribute [r] maxProperties
     #   @return [Integer, nil]
     # @!attribute [r] minProperties
@@ -62,6 +66,7 @@ module OpenAPIParser::Schemas
                         :maxLength, :minLength,
                         :pattern,
                         :maxItems, :minItems, :uniqueItems,
+                        :maxContains, :minContains,
                         :maxProperties, :minProperties,
                         :required, :enum,
                         :description,
@@ -110,6 +115,10 @@ module OpenAPIParser::Schemas
     # @!attribute [r] items
     #   @return [Schema, nil]
     openapi_attr_object :items, Schema, reference: true
+
+    # @!attribute [r] contains
+    #   @return [Schema, nil] an array must have items valid against it (OpenAPI 3.1+)
+    openapi_attr_object :contains, Schema, reference: true
 
     # @!attribute [r] prefix_items
     #   @return [Array<Schema>, nil] tuple-style positional schemas (OpenAPI 3.1+)

@@ -19,7 +19,15 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
   end
 
   context 'when the array must contain a matching item' do
-    it 'rejects an array without a matching item'
+    let(:schemas) { { 'Target' => { 'type' => 'array', 'contains' => { 'type' => 'integer' } } } }
+
+    it 'rejects an array without a matching item' do
+      expect { validate(%w[a b]) }.to raise_error(
+        OpenAPIParser::LessThanMinContains,
+        %r{#/components/schemas/Target \["a", "b"\] contains fewer than minContains matching items},
+      )
+    end
+
     it 'accepts an array with one matching item'
     it 'accepts an array whose items all match'
     it 'rejects an empty array'
