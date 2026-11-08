@@ -23,6 +23,7 @@ require_relative 'spec_validator/rules/property_names_in_30'
 require_relative 'spec_validator/rules/pattern_properties_in_30'
 require_relative 'spec_validator/rules/contains_in_30'
 require_relative 'spec_validator/rules/dependent_schemas_in_30'
+require_relative 'spec_validator/rules/if_then_else_in_30'
 require_relative 'spec_validator/rules/allow_empty_value_deprecation'
 require_relative 'spec_validator/rules/xml_node_type_before_32'
 require_relative 'spec_validator/rules/xml_attribute_deprecation'
@@ -110,6 +111,7 @@ module OpenAPIParser
           Rules::PatternPropertiesIn30,
           Rules::ContainsIn30,
           Rules::DependentSchemasIn30,
+          Rules::IfThenElseIn30,
           Rules::AllowEmptyValueDeprecation,
           Rules::XmlNodeTypeBefore32,
           Rules::XmlAttributeDeprecation,
