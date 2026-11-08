@@ -2,6 +2,8 @@
 * match an exact `additionalOperations` key before a standard method in 3.2 documents, so a `Get` request finds `additionalOperations.Get` rather than `get` ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1))
 * check the keywords next to `$ref` in Schema Objects of OpenAPI 3.1 documents, such as `{ $ref: ..., maxLength: 3 }`. They were ignored before, so a value that passed may now fail. A Reference Object, and any object in a 3.0 document, still ignores them. Readers such as `Schema#type` still return the values of the referenced schema
 * accept a value that matches exactly one `oneOf` member as it is when `coerce_value` is on, and keep it uncoerced. `"1"` for `oneOf: [integer, string]` failed with `NotOneOf` before, because coercion made it match both
+* support the `propertyNames` keyword (OpenAPI 3.1): every property name of an object is checked against its schema, and the first name that fails returns the error from that schema, such as `InvalidPattern` or `MoreThanMaxLength`. Names are checked as strings even when `coerce_value` is on. It was ignored before, so a value that passed may now fail
+* add `SpecValidator` rule `PropertyNamesIn30`: detect `propertyNames` in 3.0 documents (3.1 addition)
 
 ## 2.7.0 (2026-11-06)
 * match `additionalOperations` method names case-sensitively ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)). Standard methods still match their fixed fields in any case
