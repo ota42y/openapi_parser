@@ -23,14 +23,16 @@ module OpenAPIParser::Schemas
         return PRE_3_2_METHODS.include?(method.to_s) ? public_send(method.to_s) : nil
       end
 
-      method_name = method.to_s.downcase
-      return public_send(method_name) if STANDARD_METHODS.include?(method_name)
+      # an exact additionalOperations key wins, so `Get` isn't routed to `get`
+      additional = additional_operation(method.to_s)
+      return additional if additional
 
-      additional_operation(method.to_s)
+      method_name = method.to_s.downcase
+      STANDARD_METHODS.include?(method_name) ? public_send(method_name) : nil
     end
 
     def set_path_item_to_operation
-      STANDARD_METHODS.each { |method| operation(method)&.set_parent_path_item(self) }
+      STANDARD_METHODS.each { |method| public_send(method)&.set_parent_path_item(self) }
       additional_operations&.each_value { |op| op.set_parent_path_item(self) }
     end
 
