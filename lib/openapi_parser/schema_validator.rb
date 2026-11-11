@@ -80,6 +80,7 @@ class OpenAPIParser::SchemaValidator
   # @param [OpenAPIParser::Schemas::Schema] schema
   def validate_schema(value, schema, **keyword_args)
     return [value, nil] unless schema
+    return validate_schema_with_ref(value, schema, **keyword_args) if schema.is_a?(OpenAPIParser::Schemas::SchemaWithRef)
 
     # 3.1: a boolean schema accepts (`true`) or rejects (`false`) any value,
     # including null.
@@ -114,6 +115,15 @@ class OpenAPIParser::SchemaValidator
     integer_validator.coerce_and_validate(value, schema)
   end
 
+  # @param [Object] value
+  # @param [OpenAPIParser::Schemas::Schema] schema
+  # @return [Boolean] whether the value is valid as it is, without coerce_value
+  def valid_without_coercion?(value, schema)
+    @validator_without_coercion ||= self.class.new(value, schema, Options.new(allow_empty_date_and_datetime: @allow_empty_date_and_datetime))
+    _value, err = @validator_without_coercion.validate_schema(value, schema)
+    err.nil?
+  end
+
   # Run the steps in order, each with the value coerced by the steps before it.
   # Keywords check JSON values. A coerced value of another class, like DateTime,
   # is only the output form, so the later steps check the original value.
@@ -135,6 +145,19 @@ class OpenAPIParser::SchemaValidator
 
     def json_value?(value)
       JSON_VALUE_CLASSES.any? { |klass| value.is_a?(klass) }
+    end
+
+    # `$ref` and the keywords next to it both apply. The one with `type` goes first,
+    # so that the other sees the coerced value.
+    # @return [Array] coerced value and error
+    def validate_schema_with_ref(value, schema, **keyword_args)
+      target = schema.ref_target
+      return validate_schema(value, schema.ref_siblings, **keyword_args) unless target.is_a?(OpenAPIParser::Schemas::Schema)
+
+      steps = [target, schema.ref_siblings].partition(&:type).flatten.map do |s|
+        ->(input) { validate_schema(input, s, **keyword_args) }
+      end
+      validate_in_order(value, steps)
     end
 
     # @return [Array<OpenAPIParser::SchemaValidator::Base>]
