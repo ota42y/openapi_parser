@@ -1,4 +1,5 @@
 ## Unreleased
+* accept a value that matches exactly one `oneOf` member as it is when `coerce_value` is on, and keep it uncoerced. `"1"` for `oneOf: [integer, string]` failed with `NotOneOf` before, because coercion made it match both
 
 ## 2.7.0 (2026-11-06)
 * match `additionalOperations` method names case-sensitively ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)). Standard methods still match their fixed fields in any case
