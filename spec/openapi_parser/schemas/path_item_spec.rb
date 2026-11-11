@@ -107,6 +107,28 @@ RSpec.describe OpenAPIParser::Schemas::PathItem do
           expect(path_item.operation('Purge')).to eq nil
         end
       end
+
+      context 'with an entry that differs from a standard method only in case' do
+        let(:root) do
+          operation = ->(summary) { { 'summary' => summary, 'responses' => { '200' => { 'description' => 'OK' } } } }
+          OpenAPIParser.parse({
+            'openapi' => '3.2.0',
+            'info' => { 'title' => 'Pet API', 'version' => '1.0' },
+            'paths' => { '/pets' => { 'get' => operation.('standard'), 'additionalOperations' => { 'Get' => operation.('custom') } } },
+          }, {})
+        end
+
+        it 'finds the additionalOperations entry by its exact name and the standard method otherwise' do
+          expect(path_item.operation('Get').summary).to eq 'custom'
+          expect(path_item.operation('GET').summary).to eq 'standard'
+          expect(path_item.operation(:get).summary).to eq 'standard'
+        end
+
+        it 'sets the path item on both operations' do
+          expect(path_item.get.parent).to eq path_item
+          expect(path_item.operation('Get').parent).to eq path_item
+        end
+      end
     end
 
     it 'returns nil for non-operation path item fields' do
