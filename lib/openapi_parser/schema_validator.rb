@@ -115,6 +115,15 @@ class OpenAPIParser::SchemaValidator
     integer_validator.coerce_and_validate(value, schema)
   end
 
+  # @param [Object] value
+  # @param [OpenAPIParser::Schemas::Schema] schema
+  # @return [Boolean] whether the value is valid as it is, without coerce_value
+  def valid_without_coercion?(value, schema)
+    @validator_without_coercion ||= self.class.new(value, schema, Options.new(allow_empty_date_and_datetime: @allow_empty_date_and_datetime))
+    _value, err = @validator_without_coercion.validate_schema(value, schema)
+    err.nil?
+  end
+
   # Run the steps in order, each with the value coerced by the steps before it.
   # Keywords check JSON values. A coerced value of another class, like DateTime,
   # is only the output form, so the later steps check the original value.
