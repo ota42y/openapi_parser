@@ -19,12 +19,19 @@ RSpec.describe 'enum for objects and arrays' do
   end
 
   describe 'an object' do
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'enum' => [{ 'a' => 'b', 'c' => 'd' }, { 'a' => 1 }] } } }
+
     context 'when the value equals a member' do
-      it 'accepts the value'
+      it 'accepts the value' do
+        value = { 'a' => 'b', 'c' => 'd' }
+        expect(validate(value)).to eq value
+      end
     end
 
     context 'when a property value differs from every member' do
-      it 'rejects the value'
+      it 'rejects the value' do
+        expect { validate({ 'a' => 2 }) }.to raise_error(OpenAPIParser::NotEnumInclude, %r{#/components/schemas/Target})
+      end
     end
 
     context 'when the keys are in a different order' do
