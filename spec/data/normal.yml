@@ -127,6 +127,34 @@ paths:
             type: array
             items:
               type: integer
+        - name: form_unexploded_array
+          in: query
+          description: array that looks like 'apple,banana,coconut'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: space_unexploded_array
+          in: query
+          description: array that looks like '5 10 15'
+          style: spaceDelimited
+          explode: false
+          schema:
+            type: array
+            items:
+              type:
+                integer
+        - name: pipe_unexploded_array
+          in: query
+          description: array that looks like 'first|second|last'
+          style: pipeDelimited
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
         - name: nested_array
           in: query
           description: nested_array
