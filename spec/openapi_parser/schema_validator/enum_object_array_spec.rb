@@ -93,6 +93,18 @@ RSpec.describe 'enum for objects and arrays' do
         expect { validate([0]) }.to raise_error(OpenAPIParser::NotEnumInclude)
       end
     end
+
+    context 'when a member is an empty array' do
+      let(:schemas) { { 'Target' => { 'type' => 'array', 'enum' => [[]] } } }
+
+      it 'accepts an empty array' do
+        expect(validate([])).to eq []
+      end
+
+      it 'rejects a non-empty array' do
+        expect { validate(['a']) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
+    end
   end
 
   describe 'a schema without type' do
