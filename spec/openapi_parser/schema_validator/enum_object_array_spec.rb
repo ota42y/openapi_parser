@@ -35,15 +35,24 @@ RSpec.describe 'enum for objects and arrays' do
     end
 
     context 'when the keys are in a different order' do
-      it 'accepts the value'
+      it 'accepts the value' do
+        value = { 'c' => 'd', 'a' => 'b' }
+        expect(validate(value)).to eq value
+      end
     end
 
     context 'when the value lacks a key or has an extra key' do
-      it 'rejects the value'
+      it 'rejects the value' do
+        expect { validate({ 'a' => 'b' }) }.to raise_error(OpenAPIParser::NotEnumInclude)
+        expect { validate({ 'a' => 'b', 'c' => 'd', 'e' => 1 }) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
 
     context 'when a nested number is written as 1.0' do
-      it 'accepts the value'
+      it 'accepts the value' do
+        value = { 'a' => 1.0 }
+        expect(validate(value)).to eq value
+      end
     end
   end
 
