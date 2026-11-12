@@ -72,39 +72,77 @@ RSpec.describe 'enum for objects and arrays' do
     end
 
     context 'when the elements are in a different order' do
-      it 'rejects the value'
+      it 'rejects the value' do
+        expect { validate([2, 1]) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
 
     context 'when enum lists the values meant for items' do
-      it 'rejects every array'
+      let(:schemas) { { 'Target' => { 'type' => 'array', 'items' => { 'type' => 'string' }, 'enum' => %w[a b], 'minItems' => 0 } } }
+
+      it 'rejects every array' do
+        expect { validate(['a']) }.to raise_error(OpenAPIParser::NotEnumInclude)
+        expect { validate([]) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
 
     context 'when the member has false and the value has 0' do
-      it 'rejects the value'
+      let(:schemas) { { 'Target' => { 'type' => 'array', 'enum' => [[false]] } } }
+
+      it 'rejects the value' do
+        expect { validate([0]) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
   end
 
   describe 'a schema without type' do
+    let(:schemas) { { 'Target' => { 'enum' => [{ 'a' => 1 }, [1]] } } }
+
     context 'when the value is an object or an array' do
-      it 'checks enum'
+      it 'checks enum' do
+        expect(validate({ 'a' => 1 })).to eq({ 'a' => 1 })
+        expect(validate([1])).to eq [1]
+        expect { validate({ 'a' => 2 }) }.to raise_error(OpenAPIParser::NotEnumInclude)
+        expect { validate([2]) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
   end
 
   describe 'an empty enum' do
+    let(:schemas) do
+      {
+        'Object' => { 'type' => 'object', 'enum' => [] },
+        'Array' => { 'type' => 'array', 'enum' => [] },
+      }
+    end
+
     context 'when the value is an object or an array' do
-      it 'rejects the value'
+      it 'rejects the value' do
+        expect { OpenAPIParser::SchemaValidator.validate({}, root.components.schemas['Object'], options) }.to raise_error(OpenAPIParser::NotEnumInclude)
+        expect { OpenAPIParser::SchemaValidator.validate([], root.components.schemas['Array'], options) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
   end
 
   describe 'with coerce_value' do
+    let(:schemas) { { 'Target' => { 'type' => 'array', 'items' => { 'type' => 'integer' }, 'enum' => [[1, 2]] } } }
+    let(:coerce_options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
+
     context 'when the coerced value equals a member' do
-      it 'accepts the value and returns the coerced value'
+      it 'accepts the value and returns the coerced value' do
+        expect(validate(%w[1 2], coerce_options)).to eq [1, 2]
+      end
     end
   end
 
   describe 'in an OpenAPI 3.0 document' do
+    let(:openapi_version) { '3.0.3' }
+    let(:schemas) { { 'Target' => { 'type' => 'object', 'enum' => [{ 'a' => 1 }] } } }
+
     context 'when the value differs from every member' do
-      it 'rejects the value'
+      it 'rejects the value' do
+        expect { validate({ 'a' => 2 }) }.to raise_error(OpenAPIParser::NotEnumInclude)
+      end
     end
   end
 end
