@@ -26,6 +26,9 @@ class OpenAPIParser::SchemaValidator
         remaining_keys.delete('discriminator')
       end
 
+      property_names_error = check_property_names(value, schema)
+      return [nil, property_names_error] if property_names_error
+
       coerced_values = value.map do |name, v|
         s = properties[name]
         coerced, err = if s
@@ -66,6 +69,21 @@ class OpenAPIParser::SchemaValidator
     end
 
     private
+
+    # Property names are always strings, so they are checked without coercion.
+    # A name like "5" does not become 5 for `propertyNames: { type: integer }`.
+    # @return [OpenAPIParser::OpenAPIError, nil]
+    def check_property_names(value, schema)
+      property_names = schema.property_names
+      return unless property_names
+
+      validator = OpenAPIParser::SchemaValidator.new(nil, property_names, OpenAPIParser::SchemaValidator::Options.new)
+      value.each_key do |name|
+        _, err = validator.validate_schema(name, property_names)
+        return err if err
+      end
+      nil
+    end
 
     # @return [OpenAPIParser::NotExistDependentRequiredKey, nil]
     def check_dependent_required(value, schema)
