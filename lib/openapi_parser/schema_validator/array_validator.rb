@@ -1,5 +1,7 @@
 class OpenAPIParser::SchemaValidator
   class ArrayValidator < Base
+    include ::OpenAPIParser::SchemaValidator::Enumable
+
     # @param [Array] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def coerce_and_validate(value, schema, **_keyword_args)
@@ -26,7 +28,7 @@ class OpenAPIParser::SchemaValidator
 
       value.each_index { |idx| value[idx] = coerced_values[idx] } if @coerce_value
 
-      [value, nil]
+      check_enum_include(value, schema)
     end
 
     def validate_max_min_items(value, schema)
