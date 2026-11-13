@@ -1,5 +1,6 @@
 class OpenAPIParser::SchemaValidator
   class ObjectValidator < Base
+    include ::OpenAPIParser::SchemaValidator::Enumable
     include ::OpenAPIParser::SchemaValidator::PropertiesNumber
 
     # @param [Hash] value
@@ -57,6 +58,9 @@ class OpenAPIParser::SchemaValidator
       return [nil, dependent_required_error] if dependent_required_error
 
       value.merge!(coerced_values.to_h) if @coerce_value
+
+      value, err = check_enum_include(value, schema)
+      return [nil, err] if err
 
       check_properties_number(value, schema)
     end
