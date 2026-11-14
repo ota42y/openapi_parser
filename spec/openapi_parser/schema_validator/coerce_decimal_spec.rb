@@ -82,6 +82,12 @@ RSpec.describe 'coerce_value reads numbers as decimal' do
         end
       end
     end
-    context 'when the value has a binary or octal prefix'
+    context 'when the value has a binary or octal prefix' do
+      it 'rejects the value' do
+        %w[0b10 0o10].each do |value|
+          expect { validate(value) }.to raise_error(OpenAPIParser::ValidateError, /expected number, but received String/)
+        end
+      end
+    end
   end
 end
