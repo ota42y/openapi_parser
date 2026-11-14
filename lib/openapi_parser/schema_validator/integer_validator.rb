@@ -41,7 +41,8 @@ class OpenAPIParser::SchemaValidator
         return value.finite? && value == value.floor ? value.to_i : value if value.kind_of?(Float)
 
         begin
-          Integer(value)
+          # Base 10, so "010" is 10 rather than octal 8, and 0x, 0b and 0o are rejected.
+          Integer(value, 10)
         rescue ArgumentError, TypeError
           value
         end

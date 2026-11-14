@@ -23,9 +23,26 @@ RSpec.describe 'coerce_value reads numbers as decimal' do
   describe 'type: integer' do
     let(:type) { 'integer' }
 
-    context 'when the value has only digits'
-    context 'when the value has a leading zero'
-    context 'when the value has a base prefix'
+    context 'when the value has only digits' do
+      it 'returns the Integer' do
+        expect(validate('10')).to eq 10
+      end
+    end
+
+    context 'when the value has a leading zero' do
+      it 'reads it as decimal, not octal' do
+        expect(validate('010')).to eq 10
+        expect(validate('08')).to eq 8
+      end
+    end
+
+    context 'when the value has a base prefix' do
+      it 'rejects the value' do
+        %w[0x10 0b10 0o10].each do |value|
+          expect { validate(value) }.to raise_error(OpenAPIParser::ValidateError, /expected integer, but received String: "#{value}"/)
+        end
+      end
+    end
     context 'when the value has a sign, an underscore or spaces around it'
     context 'when the value is larger than 2**53'
   end
