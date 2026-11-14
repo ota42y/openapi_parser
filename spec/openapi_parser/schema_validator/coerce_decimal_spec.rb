@@ -62,9 +62,26 @@ RSpec.describe 'coerce_value reads numbers as decimal' do
   describe 'type: number' do
     let(:type) { 'number' }
 
-    context 'when the value is a decimal number'
-    context 'when the value has a leading zero'
-    context 'when the value is hexadecimal'
+    context 'when the value is a decimal number' do
+      it 'returns the Float' do
+        expect(validate('1.5')).to eq 1.5
+        expect(validate('1e3')).to eq 1000.0
+      end
+    end
+
+    context 'when the value has a leading zero' do
+      it 'reads it as decimal' do
+        expect(validate('010')).to eq 10.0
+      end
+    end
+
+    context 'when the value is hexadecimal' do
+      it 'rejects the value' do
+        ['0x10', '0X10', '-0x10', ' +0x10', '0x1p3'].each do |value|
+          expect { validate(value) }.to raise_error(OpenAPIParser::ValidateError, /expected number, but received String/)
+        end
+      end
+    end
     context 'when the value has a binary or octal prefix'
   end
 end
