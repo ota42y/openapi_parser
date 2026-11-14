@@ -123,6 +123,10 @@ module OpenAPIParser::Schemas
     #   @return [Hash{String => Schema}, nil]
     openapi_attr_hash_object :properties, Schema, reference: true
 
+    # @!attribute [r] pattern_properties
+    #   @return [Hash{String => Schema}, nil] schemas for properties whose names match the regular expression keys (OpenAPI 3.1+)
+    openapi_attr_hash_object :pattern_properties, Schema, reference: true, schema_key: :patternProperties
+
     # @!attribute [r] defs
     #   @return [Hash{String => Schema}, nil] reusable schemas for `$ref` (OpenAPI 3.1+)
     openapi_attr_hash_object :defs, Schema, reference: true, schema_key: :$defs
