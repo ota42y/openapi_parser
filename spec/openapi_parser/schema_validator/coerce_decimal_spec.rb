@@ -43,8 +43,20 @@ RSpec.describe 'coerce_value reads numbers as decimal' do
         end
       end
     end
-    context 'when the value has a sign, an underscore or spaces around it'
-    context 'when the value is larger than 2**53'
+    context 'when the value has a sign, an underscore or spaces around it' do
+      it 'accepts the value, because it can only mean one decimal number' do
+        expect(validate('+5')).to eq 5
+        expect(validate('-5')).to eq(-5)
+        expect(validate('1_000')).to eq 1000
+        expect(validate(' 5 ')).to eq 5
+      end
+    end
+
+    context 'when the value is larger than 2**53' do
+      it 'keeps every digit' do
+        expect(validate('9007199254740993')).to eq 9_007_199_254_740_993
+      end
+    end
   end
 
   describe 'type: number' do
