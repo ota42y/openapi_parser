@@ -127,7 +127,7 @@ OpenAPIParser.parse(schema, strict_specification_version: :raise)
 
 Detected mismatches:
 
-- 3.1 additions in 3.0 documents: `const`, `prefixItems`, array-form `type`, `type: "null"`, `webhooks`, `jsonSchemaDialect`, `components.pathItems`, `$dynamicRef`, `$dynamicAnchor`, `contentEncoding`, `contentMediaType`, `contentSchema`, `$defs`, `dependentRequired`, `propertyNames`, boolean schemas
+- 3.1 additions in 3.0 documents: `const`, `prefixItems`, array-form `type`, `type: "null"`, `webhooks`, `jsonSchemaDialect`, `components.pathItems`, `$dynamicRef`, `$dynamicAnchor`, `contentEncoding`, `contentMediaType`, `contentSchema`, `$defs`, `dependentRequired`, `propertyNames`, `patternProperties`, boolean schemas
 - the 3.0 Boolean vs 3.1 numeric forms of `exclusiveMinimum` / `exclusiveMaximum`
 - 3.2 additions in earlier documents: `$self`, the `query` operation, `additionalOperations`, `components.mediaTypes`, Tag `summary` / `parent` / `kind`, Server `name`, Example `dataValue` / `serializedValue`, XML `nodeType`, Security Scheme `deprecated` / `oauth2MetadataUrl` and the `deviceAuthorization` flow, Media Type and Encoding `itemSchema` / `itemEncoding` / `prefixEncoding`, Discriminator `defaultMapping`, Parameter `in: querystring` and `style: cookie`, Response `summary`
 - keywords removed or deprecated by the declared version: `nullable` and singular schema `example` in 3.1+, XML `attribute: true` / `wrapped: true` and Parameter `allowEmptyValue` in 3.2

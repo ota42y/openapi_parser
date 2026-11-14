@@ -30,6 +30,8 @@ class OpenAPIParser::SchemaValidator
       schema.all_of.each do |s|
         if s.type == "object"
           remaining_keys               -= (s.properties || {}).keys
+          patterns                     = (s.pattern_properties || {}).keys
+          remaining_keys               = remaining_keys.reject { |key| patterns.any? { |pattern| key =~ /#{pattern}/ } }
           nested_additional_properties = true if s.additional_properties
         else
           # If this is not allOf having array of objects inside, but e.g. having another anyOf/oneOf nested

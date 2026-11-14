@@ -5,6 +5,8 @@
 * support the `propertyNames` keyword (OpenAPI 3.1): every property name of an object is checked against its schema, and the first name that fails returns the error from that schema, such as `InvalidPattern` or `MoreThanMaxLength`. Names are checked as strings even when `coerce_value` is on. It was ignored before, so a value that passed may now fail
 * add `SpecValidator` rule `PropertyNamesIn30`: detect `propertyNames` in 3.0 documents (3.1 addition)
 * check `enum` on objects and arrays (OpenAPI 3.0 and 3.1). A value now has to equal one of the members, as in JSON Schema: objects are compared by keys and values, and arrays element by element in order. It was ignored before, so a value that passed may now fail. In particular, `enum` written next to `items`, such as `{ type: array, items: { type: string }, enum: [a, b] }`, now rejects every array. To limit the elements, move `enum` into `items`
+* support the `patternProperties` keyword (OpenAPI 3.1): a property whose name matches a pattern is now checked against that pattern's schema, as well as its `properties` schema. Such a property is no longer an additional property, so `additionalProperties` does not apply to it. It was ignored before, so a value that passed may now fail, and a value that failed on `additionalProperties` may now pass
+* add `SpecValidator` rule `PatternPropertiesIn30`: detect `patternProperties` in 3.0 documents (3.1 addition)
 
 ## 2.7.0 (2026-11-06)
 * match `additionalOperations` method names case-sensitively ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)). Standard methods still match their fixed fields in any case
