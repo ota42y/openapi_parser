@@ -1,4 +1,6 @@
 ## Unreleased
+* support the `contains`, `minContains` and `maxContains` keywords (OpenAPI 3.1): an array with no item valid against `contains` now fails with `NotContains`. With `minContains`, an array with fewer valid items than that fails with `LessThanMinContains` instead. With `maxContains`, an array with more valid items than that fails with `MoreThanMaxContains`. They were ignored before, so a value that passed may now fail
+* add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 
 ## 2.8.0 (2026-11-16)
 * match an exact `additionalOperations` key before a standard method in 3.2 documents, so a `Get` request finds `additionalOperations.Get` rather than `get` ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1))
