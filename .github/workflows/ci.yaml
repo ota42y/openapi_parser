@@ -1,7 +1,9 @@
 name: ci
 on:
-  - pull_request
-  - push
+  pull_request:
+  push:
+    branches:
+      - master
 jobs:
   test:
     strategy:
@@ -9,7 +11,6 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
         ruby:
           - "3.2"
           - "3.3"
@@ -17,6 +18,12 @@ jobs:
           - "4.0"
           - "4.1"
           - ruby-head
+        include:
+          # macOS runners are capacity-constrained; only test the oldest and newest stable Rubies there.
+          - os: macos-latest
+            ruby: "3.2"
+          - os: macos-latest
+            ruby: "4.1"
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v7
