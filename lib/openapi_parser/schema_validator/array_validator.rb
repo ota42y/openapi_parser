@@ -48,7 +48,8 @@ class OpenAPIParser::SchemaValidator
     end
 
     # 3.1: `contains` counts the items valid against its schema.
-    # The count must be at least `minContains` (1 by default) and at most `maxContains`.
+    # The count must be at least `minContains` and at most `maxContains`.
+    # Without `minContains`, at least one item must match.
     # It only checks the items, so the values it coerces are dropped.
     def validate_contains(value, schema)
       contains_schema = schema.contains
@@ -59,10 +60,11 @@ class OpenAPIParser::SchemaValidator
         err.nil?
       end
 
-      min = non_negative_integer?(schema.minContains) ? schema.minContains : 1
+      min = schema.minContains
       max = schema.maxContains
       return [nil, OpenAPIParser::MoreThanMaxContains.new(value, schema.object_reference)] if non_negative_integer?(max) && count > max
-      return [nil, OpenAPIParser::LessThanMinContains.new(value, schema.object_reference)] if count < min
+      return [nil, OpenAPIParser::LessThanMinContains.new(value, schema.object_reference)] if non_negative_integer?(min) && count < min
+      return [nil, OpenAPIParser::NotContains.new(value, schema.object_reference)] if count.zero? && !non_negative_integer?(min)
 
       [value, nil]
     end

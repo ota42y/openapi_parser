@@ -23,8 +23,8 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
 
     it 'rejects an array without a matching item' do
       expect { validate(%w[a b]) }.to raise_error(
-        OpenAPIParser::LessThanMinContains,
-        %r{#/components/schemas/Target \["a", "b"\] contains fewer than minContains matching items},
+        OpenAPIParser::NotContains,
+        %r{#/components/schemas/Target \["a", "b"\] has no item matching contains},
       )
     end
 
@@ -38,7 +38,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
     end
 
     it 'rejects an empty array' do
-      expect { validate([]) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate([]) }.to raise_error(OpenAPIParser::NotContains)
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
     end
 
     it 'still needs one matching item' do
-      expect { validate(['a']) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate(['a']) }.to raise_error(OpenAPIParser::NotContains)
     end
   end
 
@@ -101,7 +101,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
 
     it 'checks both keywords' do
       expect(validate([1, 5])).to eq [1, 5]
-      expect { validate([1, 2]) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate([1, 2]) }.to raise_error(OpenAPIParser::NotContains)
       expect { validate([5, 'a']) }.to raise_error(OpenAPIParser::ValidateError)
     end
 
@@ -145,7 +145,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
     let(:schemas) { { 'Target' => { 'contains' => { 'type' => 'integer' } } } }
 
     it 'checks an array' do
-      expect { validate(['a']) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate(['a']) }.to raise_error(OpenAPIParser::NotContains)
     end
 
     it 'ignores a value that is not an array' do
@@ -166,8 +166,8 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
 
     it 'checks the keyword' do
       expect { validate({ 'nested' => ['a'] }) }.to raise_error(
-        OpenAPIParser::LessThanMinContains,
-        %r{#/components/schemas/Target/properties/nested \["a"\] contains fewer than minContains matching items},
+        OpenAPIParser::NotContains,
+        %r{#/components/schemas/Target/properties/nested \["a"\] has no item matching contains},
       )
       expect(validate({ 'nested' => [1] })).to eq({ 'nested' => [1] })
     end
@@ -179,7 +179,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
 
       it 'counts every item for true' do
         expect(validate(['a', 1])).to eq ['a', 1]
-        expect { validate([]) }.to raise_error(OpenAPIParser::LessThanMinContains)
+        expect { validate([]) }.to raise_error(OpenAPIParser::NotContains)
         expect { validate(['a', 1, nil]) }.to raise_error(OpenAPIParser::MoreThanMaxContains)
       end
     end
@@ -188,7 +188,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
       let(:schemas) { { 'Target' => { 'type' => 'array', 'contains' => false } } }
 
       it 'counts no item for false' do
-        expect { validate(['a', 1]) }.to raise_error(OpenAPIParser::LessThanMinContains)
+        expect { validate(['a', 1]) }.to raise_error(OpenAPIParser::NotContains)
       end
     end
   end
@@ -198,7 +198,7 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
     let(:schemas) { { 'Target' => { 'type' => 'array', 'contains' => { 'type' => 'integer' }, 'maxContains' => 1 } } }
 
     it 'checks the keywords in the same way' do
-      expect { validate(['a']) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate(['a']) }.to raise_error(OpenAPIParser::NotContains)
       expect { validate([1, 2]) }.to raise_error(OpenAPIParser::MoreThanMaxContains)
     end
   end
@@ -228,8 +228,8 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
       { 'Target' => { 'type' => 'array', 'contains' => { 'type' => 'integer' }, 'minContains' => -1, 'maxContains' => 'one' } }
     end
 
-    it 'treats minContains as 1' do
-      expect { validate(['a']) }.to raise_error(OpenAPIParser::LessThanMinContains)
+    it 'ignores minContains, so an item must still match' do
+      expect { validate(['a']) }.to raise_error(OpenAPIParser::NotContains)
     end
 
     it 'ignores maxContains' do
