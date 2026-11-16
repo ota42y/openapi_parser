@@ -49,6 +49,11 @@ RSpec.describe 'contains, minContains and maxContains keywords' do
       expect { validate(['a', 1]) }.to raise_error(OpenAPIParser::LessThanMinContains)
     end
 
+    it 'rejects an array without a matching item in the same way' do
+      expect { validate(['a']) }.to raise_error(OpenAPIParser::LessThanMinContains)
+      expect { validate([]) }.to raise_error(OpenAPIParser::LessThanMinContains)
+    end
+
     it 'accepts an array with enough matching items' do
       value = [1, 'a', 2]
       expect(validate(value)).to eq value
