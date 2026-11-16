@@ -4,6 +4,9 @@ class OpenAPIParser::SchemaValidator
     include ::OpenAPIParser::SchemaValidator::MinimumMaximum
     include ::OpenAPIParser::SchemaValidator::MultipleOf
 
+    # Float() has no base argument and reads hexadecimal such as "0x10" and "0x1p3".
+    HEXADECIMAL = /\A\s*[+-]?0x/i.freeze
+
     # validate float value by schema
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
@@ -30,6 +33,8 @@ class OpenAPIParser::SchemaValidator
       end
 
       def coerce(value)
+        return value if value.kind_of?(String) && value.match?(HEXADECIMAL)
+
         Float(value)
       rescue ArgumentError, TypeError
         value
