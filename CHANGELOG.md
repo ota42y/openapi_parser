@@ -1,4 +1,6 @@
 ## Unreleased
+* support the `contains`, `minContains` and `maxContains` keywords (OpenAPI 3.1): an array with no item valid against `contains` now fails with `NotContains`. With `minContains`, an array with fewer valid items than that fails with `LessThanMinContains` instead. With `maxContains`, an array with more valid items than that fails with `MoreThanMaxContains`. They were ignored before, so a value that passed may now fail
+* add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 
 ## 2.8.0 (2026-11-16)
 * match an exact `additionalOperations` key before a standard method in 3.2 documents, so a `Get` request finds `additionalOperations.Get` rather than `get` ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1))
@@ -10,8 +12,6 @@
 * check `enum` on objects and arrays (OpenAPI 3.0 and 3.1). A value now has to equal one of the members, as in JSON Schema: objects are compared by keys and values, and arrays element by element in order. It was ignored before, so a value that passed may now fail. In particular, `enum` written next to `items`, such as `{ type: array, items: { type: string }, enum: [a, b] }`, now rejects every array. To limit the elements, move `enum` into `items`
 * support the `patternProperties` keyword (OpenAPI 3.1): a property whose name matches a pattern is now checked against that pattern's schema, as well as its `properties` schema. Such a property is no longer an additional property, so `additionalProperties` does not apply to it. It was ignored before, so a value that passed may now fail, and a value that failed on `additionalProperties` may now pass
 * add `SpecValidator` rule `PatternPropertiesIn30`: detect `patternProperties` in 3.0 documents (3.1 addition)
-* support the `contains`, `minContains` and `maxContains` keywords (OpenAPI 3.1): an array with fewer items valid against `contains` than `minContains` (1 by default) now fails with `LessThanMinContains`, and one with more than `maxContains` fails with `MoreThanMaxContains`. They were ignored before, so a value that passed may now fail
-* add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 
 ## 2.7.0 (2026-11-06)
 * match `additionalOperations` method names case-sensitively ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1)). Standard methods still match their fixed fields in any case
