@@ -66,6 +66,9 @@ class OpenAPIParser::SchemaValidator
       value, err = check_enum_include(value, schema)
       return [nil, err] if err
 
+      dependent_schemas_error = check_dependent_schemas(value, schema)
+      return [nil, dependent_schemas_error] if dependent_schemas_error
+
       check_properties_number(value, schema)
     end
 
@@ -113,6 +116,22 @@ class OpenAPIParser::SchemaValidator
         next if missing_keys.empty?
 
         return OpenAPIParser::NotExistDependentRequiredKey.new(property, missing_keys, schema.object_reference)
+      end
+      nil
+    end
+
+    # Each subschema applies to the whole object when the object has its property.
+    # The nested validation updates the same Hash, so coerced values stay in it.
+    # @return [OpenAPIParser::OpenAPIError, nil]
+    def check_dependent_schemas(value, schema)
+      dependent_schemas = schema.dependent_schemas
+      return unless dependent_schemas.is_a?(Hash)
+
+      dependent_schemas.each do |property, sub_schema|
+        next unless value.key?(property)
+
+        _, err = validatable.validate_schema(value, sub_schema)
+        return err if err
       end
       nil
     end
