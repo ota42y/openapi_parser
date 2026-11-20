@@ -230,6 +230,25 @@ RSpec.describe 'if, then and else keywords' do
       end
     end
 
+    context 'when if coerces one property and then fails on another property' do
+      let(:schemas) do
+        {
+          'Target' => {
+            'if' => {
+              'properties' => { 'a' => { 'type' => 'integer' }, 'b' => { 'type' => 'integer' } },
+            },
+            'else' => { 'properties' => { 'a' => { 'type' => 'string' } } },
+          },
+        }
+      end
+
+      it 'checks else with the original value' do
+        value = { 'a' => '1', 'b' => 'x' }
+        expect(validate(value, coerce_options)).to eq({ 'a' => '1', 'b' => 'x' })
+        expect(value).to eq({ 'a' => '1', 'b' => 'x' })
+      end
+    end
+
     context 'with type only in if for a value that is not a Hash' do
       let(:schemas) { { 'Target' => { 'if' => { 'type' => 'integer' }, 'then' => { 'minimum' => 10 } } } }
 
