@@ -38,23 +38,31 @@ class OpenAPIParser::PathItemFinder
     end
   end
 
-  def parse_path_parameters(schema_path, request_path)
+  def parse_path_parameters(schema_path, request_path, parameter_styles = {})
     parameters = path_parameters(schema_path)
     return nil if parameters.empty?
 
     # If there are regex special characters in the path, the regex will
     # be too permissive, so escape the non-parameter parts.
     components = []
+    label_segment = false
     unprocessed = schema_path.dup
     parameters.each do |parameter|
       parts = unprocessed.partition(parameter)
       components << Regexp.escape(parts[0]) unless parts[0] == ''
-      components << "(?<#{param_name(parameter)}>.+)"
+      name = param_name(parameter)
+      if parameter_styles[name] == 'label'
+        components << "(?<#{name}>\\..*)"
+        label_segment = true
+      else
+        components << "(?<#{name}>.+)"
+      end
       unprocessed = parts[2]
     end
     components << Regexp.escape(unprocessed) unless unprocessed == ''
 
     regex = components.join('')
+    regex = "\\A#{regex}\\z" if label_segment
     matches = request_path.match(regex)
     return nil unless matches
 
@@ -78,9 +86,13 @@ class OpenAPIParser::PathItemFinder
       @paths.path[request_path]&.operation(http_method)
     end
 
-    # used to filter paths with different depth or without given http method
-    def different_depth_or_method?(splitted_schema_path, splitted_request_path, path_item, http_method)
-      splitted_schema_path.size != splitted_request_path.size || !path_item.operation(http_method)
+    def path_parameter_styles(path_item, operation)
+      parameters = (path_item.parameters || []) + (operation.parameters || [])
+      parameters.each_with_object({}) do |parameter, styles|
+        next unless parameter.is_a?(OpenAPIParser::Schemas::Parameter) && parameter.in == 'path'
+
+        styles[parameter.name] = parameter.style
+      end
     end
 
     # check if the path item is a template
@@ -100,11 +112,11 @@ class OpenAPIParser::PathItemFinder
     # extract_params(['org', '1', 'user', '2', 'edit'], ['org', '{org_id}', 'user', '{user_id}'])
     # => { 'org_id' => 1, 'user_id' => 2 }
     # return nil if the schema does not match
-    def extract_params(splitted_request_path, splitted_schema_path)
+    def extract_params(splitted_request_path, splitted_schema_path, parameter_styles)
       splitted_request_path.zip(splitted_schema_path).reduce({}) do |result, zip_item|
         request_path_item, schema_path_item = zip_item
 
-        params = parse_path_parameters(schema_path_item, request_path_item)
+        params = parse_path_parameters(schema_path_item, request_path_item, parameter_styles)
         if params
           result.merge!(params)
         else
@@ -128,9 +140,13 @@ class OpenAPIParser::PathItemFinder
         path, path_item = item
         splitted_schema_path = path.split('/')
 
-        next result if different_depth_or_method?(splitted_schema_path, splitted_request_path, path_item, http_method)
+        next result unless splitted_schema_path.size == splitted_request_path.size
 
-        extracted_params = extract_params(splitted_request_path, splitted_schema_path)
+        operation = path_item.operation(http_method)
+        next result unless operation
+
+        parameter_styles = path_parameter_styles(path_item, operation)
+        extracted_params = extract_params(splitted_request_path, splitted_schema_path, parameter_styles)
         result << [path, extracted_params] if extracted_params
         result
       end
