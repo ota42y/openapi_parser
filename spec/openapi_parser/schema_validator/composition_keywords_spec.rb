@@ -4,15 +4,15 @@ RSpec.describe 'keywords next to allOf, anyOf and oneOf' do
   let(:openapi_version) { '3.1.0' }
   let(:options) { ::OpenAPIParser::SchemaValidator::Options.new }
   let(:coerce_options) { ::OpenAPIParser::SchemaValidator::Options.new(coerce_value: true) }
-  let(:root) do
-    raw = {
+  let(:document) do
+    {
       'openapi' => openapi_version,
       'info' => { 'title' => 'test', 'version' => '1.0' },
       'paths' => {},
       'components' => { 'schemas' => schemas },
     }
-    OpenAPIParser.parse(raw, strict_reference_validation: true)
   end
+  let(:root) { OpenAPIParser.parse(document, strict_reference_validation: true) }
   let(:schema) { root.components.schemas['Target'] }
 
   def validate(value, validate_options = options)
@@ -158,11 +158,80 @@ RSpec.describe 'keywords next to allOf, anyOf and oneOf' do
     end
   end
 
+  context 'when discriminator is next to oneOf or anyOf' do
+    let(:openapi_version) { '3.1.1' }
+    let(:composition) { 'oneOf' }
+    let(:cat_required) { ['petType'] }
+    let(:dog_required) { ['petType'] }
+    let(:properties) do
+      { 'petType' => { 'type' => 'string' }, 'meow' => { 'type' => 'string' }, 'bark' => { 'type' => 'string' } }
+    end
+    let(:schemas) do
+      {
+        'Cat' => { 'type' => 'object', 'properties' => properties, 'required' => cat_required },
+        'Dog' => { 'type' => 'object', 'properties' => properties, 'required' => dog_required },
+        'Target' => {
+          composition => [{ '$ref' => '#/components/schemas/Cat' }, { '$ref' => '#/components/schemas/Dog' }],
+          'discriminator' => { 'propertyName' => 'petType' },
+        },
+      }
+    end
+
+    where(:openapi_version) { ['3.1.1', '3.2.0'] }
+
+    with_them do
+      it 'rejects oneOf when both members match' do
+        expect { validate({ 'petType' => 'Cat' }) }.to raise_error(OpenAPIParser::NotOneOf)
+      end
+    end
+
+    context 'when the member named by the discriminator fails' do
+      let(:cat_required) { %w[petType meow] }
+
+      where(:composition) { ['oneOf', 'anyOf'] }
+
+      with_them do
+        it 'accepts the value when another member matches' do
+          value = { 'petType' => 'Cat' }
+          expect(validate(value)).to eq value
+        end
+
+        context 'when no member matches' do
+          let(:dog_required) { %w[petType bark] }
+
+          it 'reports the error from the named member' do
+            expect { validate({ 'petType' => 'Dog' }) }
+              .to raise_error(OpenAPIParser::NotExistRequiredKey, /Dog missing required parameters: bark/)
+          end
+        end
+      end
+    end
+
+    context 'in a 3.0 document' do
+      let(:openapi_version) { '3.0.3' }
+
+      it 'retains the discriminator shortcut' do
+        value = { 'petType' => 'Cat' }
+        expect(validate(value)).to eq value
+      end
+    end
+
+    it 'reports the mapped member error from an already loaded document' do
+      reference = 'normal.yml#/components/schemas/all_of_base'
+      schemas['Target']['oneOf'] = [{ '$ref' => reference }]
+      schemas['Target']['discriminator']['mapping'] = { 'Cat' => reference }
+      parsed = OpenAPIParser.parse_with_filepath(document, 'spec/data/discriminator.yml', strict_reference_validation: true)
+      expect do
+        OpenAPIParser::SchemaValidator.validate({ 'petType' => 'Cat' }, parsed.components.schemas['Target'], options)
+      end.to raise_error(OpenAPIParser::NotExistRequiredKey, /all_of_base missing required parameters: name/)
+    end
+  end
+
   context 'when discriminator is next to oneOf with other keywords' do
     let(:schemas) do
       {
-        'Cat' => { 'type' => 'object', 'properties' => { 'kind' => { 'type' => 'string' }, 'lives' => { 'type' => 'integer' } } },
-        'Dog' => { 'type' => 'object', 'properties' => { 'kind' => { 'type' => 'string' }, 'bark' => { 'type' => 'boolean' } } },
+        'Cat' => { 'type' => 'object', 'required' => ['lives'], 'properties' => { 'kind' => { 'type' => 'string' }, 'lives' => { 'type' => 'integer' } } },
+        'Dog' => { 'type' => 'object', 'required' => ['bark'], 'properties' => { 'kind' => { 'type' => 'string' }, 'bark' => { 'type' => 'boolean' } } },
         'Target' => {
           'type' => 'object',
           'required' => ['name'],
@@ -172,8 +241,12 @@ RSpec.describe 'keywords next to allOf, anyOf and oneOf' do
       }
     end
 
-    it 'selects the schema with discriminator' do
-      expect { validate({ 'kind' => 'Cat', 'name' => 'a', 'lives' => 'x' }) }.to raise_error(OpenAPIParser::ValidateError)
+    it 'uses the discriminator to select the error' do
+      expect { validate({ 'kind' => 'Cat', 'name' => 'a', 'lives' => 'x' }) }
+        .to raise_error(OpenAPIParser::ValidateError, %r{Cat/properties/lives})
+    end
+
+    it 'accepts the value when exactly one member matches' do
       value = { 'kind' => 'Cat', 'name' => 'a', 'lives' => 9 }
       expect(validate(value)).to eq value
     end

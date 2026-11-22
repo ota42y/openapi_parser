@@ -3,6 +3,7 @@
 * add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 * support the `dependentSchemas` keyword (OpenAPI 3.1): when an object has a property, the whole object must also be valid against the subschema for that property. The error is the one the subschema gives, such as `NotExistRequiredKey`. It was ignored before, so a value that passed may now fail
 * add `SpecValidator` rule `DependentSchemasIn30`: detect `dependentSchemas` in 3.0 documents (3.1 addition)
+* use `discriminator` as an error hint for `oneOf` and `anyOf` in OpenAPI 3.1 and later. A value that matches multiple `oneOf` members now fails even when the discriminator names one of them
 
 ## 2.8.0 (2026-11-16)
 * match an exact `additionalOperations` key before a standard method in 3.2 documents, so a `Get` request finds `additionalOperations.Get` rather than `get` ([OpenAPI 3.2](https://spec.openapis.org/oas/v3.2.0.html#path-item-object), [RFC 9110 §9.1](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.1))

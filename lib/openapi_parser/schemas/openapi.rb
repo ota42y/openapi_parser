@@ -97,12 +97,12 @@ module OpenAPIParser::Schemas
 
     # load another schema with shared config and schema_registry
     # @return [OpenAPIParser::Schemas::OpenAPI]
-    def load_another_schema(uri)
+    def load_another_schema(uri, cached_only: false)
       resolved_uri = resolve_uri(uri)
       return if resolved_uri.nil?
 
       loaded = @schema_registry[resolved_uri]
-      return loaded if loaded
+      return loaded if loaded || cached_only
 
       OpenAPIParser.load_uri(resolved_uri, config: @config, schema_registry: @schema_registry, referrer: self)
     end
