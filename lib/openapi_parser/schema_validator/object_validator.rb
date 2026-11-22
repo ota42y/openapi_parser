@@ -17,7 +17,7 @@ class OpenAPIParser::SchemaValidator
       required_set = schema.required ? schema.required.to_set : Set.new
       remaining_keys = value.keys
 
-      if schema.discriminator && !parent_discriminator_schemas.include?(schema)
+      if schema.discriminator && schema.root.use_legacy_all_of_discriminator? && !parent_discriminator_schemas.include?(schema)
         return validate_discriminator_schema(
           schema.discriminator,
           value,

@@ -36,6 +36,15 @@ module OpenAPIParser::Schemas
       Gem::Version.new(openapi).release
     end
 
+    # OpenAPI 3.0.4 clarified that validation must not follow a discriminator to an allOf child.
+    def use_legacy_all_of_discriminator?
+      version = openapi_version
+      return version < Gem::Version.new('3.0.4') if version
+      return @referrer.use_legacy_all_of_discriminator? if openapi.nil? && @referrer
+
+      true
+    end
+
     # Whether OpenAPI 3.1 runtime behavior applies where 3.0 and 3.1 define
     # the same thing differently: the document declares 3.1 or later. A
     # referenced file that declares no version follows the document that
