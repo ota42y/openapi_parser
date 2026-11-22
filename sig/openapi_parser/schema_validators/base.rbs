@@ -15,6 +15,7 @@ module OpenAPIParser
         ?parent_discriminator_schemas: Array[OpenAPIParser::Schemas::Schema]
       ) -> [Object | nil, OpenAPIParser::OpenAPIError | nil]
       private def default_mapping_target: (OpenAPIParser::Schemas::Discriminator discriminator) -> (String | nil)
+      private def legacy_nullable?: (OpenAPIParser::Schemas::Schema schema) -> bool?
     end
   end
 end

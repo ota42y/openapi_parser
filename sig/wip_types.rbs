@@ -5,7 +5,8 @@ end
                  
 module OpenAPIParser
   module Schemas
-    class Schema
+    class Schema < Base
+      attr_reader nullable: bool?
     end
   end
 end

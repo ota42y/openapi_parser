@@ -212,6 +212,26 @@ RSpec.describe 'keywords next to allOf, anyOf and oneOf' do
     end
   end
 
+  context 'when nullable is present in OpenAPI 3.1 or later' do
+    let(:schemas) { { 'Target' => keywords.merge('nullable' => true) } }
+
+    where(:openapi_version, :keywords, :error_class) do
+      [
+        ['3.1.0', { 'type' => 'string' }, OpenAPIParser::NotNullError],
+        ['3.2.0', { 'type' => 'string' }, OpenAPIParser::NotNullError],
+        ['3.1.0', { 'oneOf' => [{ 'type' => 'string' }] }, OpenAPIParser::NotOneOf],
+        ['3.1.0', { 'anyOf' => [{ 'type' => 'string' }] }, OpenAPIParser::NotAnyOf],
+        ['3.1.0', { 'allOf' => [{ 'type' => 'string' }] }, OpenAPIParser::NotNullError],
+      ]
+    end
+
+    with_them do
+      it 'rejects null when the schema does not allow it' do
+        expect { validate(nil) }.to raise_error(error_class)
+      end
+    end
+  end
+
   context 'with coerce_value' do
     context 'when allOf has a member with type' do
       let(:schemas) { { 'Target' => { 'allOf' => [{ 'maximum' => 5 }, { 'type' => 'integer' }] } } }

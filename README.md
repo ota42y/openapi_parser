@@ -91,9 +91,9 @@ OpenAPIParser.parse(yaml_file, options)
 
 ### Supported OpenAPI versions
 
-The parser accepts OpenAPI 3.0, 3.1, and 3.2 documents. Parsing and runtime request/response validation are version-permissive: supported keywords are honored regardless of the document's declared `openapi:` version (for example, both `nullable` and `type: [..., "null"]` work everywhere).
+The parser accepts OpenAPI 3.0, 3.1, and 3.2 documents. Many supported keywords work across versions. Runtime validation uses `nullable` in OpenAPI 3.0 and ignores it in 3.1 and later. In 3.1 and later, use `type: [string, "null"]` to allow either a string or null.
 
-The exception is 3.2 behavior that would change how an existing 3.0 or 3.1 document validates. It applies only to documents that declare 3.2 or later:
+The following 3.2 behavior applies to documents that declare 3.2 or later:
 
 - `$ref`s in request body and response `content` (e.g. into `components.mediaTypes`)
 - the `query` operation, `additionalOperations`, and case-insensitive method matching in `request_operation`
@@ -131,6 +131,8 @@ Detected mismatches:
 - the 3.0 Boolean vs 3.1 numeric forms of `exclusiveMinimum` / `exclusiveMaximum`
 - 3.2 additions in earlier documents: `$self`, the `query` operation, `additionalOperations`, `components.mediaTypes`, Tag `summary` / `parent` / `kind`, Server `name`, Example `dataValue` / `serializedValue`, XML `nodeType`, Security Scheme `deprecated` / `oauth2MetadataUrl` and the `deviceAuthorization` flow, Media Type and Encoding `itemSchema` / `itemEncoding` / `prefixEncoding`, Discriminator `defaultMapping`, Parameter `in: querystring` and `style: cookie`, Response `summary`
 - keywords removed or deprecated by the declared version: `nullable` and singular schema `example` in 3.1+, XML `attribute: true` / `wrapped: true` and Parameter `allowEmptyValue` in 3.2
+
+Before upgrading, use `strict_specification_version: :warn` on your current version to find `nullable` in 3.1 and later documents. Remove the keyword and include `"null"` where the schema should allow it. For a composition keyword, the member schemas must allow null according to the keyword's rules. After migrating, use `:raise` in CI to catch new version mismatches.
 
 ## ToDo
 - correct schema checker
