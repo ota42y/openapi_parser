@@ -109,5 +109,57 @@ RSpec.describe OpenAPIParser::PathItemFinder do
       expect(subject.operation_object(:exit, '/pets')).to eq(nil)
       expect(subject.operation_object(:blah, '/pets')).to eq(nil)
     end
+
+    context 'with adjacent path parameters' do
+      let(:openapi_version) { '3.1.1' }
+      let(:name_parameter) { {'name' => 'name', 'in' => 'path', 'required' => true, 'schema' => {'type' => 'string'}} }
+      let(:format_parameter) do
+        {'name' => 'format', 'in' => 'path', 'required' => true, 'style' => 'label', 'schema' => {'type' => 'string', 'enum' => ['json']}}
+      end
+      let(:operation) do
+        {'parameters' => [name_parameter, format_parameter], 'responses' => {'200' => {'description' => 'OK'}}}
+      end
+      let(:path_item) { {'get' => operation} }
+      let(:root) do
+        OpenAPIParser.parse({
+          'openapi' => openapi_version,
+          'paths' => {'/items/{name}{format}' => path_item},
+        }, strict_reference_validation: true)
+      end
+
+      where(:openapi_version) { ['3.0.3', '3.1.1', '3.2.1'] }
+
+      with_them do
+        it 'keeps the dot with the label parameter' do
+          expect(root.request_operation(:get, '/items/widget.json').path_params).to eq({'name' => 'widget', 'format' => '.json'})
+        end
+      end
+
+      it 'keeps earlier dots in the preceding parameter' do
+        expect(subject.operation_object(:get, '/items/widget.v2.json').path_params).to eq({'name' => 'widget.v2', 'format' => '.json'})
+      end
+
+      it 'requires the label prefix' do
+        expect(subject.operation_object(:get, '/items/widget')).to be_nil
+      end
+
+      context 'with the label declared on the path item' do
+        let(:path_item) do
+          {
+            'parameters' => [name_parameter, format_parameter],
+            'get' => operation.reject { |key| key == 'parameters' },
+            'post' => operation.merge('parameters' => [format_parameter.merge('style' => 'simple')]),
+          }
+        end
+
+        it 'inherits the label style' do
+          expect(subject.operation_object(:get, '/items/widget.json').path_params).to eq({'name' => 'widget', 'format' => '.json'})
+        end
+
+        it 'uses the operation style when it overrides the path item style' do
+          expect(subject.operation_object(:post, '/items/xy').path_params).to eq({'name' => 'x', 'format' => 'y'})
+        end
+      end
+    end
   end
 end
