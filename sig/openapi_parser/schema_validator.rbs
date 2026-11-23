@@ -17,6 +17,7 @@ module OpenAPIParser
     @any_of_validator: OpenAPIParser::SchemaValidator::AnyOfValidator | nil
     @all_of_validator: OpenAPIParser::SchemaValidator::AllOfValidator | nil
     @one_of_validator: OpenAPIParser::SchemaValidator::OneOfValidator | nil
+    @if_then_else_validator: OpenAPIParser::SchemaValidator::IfThenElseValidator | nil
     @nil_validator: OpenAPIParser::SchemaValidator::NilValidator | nil
     @unspecified_type_validator: OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator | nil
 
@@ -42,6 +43,7 @@ module OpenAPIParser
     def any_of_validator: -> OpenAPIParser::SchemaValidator::AnyOfValidator
     def all_of_validator: -> OpenAPIParser::SchemaValidator::AllOfValidator
     def one_of_validator: -> OpenAPIParser::SchemaValidator::OneOfValidator
+    def if_then_else_validator: -> OpenAPIParser::SchemaValidator::IfThenElseValidator
     def nil_validator: -> OpenAPIParser::SchemaValidator::NilValidator
     def unspecified_type_validator: -> OpenAPIParser::SchemaValidator::UnspecifiedTypeValidator
 

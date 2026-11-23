@@ -40,6 +40,9 @@ end
 class OpenAPIParser::SchemaValidator::OneOfValidator
 end
 
+class OpenAPIParser::SchemaValidator::IfThenElseValidator
+end
+
 class OpenAPIParser::SchemaValidator::NilValidator
 end
 

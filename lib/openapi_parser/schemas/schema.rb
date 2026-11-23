@@ -112,6 +112,18 @@ module OpenAPIParser::Schemas
     #   @return [Schema, nil]
     openapi_attr_object :property_names, Schema, reference: true, schema_key: :propertyNames
 
+    # @!attribute [r] if_schema
+    #   @return [Schema, nil] `if` (OpenAPI 3.1+)
+    openapi_attr_object :if_schema, Schema, reference: true, schema_key: :if
+
+    # @!attribute [r] then_schema
+    #   @return [Schema, nil] `then` (OpenAPI 3.1+)
+    openapi_attr_object :then_schema, Schema, reference: true, schema_key: :then
+
+    # @!attribute [r] else_schema
+    #   @return [Schema, nil] `else` (OpenAPI 3.1+)
+    openapi_attr_object :else_schema, Schema, reference: true, schema_key: :else
+
     # @!attribute [r] items
     #   @return [Schema, nil]
     openapi_attr_object :items, Schema, reference: true
