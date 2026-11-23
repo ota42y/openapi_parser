@@ -136,6 +136,12 @@ module OpenAPIParser
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
 
+      class IfThenElseIn30 < Rule
+        KEYWORDS: Array[String]
+
+        def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
+      end
+
       class AllowEmptyValueDeprecation < Rule
         def check: (OpenAPIParser::Schemas::OpenAPI root) -> Array[SpecValidator::SpecViolation]
       end
