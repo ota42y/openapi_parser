@@ -26,6 +26,7 @@ module OpenAPIParser
       ) { (String) -> OpenAPIParser::Schemas::Schema? } -> [String?, OpenAPIParser::Schemas::Schema?]
       private def find_loaded_discriminator_target: (OpenAPIParser::Schemas::OpenAPI, String) -> OpenAPIParser::Schemas::Schema?
       private def default_mapping_target: (OpenAPIParser::Schemas::Discriminator discriminator) -> (String | nil)
+      private def legacy_nullable?: (OpenAPIParser::Schemas::Schema schema) -> bool?
     end
   end
 end

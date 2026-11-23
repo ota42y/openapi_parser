@@ -170,6 +170,16 @@ RSpec.describe 'OpenAPIParser 3.1 spec validator (integration)' do
     it 'stays clean on the correctly-versioned document' do
       expect_clean('nullable_30.yaml')
     end
+
+    it 'rejects null at runtime even when the load policy is :warn' do
+      root = nil
+      expect { root = load_doc('nullable_31.yaml', :warn) }.to output(/\[nullable_deprecation\]/).to_stderr
+      operation = root.request_operation(:get, '/profiles/1')
+      response = OpenAPIParser::RequestOperation::ValidatableResponseBody.new(
+        200, { 'nickname' => nil }, { 'Content-Type' => 'application/json' }
+      )
+      expect { operation.validate_response_body(response) }.to raise_error(OpenAPIParser::NotNullError)
+    end
   end
 
   describe 'singular example on a Schema (deprecated in 3.1)' do

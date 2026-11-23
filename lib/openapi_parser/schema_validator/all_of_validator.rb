@@ -5,7 +5,7 @@ class OpenAPIParser::SchemaValidator
     # @param [Object] value
     # @param [OpenAPIParser::Schemas::Schema] schema
     def coerce_and_validate(value, schema, **keyword_args)
-      if value.nil? && schema.nullable
+      if value.nil? && legacy_nullable?(schema)
         return [value, nil]
       end
 

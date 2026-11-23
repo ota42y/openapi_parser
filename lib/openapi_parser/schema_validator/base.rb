@@ -82,5 +82,9 @@ class OpenAPIParser::SchemaValidator
 
         target.start_with?('#') || target.include?('/') ? target : "#/components/schemas/#{target}"
       end
+
+      def legacy_nullable?(schema)
+        schema.nullable && !schema.root.use_3_1_features?
+      end
   end
 end
