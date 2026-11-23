@@ -6,16 +6,20 @@ class OpenAPIParser::SchemaValidator
       if value.nil? && schema.nullable
         return [value, nil]
       end
-      if schema.discriminator
-        return validate_discriminator_schema(schema.discriminator, value, candidate_schemas: schema.any_of)
+      discriminator = schema.discriminator
+      if discriminator && !schema.root.use_3_1_features?
+        return validate_discriminator_schema(discriminator, value, candidate_schemas: schema.any_of)
       end
 
-      # in all schema return error (=true) not any of data
+      errors = {} if discriminator
       schema.any_of.each do |s|
         coerced, err = validatable.validate_schema(value, s)
         return [coerced, nil] if err.nil?
+
+        errors[s] = err if errors
       end
-      [nil, OpenAPIParser::NotAnyOf.new(value, schema.object_reference)]
+      error = discriminator_member_error(discriminator, value, errors) if errors
+      [nil, error || OpenAPIParser::NotAnyOf.new(value, schema.object_reference)]
     end
   end
 end

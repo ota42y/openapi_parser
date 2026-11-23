@@ -3,6 +3,7 @@
 * add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 * support the `dependentSchemas` keyword (OpenAPI 3.1): when an object has a property, the whole object must also be valid against the subschema for that property. The error is the one the subschema gives, such as `NotExistRequiredKey`. It was ignored before, so a value that passed may now fail
 * add `SpecValidator` rule `DependentSchemasIn30`: detect `dependentSchemas` in 3.0 documents (3.1 addition)
+* use `discriminator` as an error hint for `oneOf` and `anyOf` in OpenAPI 3.1 and later. A value that matches multiple `oneOf` members now fails even when the discriminator names one of them
 * support the `if`, `then` and `else` keywords (OpenAPI 3.1): a value valid against `if` is now checked with `then`, and any other value with `else`. They were ignored before, so a value that passed may now fail. When `coerce_value` is on, `if` is checked with coercion and `then` checks the value coerced by `if`. When `if` passes, the properties it coerced stay coerced in the Hash. When `if` fails, the values it coerced before the failure can also stay coerced, as with a failed `anyOf` member
 * add `SpecValidator` rule `IfThenElseIn30`: detect `if`, `then` and `else` in 3.0 documents (3.1 additions)
 

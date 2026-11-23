@@ -179,7 +179,7 @@ class OpenAPIParser::SchemaValidator
       composition_steps = composition_validators(schema).map do |v|
         ->(input) { v.coerce_and_validate(input, schema, **keyword_args) }
       end
-      # the composition keyword already used discriminator
+      # Skip discriminator dispatch when checking sibling keywords.
       parents = (keyword_args[:parent_discriminator_schemas] || []) + [schema]
       other_step = ->(input) { validate_without_composition(input, schema, **keyword_args, parent_discriminator_schemas: parents) }
 
