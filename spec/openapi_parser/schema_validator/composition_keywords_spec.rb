@@ -35,6 +35,60 @@ RSpec.describe 'keywords next to allOf, anyOf and oneOf' do
     end
   end
 
+  context 'when an allOf member has a discriminator' do
+    let(:openapi_version) { '3.1.1' }
+    let(:schema) { root.components.schemas['Pet'] }
+    let(:schemas) do
+      {
+        'Pet' => {
+          'type' => 'object',
+          'properties' => { 'petType' => { 'type' => 'string' } },
+          'required' => ['petType'],
+          'discriminator' => { 'propertyName' => 'petType' },
+        },
+        'Dog' => {
+          'allOf' => [
+            { '$ref' => '#/components/schemas/Pet' },
+            {
+              'type' => 'object',
+              'properties' => { 'bark' => { 'type' => 'string' } },
+              'required' => ['bark'],
+            },
+          ],
+        },
+      }
+    end
+
+    where(:openapi_version) { ['3.0.4', '3.1.1', '3.2.1'] }
+
+    with_them do
+      it 'accepts a value that satisfies the parent schema' do
+        value = { 'petType' => 'Dog' }
+        expect(validate(value)).to eq value
+      end
+    end
+
+    it 'checks required properties on the parent' do
+      expect { validate({}) }.to raise_error(OpenAPIParser::NotExistRequiredKey, /Pet missing required parameters: petType/)
+    end
+
+    context 'when validating the child directly' do
+      let(:schema) { root.components.schemas['Dog'] }
+
+      it 'requires the properties from the child' do
+        expect { validate({ 'petType' => 'Dog' }) }.to raise_error(OpenAPIParser::NotExistRequiredKey, /Dog\/allOf\/1 missing required parameters: bark/)
+      end
+    end
+
+    context 'in a 3.0.3 document' do
+      let(:openapi_version) { '3.0.3' }
+
+      it 'retains discriminator dispatch to the child' do
+        expect { validate({ 'petType' => 'Dog' }) }.to raise_error(OpenAPIParser::NotExistRequiredKey, /Dog\/allOf\/1 missing required parameters: bark/)
+      end
+    end
+  end
+
   context 'when a keyword is next to anyOf' do
     let(:schemas) { { 'Target' => { 'anyOf' => [{ 'type' => 'string' }], 'maxLength' => 3 } } }
 

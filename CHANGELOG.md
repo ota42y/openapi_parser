@@ -1,4 +1,5 @@
 ## Unreleased
+* validate an `allOf` parent against its own schema in OpenAPI 3.0.4 and later, without following its discriminator to a child. Earlier documents retain discriminator dispatch
 * support the `contains`, `minContains` and `maxContains` keywords (OpenAPI 3.1): an array with no item valid against `contains` now fails with `NotContains`. With `minContains`, an array with fewer valid items than that fails with `LessThanMinContains` instead. With `maxContains`, an array with more valid items than that fails with `MoreThanMaxContains`. They were ignored before, so a value that passed may now fail
 * add `SpecValidator` rule `ContainsIn30`: detect `contains`, `minContains` and `maxContains` in 3.0 documents (3.1 additions)
 * support the `dependentSchemas` keyword (OpenAPI 3.1): when an object has a property, the whole object must also be valid against the subschema for that property. The error is the one the subschema gives, such as `NotExistRequiredKey`. It was ignored before, so a value that passed may now fail

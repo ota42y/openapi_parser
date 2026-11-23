@@ -17,6 +17,7 @@ module OpenAPIParser
       def load_another_schema: (URI::Generic uri, ?cached_only: bool) -> OpenAPIParser::Schemas::OpenAPI?
       def openapi: () -> String?
       def openapi_version: () -> Gem::Version?
+      def use_legacy_all_of_discriminator?: () -> bool
       def use_3_1_features?: () -> bool
       def use_3_2_features?: () -> bool
     end
