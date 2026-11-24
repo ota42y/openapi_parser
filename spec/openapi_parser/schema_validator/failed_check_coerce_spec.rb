@@ -82,7 +82,13 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
   end
 
   context 'when a oneOf member fails after coercing a nested property' do
-    it 'checks the other members with the original value'
+    # Needs coercion too, so the value does not match it as it is.
+    let(:string_and_integer) { string.merge('properties' => string['properties'].merge('c' => { 'type' => 'integer' })) }
+    let(:target) { { 'oneOf' => [integer_then_fail, string_and_integer] } }
+
+    it 'checks the other members with the original value' do
+      expect(validate({ 'o' => { 'a' => '1' }, 'b' => 'x', 'c' => '2' })).to eq({ 'o' => { 'a' => '1' }, 'b' => 'x', 'c' => 2 })
+    end
   end
 
   context 'when the not subschema fails after coercing a nested property' do
