@@ -100,7 +100,11 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
   end
 
   context 'when if fails after coercing a nested property' do
-    it 'checks else with the original value'
+    let(:target) { { 'if' => integer_then_fail, 'else' => string } }
+
+    it 'checks else with the original value' do
+      expect(validate({ 'o' => { 'a' => '1' }, 'b' => 'x' })).to eq({ 'o' => { 'a' => '1' }, 'b' => 'x' })
+    end
   end
 
   context 'when an item fails contains after coercing a nested property' do
