@@ -99,7 +99,7 @@ class OpenAPIParser::SchemaValidator
 
     # `not` rejects a value that is valid against its schema.
     if schema.respond_to?(:not) && schema.not.is_a?(OpenAPIParser::Schemas::Schema)
-      _, not_error = validate_schema(value, schema.not)
+      _, not_error = validate_trial(value, schema.not)
       return [nil, OpenAPIParser::NotSchemaMatched.new(value, schema.not.object_reference)] unless not_error
     end
 

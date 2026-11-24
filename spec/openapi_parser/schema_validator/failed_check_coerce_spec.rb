@@ -92,7 +92,11 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
   end
 
   context 'when the not subschema fails after coercing a nested property' do
-    it 'checks the keywords next to not with the original value'
+    let(:target) { { 'not' => integer_then_fail }.merge(string) }
+
+    it 'checks the keywords next to not with the original value' do
+      expect(validate({ 'o' => { 'a' => '1' }, 'b' => 'x' })).to eq({ 'o' => { 'a' => '1' }, 'b' => 'x' })
+    end
   end
 
   context 'when if fails after coercing a nested property' do
