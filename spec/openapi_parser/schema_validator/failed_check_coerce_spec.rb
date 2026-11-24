@@ -108,10 +108,25 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
   end
 
   context 'when an item fails contains after coercing a nested property' do
-    it 'checks items with the original value'
+    let(:target) do
+      {
+        'contains' => { 'properties' => { 'a' => { 'type' => 'integer' } }, 'maxProperties' => 0 },
+        'items' => { 'properties' => { 'a' => { 'type' => 'string' } } },
+      }
+    end
+
+    it 'checks items with the original value' do
+      expect(validate([{ 'a' => '1' }, {}])).to eq([{ 'a' => '1' }, {}])
+    end
   end
 
   context 'when an item passes contains' do
-    it 'keeps the item uncoerced'
+    let(:target) { { 'contains' => { 'properties' => { 'a' => { 'type' => 'integer' } } } } }
+
+    it 'keeps the item uncoerced' do
+      value = [{ 'a' => '1' }]
+      expect(validate(value)).to eq([{ 'a' => '1' }])
+      expect(value).to eq([{ 'a' => '1' }])
+    end
   end
 end
