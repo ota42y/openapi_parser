@@ -13,8 +13,8 @@ class OpenAPIParser::SchemaValidator
 
       errors = {} if discriminator
       schema.any_of.each do |s|
-        coerced, err = validatable.validate_schema(value, s)
-        return [coerced, nil] if err.nil?
+        coerced, err = validatable.validate_trial(value, s)
+        return [validatable.adopt(value, coerced), nil] if err.nil?
 
         errors[s] = err if errors
       end

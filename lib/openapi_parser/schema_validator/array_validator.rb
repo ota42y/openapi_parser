@@ -56,7 +56,7 @@ class OpenAPIParser::SchemaValidator
       return [value, nil] unless contains_schema.is_a?(OpenAPIParser::Schemas::Schema)
 
       count = value.count do |item|
-        _, err = validatable.validate_schema(item, contains_schema)
+        _, err = validatable.validate_trial(item, contains_schema)
         err.nil?
       end
 

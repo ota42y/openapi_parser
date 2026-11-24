@@ -19,9 +19,9 @@ class OpenAPIParser::SchemaValidator
         return [nil, OpenAPIParser::NotOneOf.new(value, schema.object_reference)] if literal_matches.size > 1
       end
 
-      results = schema.one_of.map { |s| validatable.validate_schema(value, s) }
+      results = schema.one_of.map { |s| validatable.validate_trial(value, s) }
       matched = results.select { |_coerced, err| err.nil? }
-      return [matched.first.first, nil] if matched.one?
+      return [validatable.adopt(value, matched.first.first), nil] if matched.one?
 
       if discriminator && matched.empty?
         errors = schema.one_of.zip(results.map(&:last)).to_h

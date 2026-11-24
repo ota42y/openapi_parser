@@ -97,7 +97,11 @@ RSpec.describe 'oneOf with coerce_value' do
       let(:target) { { 'oneOf' => [integer_object, { 'type' => 'object', 'properties' => { 'n' => { 'type' => 'boolean' } } }] } }
 
       it 'coerces the property that matches only after coercion' do
-        expect(validate({ 'n' => '1' })).to eq({ 'n' => 1 })
+        expect(validate({ 'n' => '3' })).to eq({ 'n' => 3 })
+      end
+
+      it 'rejects a property that both members can coerce, as for a value that is not in an object' do
+        expect { validate({ 'n' => '1' }) }.to raise_error(OpenAPIParser::NotOneOf)
       end
     end
   end

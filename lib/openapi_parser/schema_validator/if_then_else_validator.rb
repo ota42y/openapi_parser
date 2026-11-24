@@ -8,12 +8,14 @@ class OpenAPIParser::SchemaValidator
     def coerce_and_validate(value, schema, **_keyword_args)
       return [value, nil] unless schema.if_schema
 
-      if_value, if_error = validatable.validate_schema(value, schema.if_schema)
+      if_value, if_error = validatable.validate_trial(value, schema.if_schema)
       if if_error
         return [value, nil] unless schema.else_schema
 
         return validatable.validate_schema(value, schema.else_schema)
       end
+
+      if_value = validatable.adopt(value, if_value)
 
       # `then` sees the value coerced by `if`. A coerced value of another class,
       # like DateTime, is only the output form, so `then` checks the original value.

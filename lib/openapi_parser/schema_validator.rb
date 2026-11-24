@@ -99,7 +99,7 @@ class OpenAPIParser::SchemaValidator
 
     # `not` rejects a value that is valid against its schema.
     if schema.respond_to?(:not) && schema.not.is_a?(OpenAPIParser::Schemas::Schema)
-      _, not_error = validate_schema(value, schema.not)
+      _, not_error = validate_trial(value, schema.not)
       return [nil, OpenAPIParser::NotSchemaMatched.new(value, schema.not.object_reference)] unless not_error
     end
 
@@ -142,7 +142,53 @@ class OpenAPIParser::SchemaValidator
     [current, nil]
   end
 
+  # Validate a value with a check that can fail without failing the whole
+  # value, like an `anyOf` member. With coerce_value, the check runs on a copy
+  # of the Hashes and Arrays in the value, so a failed check leaves the value
+  # unchanged. Pass the result of the check that is used to adopt.
+  # @param [Object] value
+  # @param [OpenAPIParser::Schemas::Schema] schema
+  # @return [Array] coerced value and error
+  def validate_trial(value, schema)
+    return validate_schema(value, schema) unless @coerce_value
+
+    validate_schema(copy_containers(value), schema)
+  end
+
+  # Write the result of a used trial back into the value, as a passed check
+  # does without a trial. Other values are returned as they are.
+  # @param [Object] value the value given to validate_trial
+  # @param [Object] coerced the value returned by validate_trial
+  # @return [Object] the value to return
+  def adopt(value, coerced)
+    return coerced unless @coerce_value
+
+    if (value.is_a?(Hash) && coerced.is_a?(Hash)) || (value.is_a?(Array) && coerced.is_a?(Array))
+      value.replace(coerced)
+    else
+      coerced
+    end
+  end
+
   private
+
+    # Copy the Hashes and Arrays at every level with dup, which keeps their
+    # classes. Other values are shared, because coercion replaces them rather
+    # than changing them.
+    def copy_containers(value)
+      case value
+      when Hash
+        copy = value.dup
+        value.each { |k, v| copy[k] = copy_containers(v) }
+        copy
+      when Array
+        copy = value.dup
+        value.each_with_index { |v, i| copy[i] = copy_containers(v) }
+        copy
+      else
+        value
+      end
+    end
 
     def json_value?(value)
       JSON_VALUE_CLASSES.any? { |klass| value.is_a?(klass) }
