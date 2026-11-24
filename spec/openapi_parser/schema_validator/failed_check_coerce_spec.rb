@@ -12,14 +12,33 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
     OpenAPIParser.parse(raw, strict_reference_validation: true)
   end
   let(:schema) { root.components.schemas['Target'] }
+  # Coerces o.a to an Integer, and then fails on b.
+  let(:integer_then_fail) do
+    {
+      'properties' => {
+        'o' => { 'properties' => { 'a' => { 'type' => 'integer' } } },
+        'b' => { 'type' => 'integer' },
+      },
+    }
+  end
+  let(:string) { { 'properties' => { 'o' => { 'properties' => { 'a' => { 'type' => 'string' } } } } } }
 
   def validate(value, validate_options = options)
     OpenAPIParser::SchemaValidator.validate(value, schema, validate_options)
   end
 
   context 'when an anyOf member fails after coercing a nested property' do
-    it 'checks the next member with the original value'
-    it 'leaves the input unchanged'
+    let(:target) { { 'anyOf' => [integer_then_fail, string] } }
+
+    it 'checks the next member with the original value' do
+      expect(validate({ 'o' => { 'a' => '1' }, 'b' => 'x' })).to eq({ 'o' => { 'a' => '1' }, 'b' => 'x' })
+    end
+
+    it 'leaves the input unchanged' do
+      value = { 'o' => { 'a' => '1' }, 'b' => 'x' }
+      validate(value)
+      expect(value).to eq({ 'o' => { 'a' => '1' }, 'b' => 'x' })
+    end
   end
 
   context 'when an anyOf member passes' do
