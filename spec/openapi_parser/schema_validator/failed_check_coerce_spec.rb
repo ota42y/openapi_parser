@@ -42,15 +42,43 @@ RSpec.describe 'coerce_value in a check that can fail without failing the value'
   end
 
   context 'when an anyOf member passes' do
-    it 'keeps the values coerced by the member in the input'
+    let(:target) { { 'anyOf' => [integer_then_fail, string] } }
+
+    it 'keeps the values coerced by the member in the input' do
+      value = { 'o' => { 'a' => '1' }, 'b' => '2' }
+      expect(validate(value)).to eq({ 'o' => { 'a' => 1 }, 'b' => 2 })
+      expect(value).to eq({ 'o' => { 'a' => 1 }, 'b' => 2 })
+    end
   end
 
   context 'when an anyOf member fails after coercing a property on the same level' do
-    it 'checks the next member with the original value'
+    let(:target) do
+      {
+        'anyOf' => [
+          { 'properties' => { 'a' => { 'type' => 'integer' } }, 'maxProperties' => 0 },
+          { 'properties' => { 'a' => { 'type' => 'string' } } },
+        ],
+      }
+    end
+
+    it 'checks the next member with the original value' do
+      expect(validate({ 'a' => '1' })).to eq({ 'a' => '1' })
+    end
   end
 
   context 'when an anyOf member fails after coercing an item of a nested Array' do
-    it 'checks the next member with the original value'
+    let(:target) do
+      {
+        'anyOf' => [
+          { 'properties' => { 'l' => { 'items' => { 'type' => 'integer' } }, 'b' => { 'type' => 'integer' } } },
+          { 'properties' => { 'l' => { 'items' => { 'type' => 'string' } } } },
+        ],
+      }
+    end
+
+    it 'checks the next member with the original value' do
+      expect(validate({ 'l' => ['1'], 'b' => 'x' })).to eq({ 'l' => ['1'], 'b' => 'x' })
+    end
   end
 
   context 'when a oneOf member fails after coercing a nested property' do
